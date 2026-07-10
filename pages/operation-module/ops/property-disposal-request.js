@@ -24,7 +24,7 @@ ${_card('pdispreq-det','<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 
   </div>
 `,true)}
 <div class="op-action-bar"><div class="op-action-bar__left">
-  <button class="op-btn op-btn--primary" onclick="Toast.show('Disposal request submitted.','success')">${_icon('<path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4 20-7z"/>')} Submit Request</button>
+  <button class="op-btn op-btn--primary" onclick="_OP_quickSave('property-disposal-request')">${_icon('<path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4 20-7z"/>')} Submit Request</button>
   <button class="op-btn op-btn--secondary" onclick="Toast.show('Form reset.','info')">${_icon('<polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>')} Reset</button>
 </div><div class="op-action-bar__right">
   <span class="op-count-pill" style="background:rgba(183,28,28,0.08);color:#78281f;border-color:rgba(183,28,28,0.2);">${_icon('<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>')} <span class="op-count-num" style="color:#78281f;">0</span> Item(s) for Disposal</span>

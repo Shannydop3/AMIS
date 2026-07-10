@@ -929,16 +929,31 @@ project-root/
       offices, custodian types, suppliers, users) now load from
       Supabase via _OP_bootstrapRefs() in ops/_op_helpers.js.
       Shared helpers _OP_saveHeader() and _OP_loadHistory() do the
-      insert + history-list plumbing for every sub-view.
-      Wired end-to-end:
+      insert + history-list plumbing.
+      Wired end-to-end WITH history list:
         - Goods Receive         (goods_receipts)
         - Property Request      (property_requests)
         - Stock Request         (stock_requests)
-      The other 17 sub-views still have static Toast stubs on their
-      Save buttons — porting each follows the exact pattern in
-      goods-receive.js / property-request.js: give the Save button an
-      id, wire it in a _*_wireActions(container) hook, and add a
-      _*_loadHistory(container) call that renders a tbody.
+      Wired via _OP_quickSave (header insert only, no history list yet):
+        - Tagging                                 → taggings
+        - Property Issuance                       → property_issuances
+        - Stock Issuance                          → stock_issuances
+        - Property Transfer                       → property_transfers
+        - Property Return                         → property_returns
+        - Property Return Request                 → property_returns (status Pending)
+        - Stock Return                            → stock_returns
+        - Property Maintenance Request            → property_maintenances (Pending)
+        - Property Maintenance                    → property_maintenances (Maintenance)
+        - Property Verification                   → audit_trail
+        - Property Gate Pass Request              → gate_passes
+        - Personal Property Gate Pass Request     → personal_property_gate_passes
+        - Inventory Count                         → inventory_counts (Draft)
+        - Property Disposal                       → property_disposals (Disposed)
+        - Property Disposal Request               → property_disposals (Pending)
+        - Stock Disposal                          → stock_disposals
+      Only header rows are inserted — line items (property_records or
+      stock_items picking) still need UI wiring (bulk-select tables).
+      Property Information is a read-only lookup page; still stubbed.
     Phase 4 (not started):
       Views (26 sub-views under pages/views/view-list/). Each view
       currently ships label + filterFields + columns; needs an

@@ -28,7 +28,7 @@ ${_card('pmreq-det','<path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4
   </div>
 `,true)}
 <div class="op-action-bar"><div class="op-action-bar__left">
-  <button class="op-btn op-btn--primary" onclick="Toast.show('Maintenance request submitted.','success')">${_icon('<path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4 20-7z"/>')} Submit Request</button>
+  <button class="op-btn op-btn--primary" onclick="_OP_quickSave('property-maintenance-request')">${_icon('<path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4 20-7z"/>')} Submit Request</button>
   <button class="op-btn op-btn--secondary" onclick="Toast.show('Form reset.','info')">${_icon('<polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>')} Reset</button>
 </div></div>
 ${_card('pmreq-rec','<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/>','Maintenance Request Records','',`

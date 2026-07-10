@@ -389,6 +389,203 @@ async function _OP_loadHistory(cfg) {
 }
 
 /* ──────────────────────────────────────────
+   _OP_QUICK_SAVE — one-liner save-button wiring
+   for the remaining Operation Module sub-views.
+
+   Each entry describes a MINIMAL header insert to the
+   matching Postgres table. Line-item / child-row support
+   comes later (needs UI for picking property_records / stock_items).
+
+   Usage in an ops/*.js file:
+     <button onclick="_OP_quickSave('property-transfer')">Save</button>
+   ────────────────────────────────────────── */
+var _OP_QUICK_SAVE_CONFIGS = {
+  'tagging': {
+    table: 'taggings',
+    fields: [
+      { id: 'tag-gr-by',     db: 'printer_name' } // best-effort mapping
+    ],
+    extra: {},
+    successMsg: 'Tag record saved.'
+  },
+  'property-issuance': {
+    table: 'property_issuances',
+    numberField: { db: 'issuance_no', id: 'piss-ics', prefix: 'ICS' },
+    fields: [
+      { id: 'piss-by',       db: 'issued_by', fk: 'profiles' },
+      { id: 'piss-employee', db: 'issued_to', fk: 'profiles' },
+      { id: 'piss-remarks',  db: 'remarks' }
+    ],
+    extra: { status: 'Issued' },
+    successMsg: 'Property issuance saved.'
+  },
+  'stock-issuance': {
+    table: 'stock_issuances',
+    numberField: { db: 'issuance_no', id: 'si-ris', prefix: 'RIS' },
+    fields: [
+      { id: 'si-by',       db: 'issued_by', fk: 'profiles' },
+      { id: 'si-employee', db: 'issued_to', fk: 'profiles' },
+      { id: 'si-remarks',  db: 'remarks' }
+    ],
+    extra: { status: 'Issued' },
+    successMsg: 'Stock issuance saved.'
+  },
+  'property-transfer': {
+    table: 'property_transfers',
+    numberField: { db: 'transfer_number', id: 'ptrans-no', prefix: 'TR' },
+    fields: [
+      { id: 'ptrans-by',         db: 'transacted_by',  fk: 'profiles' },
+      { id: 'ptrans-from-office',db: 'from_office_id', fk: 'offices'  },
+      { id: 'ptrans-to-office',  db: 'to_office_id',   fk: 'offices'  },
+      { id: 'ptrans-remarks',    db: 'remarks' }
+    ],
+    extra: { status: 'Pending' },
+    successMsg: 'Transfer saved.'
+  },
+  'property-return': {
+    table: 'property_returns',
+    numberField: { db: 'return_number', id: 'pret-no', prefix: 'PR' },
+    fields: [
+      { id: 'pret-by',      db: 'returned_by', fk: 'profiles' },
+      { id: 'pret-remarks', db: 'remarks' }
+    ],
+    extra: { status: 'Returned' },
+    successMsg: 'Return record saved.'
+  },
+  'property-return-request': {
+    table: 'property_returns',
+    numberField: { db: 'return_number', id: 'pretreq-no', prefix: 'PRR' },
+    fields: [
+      { id: 'pretreq-by',      db: 'returned_by', fk: 'profiles' },
+      { id: 'pretreq-remarks', db: 'remarks' }
+    ],
+    extra: { status: 'Pending' },
+    successMsg: 'Return request submitted.'
+  },
+  'stock-return': {
+    table: 'stock_returns',
+    numberField: { db: 'return_number', id: 'sret-no', prefix: 'SR' },
+    fields: [
+      { id: 'sret-by',      db: 'returned_by', fk: 'profiles' },
+      { id: 'sret-remarks', db: 'remarks' }
+    ],
+    extra: { status: 'Returned' },
+    successMsg: 'Stock return saved.'
+  },
+  'property-maintenance-request': {
+    table: 'property_maintenances',
+    numberField: { db: 'maintenance_number', id: 'pmreq-no', prefix: 'MR' },
+    fields: [
+      { id: 'pmreq-issue-type', db: 'maintenance_type' },
+      { id: 'pmreq-by',         db: 'created_by', fk: 'profiles' },
+      { id: 'pmreq-issue',      db: 'remarks' }
+    ],
+    extra: { status: 'Pending' },
+    successMsg: 'Maintenance request submitted.'
+  },
+  'property-maintenance': {
+    table: 'property_maintenances',
+    numberField: { db: 'maintenance_number', id: 'pm-no', prefix: 'MT' },
+    fields: [
+      { id: 'pm-type',    db: 'maintenance_type' },
+      { id: 'pm-by',      db: 'created_by', fk: 'profiles' },
+      { id: 'pm-remarks', db: 'remarks' }
+    ],
+    extra: { status: 'Maintenance' },
+    successMsg: 'Maintenance record saved.'
+  },
+  'property-verification': {
+    table: 'audit_trail',
+    fields: [
+      { id: 'pv-remarks', db: 'activity' }
+    ],
+    extra: { entity: 'property_records' },
+    successMsg: 'Verification logged.'
+  },
+  'property-gate-pass-request': {
+    table: 'gate_passes',
+    numberField: { db: 'gate_pass_number', id: 'gpr-no', prefix: 'GP' },
+    fields: [
+      { id: 'gpr-by',      db: 'requested_by', fk: 'profiles' },
+      { id: 'gpr-purpose', db: 'purpose' }
+    ],
+    extra: { status: 'Pending' },
+    successMsg: 'Gate pass request submitted.'
+  },
+  'personal-property-gate-pass-request': {
+    table: 'personal_property_gate_passes',
+    numberField: { db: 'day_pass_number', id: 'ppgpr-no', prefix: 'PGP' },
+    fields: [
+      { id: 'ppgpr-by',      db: 'requested_by', fk: 'profiles' },
+      { id: 'ppgpr-purpose', db: 'purpose' }
+    ],
+    extra: { status: 'Pending' },
+    successMsg: 'Personal gate pass submitted.'
+  },
+  'inventory-count': {
+    table: 'inventory_counts',
+    numberField: { db: 'inventory_number', id: 'ic-no', prefix: 'INV' },
+    fields: [
+      { id: 'ic-type',      db: 'inventory_name' },
+      { id: 'ic-remarks',   db: 'description' },
+      { id: 'ic-conducted', db: 'created_by', fk: 'profiles' }
+    ],
+    extra: { status: 'Draft' },
+    successMsg: 'Inventory count saved.'
+  },
+  'property-disposal': {
+    table: 'property_disposals',
+    numberField: { db: 'disposal_number', id: 'pdisp-no', prefix: 'DSP' },
+    fields: [
+      { id: 'pdisp-by',      db: 'disposed_by', fk: 'profiles' },
+      { id: 'pdisp-just',    db: 'remarks' }
+    ],
+    extra: { status: 'Disposed' },
+    successMsg: 'Disposal record saved.'
+  },
+  'property-disposal-request': {
+    table: 'property_disposals',
+    numberField: { db: 'disposal_number', id: 'pdispreq-no', prefix: 'DR' },
+    fields: [
+      { id: 'pdispreq-by',      db: 'disposed_by', fk: 'profiles' },
+      { id: 'pdispreq-just',    db: 'remarks' }
+    ],
+    extra: { status: 'Pending' },
+    successMsg: 'Disposal request submitted.'
+  },
+  'stock-disposal': {
+    table: 'stock_disposals',
+    numberField: { db: 'disposal_number', id: 'sdisp-no', prefix: 'SDSP' },
+    fields: [
+      { id: 'sdisp-by',      db: 'disposed_by', fk: 'profiles' },
+      { id: 'sdisp-just',    db: 'remarks' }
+    ],
+    extra: { status: 'Disposed' },
+    successMsg: 'Stock disposal saved.'
+  }
+};
+
+async function _OP_quickSave(viewKey) {
+  const cfg = _OP_QUICK_SAVE_CONFIGS[viewKey];
+  if (!cfg) { Toast.show('No save config for ' + viewKey, 'error'); return; }
+  try {
+    const extra = Object.assign({}, cfg.extra || {});
+    if (cfg.numberField) {
+      const numEl = document.getElementById(cfg.numberField.id);
+      const val   = numEl && numEl.value.trim();
+      extra[cfg.numberField.db] = val ||
+        (cfg.numberField.prefix + '-' + new Date().getFullYear() + '-' + Date.now().toString().slice(-6));
+    }
+    await _OP_saveHeader({ table: cfg.table, fields: cfg.fields, extra: extra });
+    Toast.show(cfg.successMsg || 'Record saved.', 'success');
+  } catch (err) {
+    console.error('[op] quickSave failed for ' + viewKey, err);
+    Toast.show(err.message || 'Failed to save.', 'error');
+  }
+}
+window._OP_quickSave = _OP_quickSave;
+
+/* ──────────────────────────────────────────
    SHARED HTML BLOCKS
    All use exact dashboard.css classes:
    dash-card, dash-card__head, dash-card__body,

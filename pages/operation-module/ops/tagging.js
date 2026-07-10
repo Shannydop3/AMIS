@@ -65,7 +65,7 @@ ${_card('tag-details','<path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1
 `,true)}
 <div class="op-action-bar">
   <div class="op-action-bar__left">
-    <button class="op-btn op-btn--primary" onclick="Toast.show('Tag record saved.','success')">${_icon('<path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v14a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>')} Save</button>
+    <button class="op-btn op-btn--primary" onclick="_OP_quickSave('tagging')">${_icon('<path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v14a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>')} Save</button>
     <button class="op-btn op-btn--secondary" onclick="Toast.show('Form reset.','info')">${_icon('<polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>')} Reset</button>
   </div>
   <div class="op-action-bar__right">

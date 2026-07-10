@@ -238,6 +238,56 @@
     el.textContent = `Showing ${start} to ${end} of ${total} entries`;
   }
 
+  /* ──────────────────────────────────────────
+     _V_loadTable(cfg)
+     Generic "SELECT + paint tbody" for View pages.
+
+       cfg = {
+         table:    'goods_receipts',
+         select:   '*, receiver:profiles!goods_receipts_received_by_fkey(full_name,email)',
+         orderBy:  'created_at',
+         ascending:false,
+         limit:    200,
+         filter:   (q) => q.eq('status', 'Issued'),      // optional
+         rowFn:    (dbRow) => [cell1, cell2, ...]        // cells align with view.columns
+       }
+     ────────────────────────────────────────── */
+  async function loadTable(cfg) {
+    const tbody = document.getElementById('views-tbody');
+    const thead = document.getElementById('views-thead');
+    if (!tbody) return;
+    const colCount = thead ? thead.querySelectorAll('th').length : 8;
+    tbody.innerHTML = `<tr><td colspan="${colCount}" class="dash-empty">Loading…</td></tr>`;
+
+    const client = window.AMIS_READY ? await window.AMIS_READY : null;
+    if (!client) {
+      tbody.innerHTML = `<tr><td colspan="${colCount}" class="dash-empty">Database not configured.</td></tr>`;
+      return;
+    }
+    try {
+      let q = client.from(cfg.table).select(cfg.select || '*');
+      if (cfg.filter) q = cfg.filter(q);
+      q = q.order(cfg.orderBy || 'created_at', { ascending: cfg.ascending !== false ? false : true });
+      q = q.limit(cfg.limit || 200);
+      const { data, error } = await q;
+      if (error) throw error;
+      if (!data || !data.length) {
+        tbody.innerHTML = `<tr><td colspan="${colCount}" class="dash-empty">No records found.</td></tr>`;
+        updateShowing([], 1, 1);
+        return;
+      }
+      tbody.innerHTML = data.map(r => {
+        const cells = cfg.rowFn(r).map(c => `<td>${c == null ? '<span class="v-muted">—</span>' : c}</td>`).join('');
+        return `<tr>${cells}</tr>`;
+      }).join('');
+      updateShowing(data, 1, data.length);
+    } catch (err) {
+      console.error('[views] load failed for', cfg.table, err);
+      tbody.innerHTML = `<tr><td colspan="${colCount}" class="dash-empty">Failed to load: ${err.message || err}</td></tr>`;
+    }
+  }
+
   /* ── Expose globally ── */
-  window.VH = { pill, idBadge, dash, docLink, actionBtns, viewModal, uploadModal, cancelModal, updateShowing, getHost };
+  window.VH = { pill, idBadge, dash, docLink, actionBtns, viewModal, uploadModal, cancelModal, updateShowing, getHost, loadTable };
+  window._V_loadTable = loadTable;
 }());

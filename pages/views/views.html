@@ -220,7 +220,7 @@
 
   </div><!-- /#page-body -->
 
-  <script src="views-helper.js"></script>
+  <script src="view-list/views-helper.js"></script>
   <!-- View sub-modules -->
   <script src="view-list/property-masterlist.js"></script>
   <script src="view-list/stock-masterlist.js"></script>
@@ -248,6 +248,9 @@
   <script src="view-list/property-return-history.js"></script>
   <script src="view-list/stock-disposal-history.js"></script>
   <script src="view-list/audit-trail.js"></script>
+
+  <!-- Supabase onLoad wire-ups (must come AFTER all view-list/*.js) -->
+  <script src="view-list/_v_wireups.js"></script>
 
   <!-- Router -->
   <script src="views.js"></script>

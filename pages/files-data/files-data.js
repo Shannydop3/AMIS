@@ -524,22 +524,31 @@ document.addEventListener('amis:layout-ready', () => {
       saveTxtEl.classList.add('hidden');
       spinEl.classList.remove('hidden');
 
-      await delay(600);
-
       const rowData = { active: true };
       schema.forEach(function(f) {
         const el = overlay.querySelector('#sub-' + f.id);
         if (el) rowData[f.id] = el.value.trim();
       });
 
-      addRowToTable(schemaKey, schema, rowData);
+      try {
+        const row = window.FD_DB
+          ? await window.FD_DB.insert(schemaKey, rowData)
+          : (await delay(400), Object.assign({ id: null }, rowData));
+        addRowToTable(schemaKey, schema, row, row.id);
 
-      const primaryField = schema.find(function(f) { return f.req; });
-      const newValue = primaryField ? rowData[primaryField.id] : '';
+        const primaryField = schema.find(function(f) { return f.req; });
+        const newValue = primaryField ? row[primaryField.id] : '';
 
-      close();
-      Toast.show(label + ' added successfully.', 'success');
-      if (onSaved) onSaved(newValue);
+        close();
+        Toast.show(label + ' added successfully.', 'success');
+        if (onSaved) onSaved(newValue);
+      } catch (err) {
+        console.error('[fd] sub-modal insert failed', err);
+        Toast.show(err.message || 'Failed to save.', 'error');
+        saveBtn.disabled = false;
+        saveTxtEl.classList.remove('hidden');
+        spinEl.classList.add('hidden');
+      }
     });
   }
 
@@ -760,22 +769,27 @@ document.addEventListener('amis:layout-ready', () => {
         saveSpinner.classList.remove('hidden');
         modalSave.disabled = true;
 
-        await delay(800);
-
-        addRowToTable(tableId, fields, data);
-        closeModal();
-
-        saveTxt.classList.remove('hidden');
-        saveSpinner.classList.add('hidden');
-        modalSave.disabled = false;
-
-        Toast.show(title + ' added successfully.', 'success');
+        try {
+          const row = window.FD_DB
+            ? await window.FD_DB.insert(tableId, data)
+            : (await delay(600), Object.assign({ id: null }, data));
+          addRowToTable(tableId, fields, row, row.id);
+          closeModal();
+          Toast.show(title + ' added successfully.', 'success');
+        } catch (err) {
+          console.error('[fd] insert failed', err);
+          Toast.show(err.message || 'Failed to save.', 'error');
+        } finally {
+          saveTxt.classList.remove('hidden');
+          saveSpinner.classList.add('hidden');
+          modalSave.disabled = false;
+        }
       };
     });
   });
 
   /* ── Add row to table ─────────────────────── */
-  function addRowToTable(tableId, fields, data) {
+  function addRowToTable(tableId, fields, data, rowId) {
     const tbl   = document.getElementById(tableId);
     const tbody = tbl.querySelector('tbody');
     const empty = tbody.querySelector('.fd-empty');
@@ -783,6 +797,7 @@ document.addEventListener('amis:layout-ready', () => {
 
     const num = tbody.querySelectorAll('tr').length + 1;
     const tr  = document.createElement('tr');
+    if (rowId) tr.dataset.rowId = rowId;
 
     const numTd = document.createElement('td');
     numTd.textContent = num;
@@ -797,7 +812,7 @@ document.addEventListener('amis:layout-ready', () => {
     });
 
     const activeTd = document.createElement('td');
-    activeTd.innerHTML = data.active
+    activeTd.innerHTML = data.active !== false
       ? '<span class="fd-badge fd-badge--active">Active</span>'
       : '<span class="fd-badge fd-badge--inactive">Inactive</span>';
     tr.appendChild(activeTd);
@@ -852,24 +867,32 @@ document.addEventListener('amis:layout-ready', () => {
           saveSpinner.classList.remove('hidden');
           modalSave.disabled = true;
 
-          await delay(700);
+          try {
+            const row = window.FD_DB && tr.dataset.rowId
+              ? await window.FD_DB.update(tableId, tr.dataset.rowId, updated)
+              : (await delay(500), Object.assign({}, updated));
 
-          schema.forEach(function(f, idx) {
-            const cell = tr.cells[idx + 1];
-            if (cell) cell.textContent = updated[f.id] || '';
-          });
-          const activeTd = tr.querySelector('.fd-badge') ? tr.querySelector('.fd-badge').closest('td') : null;
-          if (activeTd) {
-            activeTd.innerHTML = updated.active
-              ? '<span class="fd-badge fd-badge--active">Active</span>'
-              : '<span class="fd-badge fd-badge--inactive">Inactive</span>';
+            schema.forEach(function(f, idx) {
+              const cell = tr.cells[idx + 1];
+              if (cell) cell.textContent = row[f.id] || '';
+            });
+            const activeTd = tr.querySelector('.fd-badge') ? tr.querySelector('.fd-badge').closest('td') : null;
+            if (activeTd) {
+              activeTd.innerHTML = row.active !== false
+                ? '<span class="fd-badge fd-badge--active">Active</span>'
+                : '<span class="fd-badge fd-badge--inactive">Inactive</span>';
+            }
+
+            closeModal();
+            Toast.show(titleStr + ' updated successfully.', 'success');
+          } catch (err) {
+            console.error('[fd] update failed', err);
+            Toast.show(err.message || 'Failed to update.', 'error');
+          } finally {
+            saveTxt.classList.remove('hidden');
+            saveSpinner.classList.add('hidden');
+            modalSave.disabled = false;
           }
-
-          closeModal();
-          saveTxt.classList.remove('hidden');
-          saveSpinner.classList.add('hidden');
-          modalSave.disabled = false;
-          Toast.show(titleStr + ' updated successfully.', 'success');
         };
       });
     }
@@ -879,31 +902,62 @@ document.addEventListener('amis:layout-ready', () => {
         openDelModal();
         delConfirm.onclick = async function() {
           const tbl = document.getElementById(tableId);
-          tr.style.transition = 'opacity 0.25s';
-          tr.style.opacity = '0';
-          await delay(250);
-          tr.remove();
-          const tbody = tbl.querySelector('tbody');
-          if (!tbody.querySelectorAll('tr').length) {
-            const colCount = tbl.querySelectorAll('thead th').length;
-            tbody.innerHTML = '<tr><td colspan="' + colCount + '" class="fd-empty">No data available in table</td></tr>';
+          try {
+            if (window.FD_DB && tr.dataset.rowId) {
+              await window.FD_DB.remove(tableId, tr.dataset.rowId);
+            }
+            tr.style.transition = 'opacity 0.25s';
+            tr.style.opacity = '0';
+            await delay(250);
+            tr.remove();
+            const tbody = tbl.querySelector('tbody');
+            if (!tbody.querySelectorAll('tr').length) {
+              const colCount = tbl.querySelectorAll('thead th').length;
+              tbody.innerHTML = '<tr><td colspan="' + colCount + '" class="fd-empty">No data available in table</td></tr>';
+            }
+            updateFooterCount(tbl);
+            closeDelModal();
+            Toast.show('Record deleted.', 'success');
+          } catch (err) {
+            console.error('[fd] delete failed', err);
+            Toast.show(err.message || 'Failed to delete.', 'error');
+            closeDelModal();
           }
-          updateFooterCount(tbl);
-          closeDelModal();
-          Toast.show('Record deleted.', 'success');
         };
       });
     }
   }
 
   /* ── Wire existing rows ───────────────────── */
-  document.querySelectorAll('.fd-tbl').forEach(function(tbl) {
-    const tableId = tbl.id;
-    const fields  = TABLE_SCHEMAS[tableId] || [];
-    tbl.querySelectorAll('tbody tr').forEach(function(tr) {
-      if (!tr.querySelector('.fd-empty')) wireRowButtons(tr, tableId, fields);
+  function wireAllStaticRows() {
+    document.querySelectorAll('.fd-tbl').forEach(function(tbl) {
+      const tableId = tbl.id;
+      const fields  = TABLE_SCHEMAS[tableId] || [];
+      tbl.querySelectorAll('tbody tr').forEach(function(tr) {
+        if (!tr.querySelector('.fd-empty')) wireRowButtons(tr, tableId, fields);
+      });
     });
-  });
+  }
+  wireAllStaticRows();
+
+  /* ── Bootstrap from Supabase ──────────────── */
+  if (window.FD_DB) {
+    Loader.show('Loading reference data...');
+    window.FD_DB.bootstrap({
+      renderRow: function (schemaKey, uiRow) {
+        const fields = TABLE_SCHEMAS[schemaKey] || [];
+        addRowToTable(schemaKey, fields, uiRow, uiRow.id);
+      },
+      afterTable: function (schemaKey, tblEl) {
+        updateFooterCount(tblEl);
+      }
+    }).catch(function (err) {
+      console.error('[fd] bootstrap failed', err);
+      Toast.show('Failed to load some tables. ' + (err.message || ''), 'error');
+    }).finally(function () {
+      Loader.hide();
+    });
+  }
 
   /* ── Footer count updater ─────────────────── */
   function updateFooterCount(tbl) {

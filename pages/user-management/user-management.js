@@ -12,34 +12,46 @@ document.addEventListener('amis:layout-ready', () => {
   Auth.requireAuth('../login/login.html');
 
   /* ══════════════════════════════════════════
-     DATA
+     DATA (from Supabase public.profiles)
   ══════════════════════════════════════════ */
-  let users = [
-    { id:1,  name:'BUITRE, MARY ROSE',          empno:'1202306074', email:'maryrose.buitre@dict.gov.ph',      role:'',              custodian:false, administrative:false, approver:false, active:true  },
-    { id:2,  name:'LIGOT, EDWIN',                empno:'1202208111', email:'edwin.ligot@dict.gov.ph',          role:'',              custodian:false, administrative:false, approver:false, active:true  },
-    { id:3,  name:'ALMIROL, DAVID',              empno:'1202208118', email:'david.almirol@dict.gov.ph',        role:'',              custodian:false, administrative:false, approver:false, active:true  },
-    { id:4,  name:'EVANGELISTA, KRYZTLE LOVE',   empno:'1202304080', email:'kryztle.evangelista@dict.gov.ph',  role:'',              custodian:false, administrative:false, approver:false, active:true  },
-    { id:5,  name:'DEDORO, MAE',                 empno:'1202305078', email:'mae.dedoro@dict.gov.ph',           role:'',              custodian:false, administrative:false, approver:false, active:true  },
-    { id:6,  name:'VALDERRAMA, DOMINIQUE KENJI', empno:'1202306120', email:'dominique.valderrama@dict.gov.ph', role:'',              custodian:false, administrative:false, approver:false, active:true  },
-    { id:7,  name:'JACOB, DANILO',               empno:'1202401064', email:'danilo.jacob@dict.gov.ph',         role:'',              custodian:false, administrative:false, approver:false, active:true  },
-    { id:8,  name:'CELESTE, METZILYN',            empno:'1202401065', email:'metzilyn.celeste@dict.gov.ph',     role:'',              custodian:false, administrative:false, approver:false, active:true  },
-    { id:9,  name:'BUÑAO, JESTONY',              empno:'1202401066', email:'jestony.bunao@dict.gov.ph',        role:'',              custodian:false, administrative:false, approver:false, active:true  },
-    { id:10, name:'JUDILLA, DENNIS',             empno:'1202401067', email:'dennis.judilla@dict.gov.ph',       role:'',              custodian:false, administrative:false, approver:false, active:true  },
-    { id:11, name:'MONTEMAYOR, BERNA JOY',       empno:'1202401068', email:'bernajoy.montemayor@dict.gov.ph',  role:'Administrator', custodian:true,  administrative:true,  approver:true,  active:true  },
-    { id:12, name:'REYES, JOSE',                 empno:'1202401069', email:'jose.reyes@dict.gov.ph',           role:'Custodian',     custodian:true,  administrative:false, approver:false, active:true  },
-    { id:13, name:'SANTOS, ANNA MARIE',          empno:'1202401070', email:'annamarie.santos@dict.gov.ph',     role:'Viewer',        custodian:false, administrative:false, approver:false, active:false },
-    { id:14, name:'GARCIA, PEDRO',               empno:'1202401071', email:'pedro.garcia@dict.gov.ph',         role:'Approver',      custodian:false, administrative:false, approver:true,  active:true  },
-    { id:15, name:'DELA CRUZ, MARIA',            empno:'1202401072', email:'maria.delacruz@dict.gov.ph',       role:'',              custodian:false, administrative:false, approver:false, active:true  },
-  ];
+  let users = [];
 
-  let nextId      = 16;
   let currentPage = 1;
   let pageSize    = 10;
   let searchTerm  = '';
   let sortCol     = null;
   let sortDir     = 'asc';
-  let editId      = null;
+  let editId      = null;   // Profile UUID (string)
   let actionId    = null;
+
+  async function loadProfilesFromDb() {
+    const db = await window.AMIS_READY;
+    if (!db) return;
+    try {
+      const { data, error } = await db
+        .from('profiles')
+        .select('id, full_name, email, role, is_active, created_at')
+        .order('created_at', { ascending: true });
+      if (error) throw error;
+      users = data.map(function (p) {
+        return {
+          id:             p.id,
+          name:           (p.full_name || (p.email || '').split('@')[0] || '').toUpperCase(),
+          empno:          '',
+          email:          p.email || '',
+          role:           p.role || 'Staff',
+          custodian:      false,
+          administrative: p.role === 'Administrator',
+          approver:       p.role === 'Administrator',
+          active:         p.is_active !== false,
+        };
+      });
+      renderTable();
+    } catch (err) {
+      console.error('[um] loadProfilesFromDb failed', err);
+      Toast.show('Failed to load users: ' + (err.message || err), 'error');
+    }
+  }
 
   /* ══════════════════════════════════════════
      ICON STRINGS
@@ -449,11 +461,17 @@ document.addEventListener('amis:layout-ready', () => {
     document.getElementById('confirm-signout').classList.remove('open');
     actionId = null;
   });
-  document.getElementById('confirm-signout-ok').addEventListener('click', () => {
-    const u = users.find(u => u.id === actionId);
+  document.getElementById('confirm-signout-ok').addEventListener('click', function () {
+    var u = users.find(function (u) { return u.id === actionId; });
     document.getElementById('confirm-signout').classList.remove('open');
     actionId = null;
-    if (u) Toast.show(`${u.name} has been signed out of all sessions.`, 'success');
+    if (u) {
+      Toast.show(
+        'Force sign-out requires the Supabase Dashboard → Authentication → Users (session revocation is an admin operation).',
+        'info',
+        5500
+      );
+    }
   });
   document.getElementById('confirm-signout').addEventListener('click', e => {
     if (e.target === e.currentTarget) {
@@ -477,11 +495,22 @@ document.addEventListener('amis:layout-ready', () => {
     document.getElementById('confirm-reset').classList.remove('open');
     actionId = null;
   });
-  document.getElementById('confirm-reset-ok').addEventListener('click', () => {
-    const u = users.find(u => u.id === actionId);
+  document.getElementById('confirm-reset-ok').addEventListener('click', async function () {
+    var u = users.find(function (u) { return u.id === actionId; });
     document.getElementById('confirm-reset').classList.remove('open');
     actionId = null;
-    if (u) Toast.show(`Password reset link sent to ${u.email}.`, 'success', 4000);
+    if (!u) return;
+    try {
+      const db = await window.AMIS_READY;
+      if (!db) throw new Error('Auth not configured.');
+      const { error } = await db.auth.resetPasswordForEmail(u.email, {
+        redirectTo: window.location.origin + '/pages/login/login.html'
+      });
+      if (error) throw error;
+      Toast.show('Password reset link sent to ' + u.email + '.', 'success', 4000);
+    } catch (err) {
+      Toast.show(err.message || 'Failed to send reset link.', 'error');
+    }
   });
   document.getElementById('confirm-reset').addEventListener('click', e => {
     if (e.target === e.currentTarget) {
@@ -497,29 +526,27 @@ document.addEventListener('amis:layout-ready', () => {
     const u = users.find(u => u.id === id);
     if (!u) return;
     editId = id;
-    const parts = u.name.split(', ');
+    const parts = (u.name || '').split(', ');
     document.getElementById('f-lastname').value         = parts[0] || '';
     document.getElementById('f-firstname').value        = parts[1] || '';
     document.getElementById('f-middlename').value       = '';
-    document.getElementById('f-empno').value            = u.empno;
+    document.getElementById('f-empno').value            = u.empno || '';
     document.getElementById('f-email').value            = u.email;
-    document.getElementById('f-role').value             = u.role || '';
-    document.getElementById('f-custodian').checked      = u.custodian;
-    document.getElementById('f-administrative').checked = u.administrative;
-    document.getElementById('f-approver').checked       = u.approver;
+    document.getElementById('f-role').value             = u.role || 'Staff';
     document.getElementById('f-active').checked         = u.active;
     document.getElementById('pwd-group').style.display  = 'none';
     openModal('Edit User Info');
   }
 
   /* ══════════════════════════════════════════
-     ADD USER
-  ══════════════════════════════════════════ */
+     ADD USER  (disabled — admin invite via Dashboard)
+  ═════════════════════════════════════════ */
   document.getElementById('btn-add').addEventListener('click', () => {
-    editId = null;
-    document.getElementById('pwd-group').style.display = '';
-    clearForm();
-    openModal('Add New User');
+    Toast.show(
+      'New users must be invited via Supabase Dashboard → Authentication → Users. Once invited, they will appear in this list and you can assign roles here.',
+      'info',
+      6000
+    );
   });
 
   /* ══════════════════════════════════════════
@@ -541,11 +568,8 @@ document.addEventListener('amis:layout-ready', () => {
       const el = document.getElementById(id);
       if (el) el.value = '';
     });
-    document.getElementById('f-role').value             = '';
-    document.getElementById('f-custodian').checked      = false;
-    document.getElementById('f-administrative').checked = false;
-    document.getElementById('f-approver').checked       = false;
-    document.getElementById('f-active').checked         = true;
+    document.getElementById('f-role').value     = 'Staff';
+    document.getElementById('f-active').checked = true;
   }
 
   document.getElementById('modal-close').addEventListener('click',  closeModal);
@@ -555,45 +579,69 @@ document.addEventListener('amis:layout-ready', () => {
   });
 
   /* ── Save ── */
-  document.getElementById('modal-save').addEventListener('click', () => {
+  document.getElementById('modal-save').addEventListener('click', async () => {
     const lastname  = document.getElementById('f-lastname').value.trim();
     const firstname = document.getElementById('f-firstname').value.trim();
-    const empno     = document.getElementById('f-empno').value.trim();
     const email     = document.getElementById('f-email').value.trim();
 
-    if (!lastname || !firstname || !empno || !email) {
-      Toast.show('Please fill in all required fields.', 'error');
+    if (!lastname || !firstname || !email) {
+      Toast.show('Please fill in Last Name, First Name and Email.', 'error');
       return;
     }
 
-    const userData = {
-      name:           `${lastname.toUpperCase()}, ${firstname.toUpperCase()}`,
-      empno, email,
-      role:           document.getElementById('f-role').value,
-      custodian:      document.getElementById('f-custodian').checked,
-      administrative: document.getElementById('f-administrative').checked,
-      approver:       document.getElementById('f-approver').checked,
-      active:         document.getElementById('f-active').checked,
-    };
-
-    if (editId) {
-      const idx = users.findIndex(u => u.id === editId);
-      if (idx > -1) users[idx] = { ...users[idx], ...userData };
-      Toast.show('User updated successfully.', 'success');
-    } else {
-      users.unshift({ id: nextId++, ...userData });
-      Toast.show('User added successfully.', 'success');
+    if (!editId) {
+      Toast.show(
+        'Cannot create users from here. Invite via Supabase Dashboard → Authentication → Users.',
+        'error',
+        5000
+      );
+      return;
     }
 
-    closeModal();
-    renderTable();
+    const roleVal   = document.getElementById('f-role').value || 'Staff';
+    const activeVal = document.getElementById('f-active').checked;
+    const fullName  = (lastname + ', ' + firstname).toUpperCase();
+
+    try {
+      const db = await window.AMIS_READY;
+      if (!db) throw new Error('Database not configured.');
+
+      const { error } = await db
+        .from('profiles')
+        .update({
+          full_name: fullName,
+          role:      roleVal,
+          is_active: activeVal,
+          email:     email
+        })
+        .eq('id', editId);
+      if (error) throw error;
+
+      const idx = users.findIndex(u => u.id === editId);
+      if (idx > -1) {
+        users[idx] = Object.assign({}, users[idx], {
+          name:           fullName,
+          email:          email,
+          role:           roleVal,
+          administrative: roleVal === 'Administrator',
+          approver:       roleVal === 'Administrator',
+          active:         activeVal
+        });
+      }
+
+      Toast.show('User updated successfully.', 'success');
+      closeModal();
+      renderTable();
+    } catch (err) {
+      console.error('[um] save failed', err);
+      Toast.show(err.message || 'Failed to save.', 'error');
+    }
   });
 
   /* ══════════════════════════════════════════
      INIT
   ══════════════════════════════════════════ */
-  renderTable();
-
+  renderTable();  loadProfilesFromDb();
   /* Expose globals for inline onclick attributes */
   window.goPage          = goPage;
   window.editUser        = editUser;

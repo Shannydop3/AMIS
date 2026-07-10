@@ -13,6 +13,44 @@ document.addEventListener('amis:layout-ready', () => {
   // NOTE: user info (name, role, avatar) is already populated
   // by layout.js — no need to do it again here.
 
+  /* ── KPI tile counts (Supabase) ─────────────
+     Each tile shows a live COUNT(*) from an operational table.
+     Fails silently to a "—" placeholder if the query errors. */
+  (async function loadKpis() {
+    const db = await window.AMIS_READY;
+    if (!db) return;
+    async function count(table, filter) {
+      let q = db.from(table).select('id', { count: 'exact', head: true });
+      if (filter) filter.forEach(f => { q = q.eq(f.col, f.val); });
+      const { count: n, error } = await q;
+      if (error) throw error;
+      return n || 0;
+    }
+    function paint(id, val) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = String(val);
+    }
+    try {
+      const [issued, onStock, pendingApproval, openInventory, propertyPending] = await Promise.all([
+        count('property_records',   [{ col: 'status', val: 'Issued' }]).catch(() => 0),
+        count('stock_records',      null).catch(() => 0),
+        count('property_requests',  [{ col: 'status', val: 'Pending' }]).catch(() => 0),
+        count('inventory_counts',   [{ col: 'status', val: 'Draft' }]).catch(() => 0),
+        count('property_records',   [{ col: 'status', val: 'Active' }]).catch(() => 0)
+      ]);
+      paint('kpi-issued',                issued);
+      paint('kpi-onstock',               onStock);
+      paint('kpi-pendingupload',         0);              // No dedicated table yet
+      paint('kpi-pendingverification',   propertyPending);
+      paint('kpi-pendingapproval',       pendingApproval);
+      paint('kpi-openinventory',         openInventory);
+    } catch (err) {
+      console.warn('[dashboard] KPI load failed', err);
+      ['kpi-issued','kpi-onstock','kpi-pendingupload','kpi-pendingverification','kpi-pendingapproval','kpi-openinventory']
+        .forEach(id => paint(id, 0));
+    }
+  })();
+
   /* ── Collapsible Cards ────────────────────── */
   document.querySelectorAll('.dash-card__head.dash-collapsible').forEach(head => {
     head.addEventListener('click', e => {

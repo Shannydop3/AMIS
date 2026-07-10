@@ -54,8 +54,9 @@ document.addEventListener('amis:layout-ready', () => {
     minute: '2-digit',
   });
 
-  /* Pre-fill email */
-  document.getElementById('pf-email').value = email;
+  /* Pre-fill account form fields */
+  document.getElementById('pf-email').value    = email;
+  document.getElementById('pf-fullname').value = name;
 
   /* ── Avatar Upload ───────────────────────── */
   document.getElementById('avatar-upload').addEventListener('change', function () {
@@ -124,10 +125,16 @@ document.addEventListener('amis:layout-ready', () => {
   document.getElementById('account-form').addEventListener('submit', async e => {
     e.preventDefault();
 
-    const emailVal = document.getElementById('pf-email').value.trim();
-    const pwVal    = pfPassword.value;
-    const cfmVal   = pfConfirm.value;
+    const fullNameVal = document.getElementById('pf-fullname').value.trim();
+    const emailVal    = document.getElementById('pf-email').value.trim();
+    const pwVal       = pfPassword.value;
+    const cfmVal      = pfConfirm.value;
 
+    if (!fullNameVal) {
+      Toast.show('Please enter your full name.', 'error');
+      document.getElementById('pf-fullname').focus();
+      return;
+    }
     if (!emailVal) {
       Toast.show('Please enter your email address.', 'error');
       document.getElementById('pf-email').focus();
@@ -153,9 +160,44 @@ document.addEventListener('amis:layout-ready', () => {
 
     const btn = document.getElementById('account-save-btn');
     setLoading(btn, true);
-    await delay(1000);
-    setLoading(btn, false);
-    Toast.show('Account information saved successfully.', 'success', 3000);
+
+    try {
+      const db = await window.AMIS_READY;
+      if (!db) throw new Error('Database is not configured.');
+
+      // 1. Update profile row.
+      const { error: pErr } = await db
+        .from('profiles')
+        .update({ full_name: fullNameVal, email: emailVal })
+        .eq('id', session.id);
+      if (pErr) throw pErr;
+
+      // 2. Update auth email + optional password.
+      const authPatch = {};
+      if (emailVal && emailVal !== email) authPatch.email = emailVal;
+      if (pwVal) authPatch.password = pwVal;
+      if (Object.keys(authPatch).length) {
+        const { error: aErr } = await db.auth.updateUser(authPatch);
+        if (aErr) throw aErr;
+      }
+
+      // 3. Refresh cached profile so layout header updates too.
+      await Auth.loadProfile();
+
+      // Refresh in-page identity display.
+      document.getElementById('profile-name-display').textContent = fullNameVal;
+      const newInitials = fullNameVal.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase() || '?';
+      if (!avatarEl.querySelector('img')) avatarEl.textContent = newInitials;
+
+      pfPassword.value = '';
+      pfConfirm.value  = '';
+      Toast.show('Account information saved successfully.', 'success', 3000);
+    } catch (err) {
+      console.error('[profile] save failed', err);
+      Toast.show(err.message || 'Failed to save profile.', 'error');
+    } finally {
+      setLoading(btn, false);
+    }
   });
 
   /* ── Build Security Question rows ─────────────

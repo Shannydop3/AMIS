@@ -76,9 +76,9 @@
         <!-- ── SIGN IN FORM ── -->
         <form id="login-form" novalidate autocomplete="on">
 
-          <!-- Username -->
+          <!-- Email -->
           <div class="field-group">
-            <label class="field-label" for="username">Username</label>
+            <label class="field-label" for="username">Email</label>
             <div class="field-wrapper">
               <span class="field-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24"><title xmlns="">user-solid</title><path fill="currentColor" d="M12 3.75a3.75 3.75 0 1 0 0 7.5a3.75 3.75 0 0 0 0-7.5m-4 9.5A3.75 3.75 0 0 0 4.25 17v1.188c0 .754.546 1.396 1.29 1.517c4.278.699 8.642.699 12.92 0a1.54 1.54 0 0 0 1.29-1.517V17A3.75 3.75 0 0 0 16 13.25h-.34q-.28.001-.544.086l-.866.283a7.25 7.25 0 0 1-4.5 0l-.866-.283a1.8 1.8 0 0 0-.543-.086z"/></svg>
@@ -87,11 +87,11 @@
                 </svg>
               </span>
               <input
-                type="text"
+                type="email"
                 id="username"
                 name="username"
                 class="field-input"
-                placeholder="Enter username"
+                placeholder="you@dict.gov.ph"
                 autocomplete="username"
                 required
               />
@@ -202,6 +202,8 @@
   </div>
 
   <!-- Common JS -->
+  <script src="../../common/config.js"></script>
+  <script src="../../common/supabase.js"></script>
   <script src="../../common/common.js"></script>
   <!-- Page JS -->
   <script src="login.js"></script>

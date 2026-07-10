@@ -540,6 +540,8 @@
       });
     }
     populateUser();
+    // Re-populate once Supabase has confirmed the real profile.
+    document.addEventListener('amis:auth-ready', populateUser);
 
     /* ── Signal page scripts that layout is ready ── */
     document.dispatchEvent(new CustomEvent('amis:layout-ready'));

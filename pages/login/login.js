@@ -55,36 +55,34 @@ togglePwdBtn.addEventListener('click', () => {
     Form.clearErrors(loginForm);
 
     const isValid = Form.validate([
-      { el: usernameInput, rules: ['required'] },
+      { el: usernameInput, rules: ['required', 'email'] },
       { el: passwordInput, rules: ['required', 'minLength:6'] },
     ]);
 
     if (!isValid) return;
 
-    // Show loading state
     setSigninLoading(true);
 
     try {
-      // Simulate API call (replace with real endpoint)
-      const result = await mockLogin(usernameInput.value.trim(), passwordInput.value);
+      const result = await supabaseLogin(usernameInput.value.trim(), passwordInput.value);
 
       if (result.success) {
-        Auth.setSession(result.user);
         Toast.show('Sign in successful! Redirecting...', 'success', 2000);
         Loader.show('Entering AMIS Portal...');
 
         setTimeout(() => {
           window.location.href = '../dashboard/dashboard.html';
-        }, 1200);
+        }, 1000);
       } else {
         setSigninLoading(false);
-        Toast.show(result.message || 'Invalid username or password.', 'error');
-        Form.setFieldError(passwordInput, 'Incorrect credentials. Please try again.');
+        Toast.show(result.message || 'Invalid email or password.', 'error');
+        Form.setFieldError(passwordInput, result.message || 'Incorrect credentials.');
         passwordInput.value = '';
         passwordInput.focus();
       }
     } catch (err) {
       setSigninLoading(false);
+      console.error('[login] unexpected error:', err);
       Toast.show('Connection error. Please check your network.', 'error');
     }
   });
@@ -95,51 +93,27 @@ togglePwdBtn.addEventListener('click', () => {
     signinSpinner.classList.toggle('hidden', !loading);
   }
 
-  // ── Mock Login Function ─────────────────────
-  // Replace this with your actual API call:
-  // const res = await fetch('/api/auth/login', { method: 'POST', ... })
-  //
-  // SECURITY: The demo credentials below are ONLY accepted when the page is
-  // served from a local development origin (localhost / 127.0.0.1 / file://).
-  // On any other host the mock login returns "not configured" so this file is
-  // safe to publish to a public repo without exposing usable accounts.
-  const DEMO_ALLOWED_HOSTS = ['localhost', '127.0.0.1', '::1', ''];
-
-  async function mockLogin(username, password) {
-    await delay(1200); // simulate network
-
-    if (!DEMO_ALLOWED_HOSTS.includes(location.hostname)) {
+  // ── Real login via Supabase Auth ────────────
+  async function supabaseLogin(email, password) {
+    const db = await window.AMIS_READY;
+    if (!db) {
       return {
         success: false,
-        message: 'Login backend is not configured on this host.'
+        message: 'Auth is not configured. Copy common/config.example.js → common/config.js and set your Supabase URL + key.'
       };
     }
 
-    // Demo credentials — local development only.
-    const DEMO_USERS = [
-      { username: 'admin',         password: 'admin123', name: 'Admin User',   role: 'Administrator', email: 'admin@dict.gov.ph' },
-      { username: 'dict.user',     password: 'dict1234', name: 'DICT Staff',   role: 'Staff',         email: 'staff@dict.gov.ph' },
-      { username: 'admin@dict.gov.ph', password: 'admin123', name: 'Admin User', role: 'Administrator', email: 'admin@dict.gov.ph' },
-    ];
+    const { data, error } = await db.auth.signInWithPassword({ email, password });
 
-    const match = DEMO_USERS.find(
-      u => (u.username === username || u.email === username) && u.password === password
-    );
-
-    if (match) {
-      return {
-        success: true,
-        user: {
-          id:       'usr_' + Date.now(),
-          name:     match.name,
-          email:    match.email,
-          role:     match.role,
-          loginAt:  new Date().toISOString(),
-        }
-      };
+    if (error) {
+      const msg = /invalid login credentials/i.test(error.message)
+        ? 'Invalid email or password.'
+        : error.message;
+      return { success: false, message: msg };
     }
 
-    return { success: false, message: 'Invalid username or password.' };
+    try { await Auth.loadProfile(); } catch (_) {}
+    return { success: true, user: data.user };
   }
 
   // ── Forgot Password ─────────────────────────
@@ -171,15 +145,25 @@ togglePwdBtn.addEventListener('click', () => {
     btnText.classList.add('hidden');
     spinner.classList.remove('hidden');
 
-    await delay(1500); // simulate API
+    try {
+      const db = await window.AMIS_READY;
+      if (!db) throw new Error('Auth not configured.');
 
-    submitBtn.disabled = false;
-    btnText.classList.remove('hidden');
-    spinner.classList.add('hidden');
+      const { error } = await db.auth.resetPasswordForEmail(resetEmail.value.trim(), {
+        redirectTo: window.location.origin + '/pages/login/login.html'
+      });
+      if (error) throw error;
 
-    Modal.close('forgot-modal');
-    Toast.show(`Password reset link sent to ${resetEmail.value}`, 'success', 4000);
-    resetEmail.value = '';
+      Modal.close('forgot-modal');
+      Toast.show(`Password reset link sent to ${resetEmail.value}`, 'success', 4000);
+      resetEmail.value = '';
+    } catch (err) {
+      Toast.show(err.message || 'Could not send reset link.', 'error');
+    } finally {
+      submitBtn.disabled = false;
+      btnText.classList.remove('hidden');
+      spinner.classList.add('hidden');
+    }
   });
 
   // ── Google Sign In ──────────────────────────
@@ -190,10 +174,5 @@ togglePwdBtn.addEventListener('click', () => {
     // google.accounts.id.initialize({ client_id: 'YOUR_CLIENT_ID', callback: handleCredentialResponse });
     // google.accounts.id.prompt();
   });
-
-  // ── Utility ─────────────────────────────────
-  function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
 
 });

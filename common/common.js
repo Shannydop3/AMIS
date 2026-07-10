@@ -99,42 +99,84 @@ const icons = {
   })();
 
   // ── Session / Auth Helpers ───────────────────
+  // Supabase-backed. Uses window.AMIS_DB / window.AMIS_READY from common/supabase.js.
+  // Keeps a synchronous "profile cache" in sessionStorage under 'amis_session'
+  // so layout.js and other legacy code that read Auth.getSession() keep working.
   const Auth = (() => {
     const SESSION_KEY = 'amis_session';
+
+    async function db() { return await (window.AMIS_READY || Promise.resolve(null)); }
+
+    function getSession() {
+      try { return JSON.parse(sessionStorage.getItem(SESSION_KEY)); }
+      catch { return null; }
+    }
 
     function setSession(userData) {
       sessionStorage.setItem(SESSION_KEY, JSON.stringify(userData));
     }
 
-    function getSession() {
-      try {
-        return JSON.parse(sessionStorage.getItem(SESSION_KEY));
-      } catch {
+    function isLoggedIn() { return !!getSession(); }
+
+    // Pull the current auth.user + public.profiles row and cache into sessionStorage.
+    // Returns the merged profile object, or null when signed out / not configured.
+    async function loadProfile() {
+      const client = await db();
+      if (!client) return null;
+      const { data: { user } = {} } = await client.auth.getUser();
+      if (!user) {
+        sessionStorage.removeItem(SESSION_KEY);
         return null;
       }
+      let profile = null;
+      try {
+        const { data } = await client
+          .from('profiles')
+          .select('id, full_name, email, role, department_id, job_title_id, is_active, created_at')
+          .eq('id', user.id)
+          .maybeSingle();
+        profile = data || null;
+      } catch (_) { /* RLS or offline — fall through */ }
+
+      const merged = {
+        id:      user.id,
+        email:   user.email || (profile && profile.email) || '',
+        name:    (profile && profile.full_name) || user.user_metadata?.full_name || (user.email || '').split('@')[0],
+        role:    (profile && profile.role) || 'Staff',
+        loginAt: new Date().toISOString(),
+        profile: profile
+      };
+      setSession(merged);
+      return merged;
     }
 
-    function clearSession() {
+    async function clearSession() {
       sessionStorage.removeItem(SESSION_KEY);
+      const client = await db();
+      if (client) { try { await client.auth.signOut(); } catch (_) {} }
     }
 
-    function isLoggedIn() {
-      return !!getSession();
+    async function requireAuth(redirectTo = '../login/login.html') {
+      if (isLoggedIn()) { loadProfile().then(refreshUserUI).catch(() => {}); return true; }
+      const p = await loadProfile();
+      if (!p) { window.location.href = redirectTo; return false; }
+      refreshUserUI(p);
+      return true;
     }
 
-    function requireAuth(redirectTo = '../login/login.html') {
-      if (!isLoggedIn()) {
-        window.location.href = redirectTo;
-      }
+    async function requireGuest(redirectTo = '../dashboard/dashboard.html') {
+      const p = getSession() || await loadProfile();
+      if (p) { window.location.href = redirectTo; return false; }
+      return true;
     }
 
-    function requireGuest(redirectTo = '../dashboard/dashboard.html') {
-      if (isLoggedIn()) {
-        window.location.href = redirectTo;
-      }
+    // Poke layout.js to redraw name/role/initials once a real profile lands.
+    function refreshUserUI(p) {
+      if (!p) return;
+      document.dispatchEvent(new CustomEvent('amis:auth-ready', { detail: p }));
     }
 
-    return { setSession, getSession, clearSession, isLoggedIn, requireAuth, requireGuest };
+    return { setSession, getSession, clearSession, isLoggedIn, requireAuth, requireGuest, loadProfile };
   })();
 
   // ── Modal Helpers ────────────────────────────

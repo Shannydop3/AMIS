@@ -865,6 +865,54 @@ project-root/
 
 
 ================================================================================
+  14. BACKEND / DATABASE – Supabase (2026-07 migration in progress)
+================================================================================
+
+  AMIS is being migrated from a fully static front-end to a real backend
+  powered by Supabase (managed Postgres + auth + auto REST/JS API).
+  The static pages will call Supabase directly from the browser using the
+  anon public key; Row-Level Security (RLS) enforces authorization.
+
+  Files added:
+    db/01_schema.sql          Full Postgres schema (auth profiles, master
+                              data, operational transactions, audit trail).
+    db/02_rls.sql             Row-Level Security policies. Authenticated
+                              users can read; Administrators can write.
+    db/03_seed.sql            Optional seed data (regions, UoM, categories,
+                              classifications, security questions).
+    common/config.example.js  Template for Supabase credentials.
+    common/config.js          Local copy with real URL + anon key
+                              (GIT-IGNORED — never commit).
+    common/supabase.js        Loads @supabase/supabase-js v2 and exposes
+                              window.AMIS_DB + window.AMIS_READY promise.
+
+  Setup checklist (once per environment):
+    1. Create a free Supabase project at https://supabase.com.
+       Choose the Southeast Asia (Singapore) region for lowest latency.
+    2. Project Settings → API → copy Project URL and anon public key.
+    3. Copy common/config.example.js → common/config.js and paste values.
+    4. In Supabase → SQL Editor → New query:
+         - paste db/01_schema.sql   → Run
+         - paste db/02_rls.sql      → Run
+         - paste db/03_seed.sql     → Run  (optional but recommended)
+    5. Authentication → Providers → Email → enable "Confirm email" OFF for
+       development, ON for production.
+    6. Create the first Administrator:
+         Authentication → Users → Add user → email + password.
+         Then in SQL Editor:
+           update public.profiles set role = 'Administrator'
+           where email = 'you@dict.gov.ph';
+
+  Migration phases:
+    Phase 1 (next commit):  Wire login/signup/logout/password-reset to
+                            supabase.auth. mockLogin() is removed.
+    Phase 2:                Files Data page reads/writes master tables.
+    Phase 3:                Operation Module CRUD.
+    Phase 4:                Views (masterlists + histories) query real data.
+    Phase 5:                Audit trail + notifications.
+
+
+================================================================================
   END OF DOCUMENTATION
   Last updated: May 2026
 ================================================================================

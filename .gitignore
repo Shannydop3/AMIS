@@ -23,6 +23,8 @@ yarn-error.log*
 .env.*.local
 *.pem
 *.key
+# Supabase project keys (copy config.example.js → config.js locally)
+common/config.js
 
 # ── Dependency / build (future) ────
 node_modules/

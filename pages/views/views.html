@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AMIS – Views | DICT</title>
+  <link rel="icon" href="../../assets/AMIS-LOGO_only.png" type="image/png" />
+<link rel="stylesheet" href="../../common/common.css" />
+<link rel="stylesheet" href="../../common/layout.css" />
+<link rel="stylesheet" href="../dashboard/dashboard.css" />
+<link rel="stylesheet" href="views.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+  <script>
+    window.AMIS_PAGE = { id: 'views', title: 'Views' };
+  </script>
+  <script src="../../common/common.js"></script>
+  <script src="../../common/layout.js"></script>
+
+</head>
+<body>
+
+  <div id="toast-container"></div>
+  <div id="layout-root"></div>
+
+  <div id="page-body">
+
+    <!-- Page header with inline category select -->
+    <div class="dash-page-header">
+      <div>
+        <h1 class="dash-page-title" id="views-page-title">Views</h1>
+        <p class="dash-page-sub" id="views-page-sub">Select a view to get started.</p>
+      </div>
+      <div class="views-header-sel">
+        <select class="views-cat-select" id="view-category">
+          <option value="">— Select View —</option>
+          <optgroup label="Property">
+            <option value="property-masterlist">Property Masterlist</option>
+            <option value="property-issuance-history">Property Issuance History</option>
+            <option value="property-request-history">Property Request History</option>
+            <option value="property-transfer-history">Property Transfer History</option>
+            <option value="property-maintenance-history">Property Maintenance History</option>
+            <option value="property-disposal-history">Property Disposal History</option>
+            <option value="property-disposal-request-history">Property Disposal Request History</option>
+            <option value="property-movement">Property Movement</option>
+            <option value="property-return-history">Property Return History</option>
+            <option value="property-card">Property Card</option>
+            <option value="ppe-ledger-card">PPE Ledger Card</option>
+            <option value="sep-ledger-card">SEP Ledger Card</option>
+          </optgroup>
+          <optgroup label="Stock">
+            <option value="stock-masterlist">Stock Masterlist</option>
+            <option value="good-receive-history">Good Receive History</option>
+            <option value="stock-issuance-history">Stock Issuance History</option>
+            <option value="stock-request-history">Stock Request History</option>
+            <option value="stock-card">Stock Card</option>
+            <option value="inventory-count-view">Inventory Count View</option>
+            <option value="stock-disposal-history">Stock Disposal History</option>
+          </optgroup>
+          <optgroup label="Gate Pass">
+            <option value="gate-pass-view">Gate Pass View</option>
+            <option value="personal-property-gate-pass-request">Personal Property Gate Pass Request View</option>
+          </optgroup>
+          <optgroup label="Reports">
+            <option value="rspi-view">RSPI View</option>
+            <option value="rsmi-view">RSMI View</option>
+            <option value="regspi-view">RegSPI View</option>
+            <option value="tagging-history">Tagging History</option>
+            <option value="audit-trail">Audit Trail</option>
+          </optgroup>
+        </select>
+        <svg class="views-cat-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+
+    <!-- ADVANCE FILTER CARD -->
+    <div class="dash-card dash-mb" id="card-adv-filter">
+      <div class="dash-card__head dash-collapsible">
+        <span>Advance Filter</span>
+        <div class="dash-head-right">
+          <div class="tbar" data-table="advf-tbl" data-title="Advance Filter" id="advf-tbar"></div>
+          <svg class="dash-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="dash-card__body">
+        <!-- Input row -->
+        <div class="advf-inputs">
+          <div class="advf-group">
+            <label class="advf-lbl">Logic</label>
+            <select class="advf-sel" id="advf-logic">
+              <option value="">Select Logic</option>
+              <option value="AND">AND</option>
+              <option value="OR">OR</option>
+            </select>
+          </div>
+          <div class="advf-group advf-group--wide">
+            <label class="advf-lbl">Filter By</label>
+            <div class="advf-searchable" id="advf-filterby-wrap">
+              <button type="button" class="advf-sel advf-sel--btn" id="advf-filterby-btn">
+                <span id="advf-filterby-label">Select Filter</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="advf-dropdown" id="advf-filterby-drop" style="display:none">
+                <input type="text" class="advf-drop-search" id="advf-field-search" placeholder="Search field…">
+                <ul class="advf-drop-list" id="advf-field-list"></ul>
+              </div>
+            </div>
+          </div>
+          <div class="advf-group">
+            <label class="advf-lbl">Operator</label>
+            <select class="advf-sel" id="advf-operator">
+              <option value="">Select Operator</option>
+              <option value="=">=</option>
+              <option value=">">&gt;</option>
+              <option value=">=">&gt;=</option>
+              <option value="<">&lt;</option>
+              <option value="<=">&lt;=</option>
+              <option value="Not =">Not =</option>
+              <option value="Like">Like</option>
+              <option value="In">In</option>
+              <option value="Not In">Not In</option>
+            </select>
+          </div>
+          <div class="advf-group advf-group--wide">
+            <label class="advf-lbl">Value</label>
+            <input type="text" class="advf-val" id="advf-value" placeholder="Value">
+          </div>
+          <div class="advf-group advf-group--btn">
+            <button type="button" class="advf-add-btn" id="advf-add">Add Filter</button>
+          </div>
+        </div>
+
+        <!-- Applied filters table -->
+        <div class="advf-table-section">
+          <div class="advf-tbl-tools">
+            <div style="width:28px;"></div><!-- spacer so search aligns right -->
+            <div class="dash-filter-row" style="margin:0;">
+              <input type="text" class="dash-input advf-search-inp" id="advf-row-search" placeholder="Search…" style="max-width:180px;">
+            </div>
+          </div>
+          <div class="dash-table-wrap">
+            <table class="dash-tbl" id="advf-tbl">
+              <thead>
+                <tr>
+                  <th>Logic</th>
+                  <th>Filter By</th>
+                  <th>Operation</th>
+                  <th>Value</th>
+                  <th>Active</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="advf-rows">
+                <tr><td colspan="6" class="dash-empty">No filters applied.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="dash-table-footer">
+            <span id="advf-showing">Showing 0 to 0 of 0 entries</span>
+            <span class="dash-pager">Previous &nbsp; Next</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATE BAR (shown for views that need date range) -->
+    <div class="views-date-bar dash-mb" id="views-date-bar" style="display:none;">
+      <label class="advf-lbl">Date From</label>
+      <input type="date" class="dash-input dash-input--date" id="views-date-from">
+      <label class="advf-lbl">Date To</label>
+      <input type="date" class="dash-input dash-input--date" id="views-date-to">
+    </div>
+
+    <!-- MAIN DATA CARD -->
+    <div class="dash-card" id="card-views-data">
+      <div class="dash-card__head dash-collapsible">
+        <span id="views-content-title">Views</span>
+        <div class="dash-head-right">
+          <div class="tbar" data-table="views-table" data-title="Views" id="views-tbar"></div>
+          <svg class="dash-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="dash-card__body">
+
+        <!-- Empty state -->
+        <div class="views-empty-state" id="views-empty-state">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <p>Select a view from the dropdown above to display records.</p>
+        </div>
+
+        <!-- Search toolbar (hidden until view loads) -->
+        <div class="dash-filter-row" id="views-toolbar" style="display:none;">
+          <input type="text" class="dash-input dash-search" id="views-search" data-table="views-table" placeholder="Search…" />
+        </div>
+
+        <!-- View wrap -->
+        <div class="dash-view-wrap" id="views-view-wrap" style="display:none;">
+          <div class="dash-table-wrap dash-table-wrap--scroll">
+            <table class="dash-tbl" id="views-table" style="min-width:700px;">
+              <thead id="views-thead"></thead>
+              <tbody id="views-tbody"></tbody>
+            </table>
+          </div>
+          <div class="dash-chart-wrap" style="display:none;"><canvas class="dash-chart-canvas"></canvas></div>
+        </div>
+
+        <div class="dash-table-footer" id="views-table-footer" style="display:none;">
+          <span id="views-showing-info">Showing 0 to 0 of 0 entries</span>
+          <span class="dash-pager">Previous &nbsp; Next</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /#page-body -->
+
+  <script src="views-helper.js"></script>
+  <!-- View sub-modules -->
+  <script src="view-list/property-masterlist.js"></script>
+  <script src="view-list/stock-masterlist.js"></script>
+  <script src="view-list/good-receive-history.js"></script>
+  <script src="view-list/property-issuance-history.js"></script>
+  <script src="view-list/property-request-history.js"></script>
+  <script src="view-list/property-transfer-history.js"></script>
+  <script src="view-list/property-maintenance-history.js"></script>
+  <script src="view-list/gate-pass-view.js"></script>
+  <script src="view-list/stock-issuance-history.js"></script>
+  <script src="view-list/stock-request-history.js"></script>
+  <script src="view-list/inventory-count-view.js"></script>
+  <script src="view-list/property-disposal-history.js"></script>
+  <script src="view-list/property-disposal-request-history.js"></script>
+  <script src="view-list/property-movement.js"></script>
+  <script src="view-list/stock-card.js"></script>
+  <script src="view-list/property-card.js"></script>
+  <script src="view-list/ppe-ledger-card.js"></script>
+  <script src="view-list/sep-ledger-card.js"></script>
+  <script src="view-list/rspi-view.js"></script>
+  <script src="view-list/rsmi-view.js"></script>
+  <script src="view-list/regspi-view.js"></script>
+  <script src="view-list/tagging-history.js"></script>
+  <script src="view-list/personal-property-gate-pass-request.js"></script>
+  <script src="view-list/property-return-history.js"></script>
+  <script src="view-list/stock-disposal-history.js"></script>
+  <script src="view-list/audit-trail.js"></script>
+
+  <!-- Router -->
+  <script src="views.js"></script>
+
+</body>
+</html>

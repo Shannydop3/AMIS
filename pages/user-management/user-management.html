@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AMIS – User Management | DICT</title>
+  <link rel="icon" href="../../assets/AMIS-LOGO_only.png" type="image/png" />
+  <link rel="stylesheet" href="../../common/common.css" />
+  <link rel="stylesheet" href="../../common/layout.css" />
+  <link rel="stylesheet" href="user-management.css" />
+
+  <script>
+    window.AMIS_PAGE = { id: 'user-management', title: 'User Management' };
+  </script>
+  <script src="../../common/common.js"></script>
+  <script src="../../common/layout.js"></script>
+</head>
+<body>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- ── CONFIRM: Force Sign Out ── -->
+  <div class="um-confirm-overlay" id="confirm-signout">
+    <div class="um-confirm-box">
+      <div class="um-confirm-icon um-confirm-icon--amber">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"/>
+        </svg>
+      </div>
+      <h3>Force Sign Out</h3>
+      <p id="confirm-signout-msg">Are you sure you want to force sign out this user? They will be immediately logged out of all sessions.</p>
+      <div class="um-confirm-actions">
+        <button class="um-modal-cancel" id="confirm-signout-cancel">Cancel</button>
+        <button class="um-modal-save um-modal-save--amber" id="confirm-signout-ok">Force Sign Out</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CONFIRM: Reset Password ── -->
+  <div class="um-confirm-overlay" id="confirm-reset">
+    <div class="um-confirm-box">
+      <div class="um-confirm-icon um-confirm-icon--blue">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+        </svg>
+      </div>
+      <h3>Reset Password</h3>
+      <p id="confirm-reset-msg">A password reset link will be sent to the user's registered email address. Continue?</p>
+      <div class="um-confirm-actions">
+        <button class="um-modal-cancel" id="confirm-reset-cancel">Cancel</button>
+        <button class="um-modal-save" id="confirm-reset-ok">Send Reset Link</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Add / Edit User Modal ── -->
+  <div class="um-modal-overlay" id="user-modal">
+    <div class="um-modal">
+      <div class="um-modal__head">
+        <h2 id="modal-title">Add New User</h2>
+        <button class="um-modal__close" id="modal-close">&times;</button>
+      </div>
+      <div class="um-modal__body">
+        <div class="um-form-grid">
+          <div class="um-form-group">
+            <label class="um-form-label">Last Name <span class="um-req">*</span></label>
+            <input class="um-form-control" id="f-lastname" type="text" placeholder="Last name" />
+          </div>
+          <div class="um-form-group">
+            <label class="um-form-label">First Name <span class="um-req">*</span></label>
+            <input class="um-form-control" id="f-firstname" type="text" placeholder="First name" />
+          </div>
+          <div class="um-form-group">
+            <label class="um-form-label">Middle Name</label>
+            <input class="um-form-control" id="f-middlename" type="text" placeholder="Middle name" />
+          </div>
+          <div class="um-form-group">
+            <label class="um-form-label">Employee # <span class="um-req">*</span></label>
+            <input class="um-form-control" id="f-empno" type="text" placeholder="e.g. 1202306074" />
+          </div>
+          <div class="um-form-group full">
+            <label class="um-form-label">Email Address <span class="um-req">*</span></label>
+            <input class="um-form-control" id="f-email" type="email" placeholder="user@dict.gov.ph" />
+          </div>
+          <div class="um-form-group full">
+            <label class="um-form-label">Role</label>
+            <select class="um-form-control" id="f-role">
+              <option value="">-- Select Role --</option>
+              <option>Administrator</option>
+              <option>Custodian</option>
+              <option>Approver</option>
+              <option>Viewer</option>
+            </select>
+          </div>
+          <div class="um-form-group full">
+            <div class="um-form-section-title">Permissions</div>
+            <div class="um-form-check-row">
+              <label class="um-form-check"><input type="checkbox" id="f-custodian" /> Custodian Type</label>
+              <label class="um-form-check"><input type="checkbox" id="f-administrative" /> Administrative</label>
+              <label class="um-form-check"><input type="checkbox" id="f-approver" /> Approver</label>
+              <label class="um-form-check"><input type="checkbox" id="f-active" checked /> Active</label>
+            </div>
+          </div>
+          <div class="um-form-group full" id="pwd-group">
+            <label class="um-form-label">Password <span class="um-req">*</span></label>
+            <input class="um-form-control" id="f-password" type="password" placeholder="Enter password" />
+          </div>
+        </div>
+      </div>
+      <div class="um-modal__foot">
+        <button class="um-modal-cancel" id="modal-cancel">Cancel</button>
+        <button class="um-modal-save" id="modal-save">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V7l-4-4zm-5 16a3 3 0 110-6 3 3 0 010 6zm3-10H5V5h10v4z"/></svg>
+          Save User
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating dots dropdown -->
+  <div id="um-float-drop" style="display:none; position:fixed; z-index:99999;"></div>
+
+  <div id="layout-root"></div>
+
+  <div id="page-body">
+
+    <div class="dash-page-header">
+      <div>
+        <h1 class="dash-page-title">User Management</h1>
+        <p class="dash-page-sub">Manage system users and permissions.</p>
+      </div>
+    </div>
+
+    <!-- Main Card -->
+    <div class="um-card">
+
+      <!-- Card Head (fd-card__head style) -->
+      <div class="um-card__head">
+        <div class="um-head-left">
+          <svg class="um-head-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3m-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3m0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5m8 0c-.29 0-.62.02-.97.05c1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5"/>
+          </svg>
+          <span>List of Users</span>
+        </div>
+        <div class="um-head-right">
+          <!-- 3-dot toolbar -->
+          <div class="um-tbar" id="um-tbar"></div>
+          <!-- Add User -->
+          <button class="um-add-btn" id="btn-add">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add User
+          </button>
+        </div>
+      </div>
+
+      <!-- Card Body -->
+      <div class="um-card__body">
+
+        <!-- Filter row (fd-filter-row style) -->
+        <div class="um-filter-row">
+          <div class="um-search-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="search-input" placeholder="Search users…" />
+          </div>
+          <select class="um-sort" id="um-sort">
+            <option value="">— Sort —</option>
+            <option value="name-az">Name A – Z</option>
+            <option value="name-za">Name Z – A</option>
+            <option value="empno-az">Emp # A – Z</option>
+            <option value="email-az">Email A – Z</option>
+          </select>
+          <div class="um-show-wrap">
+            <label>Show</label>
+            <select id="page-size">
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Table (fd-tbl style) -->
+        <div class="um-table-wrap">
+          <table class="um-tbl" id="user-table">
+            <colgroup>
+              <col class="col-name">
+              <col class="col-empno">
+              <col class="col-email">
+              <col class="col-role">
+              <col class="col-bool">
+              <col class="col-bool">
+              <col class="col-bool">
+              <col class="col-active">
+              <col class="col-action">
+            </colgroup>
+            <thead>
+              <tr>
+                <th class="sortable" data-col="name">Name <span class="sort-icon"><svg viewBox="0 0 10 10"><path d="M5 1l4 4H1z" fill="currentColor"/></svg><svg viewBox="0 0 10 10"><path d="M5 9L1 5h8z" fill="currentColor"/></svg></span></th>
+                <th class="sortable" data-col="empno">Emp # <span class="sort-icon"><svg viewBox="0 0 10 10"><path d="M5 1l4 4H1z" fill="currentColor"/></svg><svg viewBox="0 0 10 10"><path d="M5 9L1 5h8z" fill="currentColor"/></svg></span></th>
+                <th class="sortable" data-col="email">Email <span class="sort-icon"><svg viewBox="0 0 10 10"><path d="M5 1l4 4H1z" fill="currentColor"/></svg><svg viewBox="0 0 10 10"><path d="M5 9L1 5h8z" fill="currentColor"/></svg></span></th>
+                <th>Role</th>
+                <th>Custodian</th>
+                <th>Admin</th>
+                <th>Approver</th>
+                <th>Active</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+          </table>
+        </div>
+
+        <!-- Table footer (fd-table-footer style) -->
+        <div class="um-table-footer">
+          <span class="um-count" id="showing-info">Showing 0 to 0 of 0 entries</span>
+          <div class="um-pagination" id="pagination"></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /#page-body -->
+
+  <script src="user-management.js"></script>
+</body>
+</html>

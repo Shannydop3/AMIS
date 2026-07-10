@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AMIS – Files Data | DICT</title>
+  <link rel="icon" href="../../assets/AMIS-LOGO_only.png" type="image/png" />
+  <link rel="stylesheet" href="../../common/common.css" />
+  <link rel="stylesheet" href="../../common/layout.css" />
+  <link rel="stylesheet" href="files-data.css" />
+
+  <script>
+    window.AMIS_PAGE = { id: 'files-data', title: 'Files Data' };
+  </script>
+  <script src="../../common/common.js"></script>
+  <script src="../../common/layout.js"></script>
+</head>
+<body>
+
+  <div id="layout-root"></div>
+
+  <div id="page-body">
+
+    <div class="dash-page-header">
+      <div>
+        <h1 class="dash-page-title">Files Data</h1>
+        <p class="dash-page-sub">Manage reference data tables and master lists</p>
+      </div>
+      <button class="dash-expand-all-btn" id="fd-btn-expand-all" title="Expand all cards">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        <span>Expand All</span>
+      </button>
+    </div>
+
+    <!-- ══════════════════ CHART OF ACCOUNTS ══════════════════ -->
+    <div class="fd-card dash-mb" id="card-coa">
+      <div class="fd-card__head fd-collapsible">
+        <div class="fd-head-left">
+          <svg class="fd-head-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2m-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6m7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58z"/></svg>
+          <span>Chart of Accounts</span>
+        </div>
+        <div class="fd-head-right">
+          <button class="fd-add-btn" data-table="tbl-coa" data-title="Chart of Accounts">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add
+          </button>
+          <div class="fd-tbar" data-table="tbl-coa" data-title="Chart of Accounts"></div>
+          <svg class="fd-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="fd-card__body">
+        <div class="fd-filter-row">
+          <div class="fd-search-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="fd-search" data-table="tbl-coa" placeholder="Search chart of accounts…" />
+          </div>
+          <select class="fd-sort" data-table="tbl-coa">
+            <option value="newest">Newest – Oldest</option>
+            <option value="oldest">Oldest – Newest</option>
+            <option value="az">A – Z</option>
+            <option value="za">Z – A</option>
+          </select>
+        </div>
+        <div class="fd-table-wrap">
+          <table class="fd-tbl" id="tbl-coa">
+            <thead><tr>
+              <th>#</th><th>Account Code</th><th>Account Name</th><th>Type</th><th>Active</th><th>Actions</th>
+            </tr></thead>
+            <tbody><tr><td colspan="6" class="fd-empty">No data available in table</td></tr></tbody>
+          </table>
+        </div>
+        <div class="fd-table-footer"><span class="fd-count">Showing 0 to 0 of 0 entries</span><span class="fd-pager">Previous &nbsp; Next</span></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ CATEGORY ══════════════════ -->
+    <div class="fd-card dash-mb" id="card-category">
+      <div class="fd-card__head fd-collapsible">
+        <div class="fd-head-left">
+          <svg class="fd-head-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l3.09 6.26L22 9.27l-5 4.87l1.18 6.88L12 17.77l-6.18 3.25L7 14.14L2 9.27l6.91-1.01z"/></svg>
+          <span>Category</span>
+        </div>
+        <div class="fd-head-right">
+          <button class="fd-add-btn" data-table="tbl-category" data-title="Category">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add
+          </button>
+          <div class="fd-tbar" data-table="tbl-category" data-title="Category"></div>
+          <svg class="fd-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="fd-card__body">
+        <div class="fd-filter-row">
+          <div class="fd-search-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="fd-search" data-table="tbl-category" placeholder="Search categories…" />
+          </div>
+          <select class="fd-sort" data-table="tbl-category">
+            <option value="newest">Newest – Oldest</option><option value="oldest">Oldest – Newest</option><option value="az">A – Z</option><option value="za">Z – A</option>
+          </select>
+        </div>
+        <div class="fd-table-wrap">
+          <table class="fd-tbl" id="tbl-category">
+            <thead><tr><th>#</th><th>Category Name</th><th>Description</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>ICT Equipment</td><td>Information and Communication Technology devices and peripherals</td><td><span class="fd-badge fd-badge--active">Active</span></td><td class="fd-actions"><button class="fd-btn-edit" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="fd-btn-delete" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>
+              <tr><td>2</td><td>Machinery</td><td>Heavy equipment and industrial machinery</td><td><span class="fd-badge fd-badge--active">Active</span></td><td class="fd-actions"><button class="fd-btn-edit" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="fd-btn-delete" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fd-table-footer"><span class="fd-count">Showing 1 to 2 of 2 entries</span><span class="fd-pager">Previous &nbsp; 1 &nbsp; Next</span></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ BRAND ══════════════════ -->
+    <div class="fd-card dash-mb" id="card-brand">
+      <div class="fd-card__head fd-collapsible">
+        <div class="fd-head-left">
+          <svg class="fd-head-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M17 8C8 10 5.9 16.17 3.82 19.34c-.2.3.38.7.58.4C7 17 9 15 17 15v3l4-4l-4-4z"/></svg>
+          <span>Brand</span>
+        </div>
+        <div class="fd-head-right">
+          <button class="fd-add-btn" data-table="tbl-brand" data-title="Brand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add</button>
+          <div class="fd-tbar" data-table="tbl-brand" data-title="Brand"></div>
+          <svg class="fd-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="fd-card__body">
+        <div class="fd-filter-row">
+          <div class="fd-search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="fd-search" data-table="tbl-brand" placeholder="Search brands…" /></div>
+          <select class="fd-sort" data-table="tbl-brand"><option value="newest">Newest – Oldest</option><option value="oldest">Oldest – Newest</option><option value="az">A – Z</option><option value="za">Z – A</option></select>
+        </div>
+        <div class="fd-table-wrap">
+          <table class="fd-tbl" id="tbl-brand">
+            <thead><tr><th>#</th><th>Brand Name</th><th>Description</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Acer</td><td>Taiwanese multinational hardware and electronics corporation</td><td><span class="fd-badge fd-badge--active">Active</span></td><td class="fd-actions"><button class="fd-btn-edit" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="fd-btn-delete" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>
+              <tr><td>2</td><td>ABB</td><td>Multinational corporation operating in electrification and automation</td><td><span class="fd-badge fd-badge--active">Active</span></td><td class="fd-actions"><button class="fd-btn-edit" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="fd-btn-delete" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fd-table-footer"><span class="fd-count">Showing 1 to 2 of 2 entries</span><span class="fd-pager">Previous &nbsp; 1 &nbsp; Next</span></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ MODEL ══════════════════ -->
+    <div class="fd-card dash-mb" id="card-model">
+      <div class="fd-card__head fd-collapsible">
+        <div class="fd-head-left">
+          <svg class="fd-head-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44c-.16.12-.36.18-.57.18s-.41-.06-.57-.18l-7.9-4.44A1.008 1.008 0 0 1 3 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44c.16-.12.36-.18.57-.18s.41.06.57.18l7.9 4.44c.32.17.53.5.53.88z"/></svg>
+          <span>Model</span>
+        </div>
+        <div class="fd-head-right">
+          <button class="fd-add-btn" data-table="tbl-model" data-title="Model"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add</button>
+          <div class="fd-tbar" data-table="tbl-model" data-title="Model"></div>
+          <svg class="fd-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="fd-card__body">
+        <div class="fd-filter-row">
+          <div class="fd-search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="fd-search" data-table="tbl-model" placeholder="Search models…" /></div>
+          <select class="fd-sort" data-table="tbl-model"><option value="newest">Newest – Oldest</option><option value="oldest">Oldest – Newest</option><option value="az">A – Z</option><option value="za">Z – A</option></select>
+        </div>
+        <div class="fd-table-wrap">
+          <table class="fd-tbl" id="tbl-model">
+            <thead><tr><th>#</th><th>Model Name</th><th>Description</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>TMP414-51-59KM</td><td>Acer Travelmate laptop model</td><td><span class="fd-badge fd-badge--active">Active</span></td><td class="fd-actions"><button class="fd-btn-edit" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="fd-btn-delete" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fd-table-footer"><span class="fd-count">Showing 1 to 1 of 1 entries</span><span class="fd-pager">Previous &nbsp; 1 &nbsp; Next</span></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ CLASSIFICATION ══════════════════ -->
+    <div class="fd-card dash-mb" id="card-classification">
+      <div class="fd-card__head fd-collapsible">
+        <div class="fd-head-left">
+          <svg class="fd-head-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M10 3H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1m10 10h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1M17 3l-3.5 6h7z"/></svg>
+          <span>Classification</span>
+        </div>
+        <div class="fd-head-right">
+          <button class="fd-add-btn" data-table="tbl-classification" data-title="Classification"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add</button>
+          <div class="fd-tbar" data-table="tbl-classification" data-title="Classification"></div>
+          <svg class="fd-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="fd-card__body">
+        <div class="fd-filter-row">
+          <div class="fd-search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="fd-search" data-table="tbl-classification" placeholder="Search classifications…" /></div>
+          <select class="fd-sort" data-table="tbl-classification"><option value="newest">Newest – Oldest</option><option value="oldest">Oldest – Newest</option><option value="az">A – Z</option><option value="za">Z – A</option></select>
+        </div>
+        <div class="fd-table-wrap">
+          <table class="fd-tbl" id="tbl-classification">
+            <thead><tr><th>#</th><th>Classification Name</th><th>Description</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>LAPTOP</td><td>Portable personal computers</td><td><span class="fd-badge fd-badge--active">Active</span></td><td class="fd-actions"><button class="fd-btn-edit" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="fd-btn-delete" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>
+              <tr><td>2</td><td>SWITCHGEAR</td><td>Electrical switching equipment and enclosures</td><td><span class="fd-badge fd-badge--active">Active</span></td><td class="fd-actions"><button class="fd-btn-edit" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="fd-btn-delete" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fd-table-footer"><span class="fd-count">Showing 1 to 2 of 2 entries</span><span class="fd-pager">Previous &nbsp; 1 &nbsp; Next</span></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ UNIT OF MEASUREMENT ══════════════════ -->
+    <div class="fd-card dash-mb" id="card-uom">
+      <div class="fd-card__head fd-collapsible">
+        <div class="fd-head-left">
+          <svg class="fd-head-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M19.36 2.72L20.78 4.14L15.06 9.85C15.64 10.44 16 11.17 16 12C16 13.66 14.66 15 13 15C12.17 15 11.44 14.64 10.85 14.06L9 16H7V18H5V20H2V17L8.14 10.85C7.56 10.26 7.2 9.47 7.2 8.59C7.2 6.93 8.54 5.59 10.2 5.59C11.08 5.59 11.87 5.96 12.46 6.54L14.29 4.71L12.5 2.92L15.32.1L19.36 2.72Z"/></svg>
+          <span>Unit of Measurement</span>
+        </div>
+        <div class="fd-head-right">
+          <button class="fd-add-btn" data-table="tbl-uom" data-title="Unit of Measurement"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add</button>
+          <div class="fd-tbar" data-table="tbl-uom" data-title="Unit of Measurement"></div>
+          <svg class="fd-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="fd-card__body">
+        <div class="fd-filter-row">
+          <div class="fd-search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="fd-search" data-table="tbl-uom" placeholder="Search units…" /></div>
+          <select class="fd-sort" data-table="tbl-uom"><option value="newest">Newest – Oldest</option><option value="oldest">Oldest – Newest</option><option value="az">A – Z</option><option value="za">Z – A</option></select>
+        </div>
+        <div class="fd-table-wrap">
+          <table class="fd-tbl" id="tbl-uom">
+            <thead><tr><th>#</th><th>Unit of Measurement</th><th>Code</th><th>Description</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Gallon</td><td>GAL</td><td>Liquid volume measurement</td><td><span class="fd-badge fd-badge--active">Active</span></td><td class="fd-actions"><button class="fd-btn-edit" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="fd-btn-delete" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>
+              <tr><td>2</td><td>Pairs</td><td>PR</td><td>Count of paired items</td><td><span class="fd-badge fd-badge--active">Active</span></td><td class="fd-actions"><button class="fd-btn-edit" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="fd-btn-delete" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fd-table-footer"><span class="fd-count">Showing 1 to 2 of 2 entries</span><span class="fd-pager">Previous &nbsp; 1 &nbsp; Next</span></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ SUPPLIER ══════════════════ -->
+    <div class="fd-card dash-mb" id="card-supplier">
+      <div class="fd-card__head fd-collapsible">
+        <div class="fd-head-left">
+          <svg class="fd-head-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5s1.5.67 1.5 1.5s-.67 1.5-1.5 1.5m13.5-9l1.96 2.5H17V9.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5s1.5.67 1.5 1.5s-.67 1.5-1.5 1.5"/></svg>
+          <span>Supplier</span>
+        </div>
+        <div class="fd-head-right">
+          <button class="fd-add-btn" data-table="tbl-supplier" data-title="Supplier"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add</button>
+          <div class="fd-tbar" data-table="tbl-supplier" data-title="Supplier"></div>
+          <svg class="fd-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="fd-card__body">
+        <div class="fd-filter-row">
+          <div class="fd-search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="fd-search" data-table="tbl-supplier" placeholder="Search suppliers…" /></div>
+          <select class="fd-sort" data-table="tbl-supplier"><option value="newest">Newest – Oldest</option><option value="oldest">Oldest – Newest</option><option value="az">A – Z</option><option value="za">Z – A</option></select>
+        </div>
+        <div class="fd-table-wrap">
+          <table class="fd-tbl" id="tbl-supplier">
+            <thead><tr><th>#</th><th>Supplier Name</th><th>Contact</th><th>Email</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody><tr><td colspan="6" class="fd-empty">No data available in table</td></tr></tbody>
+          </table>
+        </div>
+        <div class="fd-table-footer"><span class="fd-count">Showing 0 to 0 of 0 entries</span><span class="fd-pager">Previous &nbsp; Next</span></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ REGION ══════════════════ -->
+    <div class="fd-card dash-mb" id="card-region">
+      <div class="fd-card__head fd-collapsible">
+        <div class="fd-head-left">
+          <svg class="fd-head-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7m0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5s-1.12 2.5-2.5 2.5"/></svg>
+          <span>Region</span>
+        </div>
+        <div class="fd-head-right">
+          <button class="fd-add-btn" data-table="tbl-region" data-title="Region"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add</button>
+          <div class="fd-tbar" data-table="tbl-region" data-title="Region"></div>
+          <svg class="fd-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="fd-card__body">
+        <div class="fd-filter-row">
+          <div class="fd-search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="fd-search" data-table="tbl-region" placeholder="Search regions…" /></div>
+          <select class="fd-sort" data-table="tbl-region"><option value="newest">Newest – Oldest</option><option value="oldest">Oldest – Newest</option><option value="az">A – Z</option><option value="za">Z – A</option></select>
+        </div>
+        <div class="fd-table-wrap">
+          <table class="fd-tbl" id="tbl-region">
+            <thead><tr><th>#</th><th>Region</th><th>Region Code</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>NCR</td><td>NCR</td><td><span class="fd-badge fd-badge--active">Active</span></td><td class="fd-actions"><button class="fd-btn-edit" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="fd-btn-delete" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>
+              <tr><td>2</td><td>Region I</td><td>R1</td><td><span class="fd-badge fd-badge--active">Active</span></td><td class="fd-actions"><button class="fd-btn-edit" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="fd-btn-delete" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>
+              <tr><td>3</td><td>Region II</td><td>R2</td><td><span class="fd-badge fd-badge--active">Active</span></td><td class="fd-actions"><button class="fd-btn-edit" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="fd-btn-delete" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>
+              <tr><td>4</td><td>Region III</td><td>R3</td><td><span class="fd-badge fd-badge--active">Active</span></td><td class="fd-actions"><button class="fd-btn-edit" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="fd-btn-delete" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fd-table-footer"><span class="fd-count">Showing 1 to 4 of 4 entries</span><span class="fd-pager">Previous &nbsp; 1 &nbsp; Next</span></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ BRANCH ══════════════════ -->
+    <div class="fd-card dash-mb" id="card-branch">
+      <div class="fd-card__head fd-collapsible">
+        <div class="fd-head-left">
+          <svg class="fd-head-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M17 11c.34 0 .67.03 1 .08V6.27L10.5 3L3 6.27v4.91c0 4.54 3.2 8.79 7.5 9.82c.55-.13 1.08-.32 1.6-.55A6.974 6.974 0 0 1 17 11m-6.5 6.52C8.21 16.5 6 13.35 6 11.18v-3.1l4.5-2.02l4.5 2.02v2.5c-.5.17-.97.4-1.4.68c-.64.45-1.19 1.04-1.6 1.7z"/><path fill="currentColor" d="M17 13c-2.21 0-4 1.79-4 4s1.79 4 4 4s4-1.79 4-4s-1.79-4-4-4m1.65 5.35L16.5 16.2v-2.7h1v2.3l1.85 1.85z"/></svg>
+          <span>Branch</span>
+        </div>
+        <div class="fd-head-right">
+          <button class="fd-add-btn" data-table="tbl-branch" data-title="Branch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add</button>
+          <div class="fd-tbar" data-table="tbl-branch" data-title="Branch"></div>
+          <svg class="fd-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="fd-card__body">
+        <div class="fd-filter-row">
+          <div class="fd-search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="fd-search" data-table="tbl-branch" placeholder="Search branches…" /></div>
+          <select class="fd-sort" data-table="tbl-branch"><option value="newest">Newest – Oldest</option><option value="oldest">Oldest – Newest</option><option value="az">A – Z</option><option value="za">Z – A</option></select>
+        </div>
+        <div class="fd-table-wrap">
+          <table class="fd-tbl" id="tbl-branch">
+            <thead><tr><th>#</th><th>Branch</th><th>Branch Code</th><th>Region</th><th>Description</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>CP Garcia</td><td>CPG</td><td>NCR</td><td>CP Garcia branch office</td><td><span class="fd-badge fd-badge--active">Active</span></td><td class="fd-actions"><button class="fd-btn-edit" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="fd-btn-delete" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>
+              <tr><td>2</td><td>Studio 7</td><td>STU7</td><td>NCR</td><td>Studio 7 branch office</td><td><span class="fd-badge fd-badge--active">Active</span></td><td class="fd-actions"><button class="fd-btn-edit" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="fd-btn-delete" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>
+              <tr><td>3</td><td>Vitro Makati</td><td>VITRO</td><td>NCR</td><td>Vitro Makati branch office</td><td><span class="fd-badge fd-badge--active">Active</span></td><td class="fd-actions"><button class="fd-btn-edit" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="fd-btn-delete" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>
+              <tr><td>4</td><td>Region I Office</td><td>R1-MAIN</td><td>Region I</td><td>Region I main branch office</td><td><span class="fd-badge fd-badge--active">Active</span></td><td class="fd-actions"><button class="fd-btn-edit" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="fd-btn-delete" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>
+              <tr><td>5</td><td>Region II Office</td><td>R2-MAIN</td><td>Region II</td><td>Region II main branch office</td><td><span class="fd-badge fd-badge--active">Active</span></td><td class="fd-actions"><button class="fd-btn-edit" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="fd-btn-delete" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>
+              <tr><td>6</td><td>Region III Office</td><td>R3-MAIN</td><td>Region III</td><td>Region III main branch office</td><td><span class="fd-badge fd-badge--active">Active</span></td><td class="fd-actions"><button class="fd-btn-edit" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="fd-btn-delete" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fd-table-footer"><span class="fd-count">Showing 1 to 6 of 6 entries</span><span class="fd-pager">Previous &nbsp; 1 &nbsp; Next</span></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ OFFICE ══════════════════ -->
+    <div class="fd-card dash-mb" id="card-office">
+      <div class="fd-card__head fd-collapsible">
+        <div class="fd-head-left">
+          <svg class="fd-head-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3L2 12h3v9h6v-6h2v6h6v-9h3z"/></svg>
+          <span>Office</span>
+        </div>
+        <div class="fd-head-right">
+          <button class="fd-add-btn" data-table="tbl-office" data-title="Office"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add</button>
+          <div class="fd-tbar" data-table="tbl-office" data-title="Office"></div>
+          <svg class="fd-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="fd-card__body">
+        <div class="fd-filter-row">
+          <div class="fd-search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="fd-search" data-table="tbl-office" placeholder="Search offices…" /></div>
+          <select class="fd-sort" data-table="tbl-office"><option value="newest">Newest – Oldest</option><option value="oldest">Oldest – Newest</option><option value="az">A – Z</option><option value="za">Z – A</option></select>
+        </div>
+        <div class="fd-table-wrap">
+          <table class="fd-tbl" id="tbl-office">
+            <thead><tr><th>#</th><th>Office</th><th>Branch</th><th>Description</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>IMB-OBD</td><td>Studio 7</td><td>Infrastructure Management Bureau – Office of the Bureau Director</td><td><span class="fd-badge fd-badge--active">Active</span></td><td class="fd-actions"><button class="fd-btn-edit" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="fd-btn-delete" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>
+              <tr><td>2</td><td>VITRO MAKATI</td><td>Vitro Makati</td><td>Vitro Makati office</td><td><span class="fd-badge fd-badge--active">Active</span></td><td class="fd-actions"><button class="fd-btn-edit" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="fd-btn-delete" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fd-table-footer"><span class="fd-count">Showing 1 to 2 of 2 entries</span><span class="fd-pager">Previous &nbsp; 1 &nbsp; Next</span></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ USER DEPARTMENT ══════════════════ -->
+    <div class="fd-card dash-mb" id="card-userdept">
+      <div class="fd-card__head fd-collapsible">
+        <div class="fd-head-left">
+          <svg class="fd-head-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3m-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3m0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5m8 0c-.29 0-.62.02-.97.05c1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5"/></svg>
+          <span>User Department</span>
+        </div>
+        <div class="fd-head-right">
+          <button class="fd-add-btn" data-table="tbl-userdept" data-title="User Department"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add</button>
+          <div class="fd-tbar" data-table="tbl-userdept" data-title="User Department"></div>
+          <svg class="fd-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="fd-card__body">
+        <div class="fd-filter-row">
+          <div class="fd-search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="fd-search" data-table="tbl-userdept" placeholder="Search departments…" /></div>
+          <select class="fd-sort" data-table="tbl-userdept"><option value="newest">Newest – Oldest</option><option value="oldest">Oldest – Newest</option><option value="az">A – Z</option><option value="za">Z – A</option></select>
+        </div>
+        <div class="fd-table-wrap">
+          <table class="fd-tbl" id="tbl-userdept">
+            <thead><tr><th>#</th><th>User Department</th><th>Description</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody><tr><td colspan="5" class="fd-empty">No data available in table</td></tr></tbody>
+          </table>
+        </div>
+        <div class="fd-table-footer"><span class="fd-count">Showing 0 to 0 of 0 entries</span><span class="fd-pager">Previous &nbsp; Next</span></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ JOB TITLE ══════════════════ -->
+    <div class="fd-card dash-mb" id="card-jobtitle">
+      <div class="fd-card__head fd-collapsible">
+        <div class="fd-head-left">
+          <svg class="fd-head-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M20 6h-2.18c.07-.44.18-.87.18-1.3C18 2.57 15.43 0 12.7 0H11.3C8.57 0 6 2.57 6 4.7c0 .43.11.86.18 1.3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2m-9.3-1.5h2.6c.47 0 .7.53.7 1v.7c0 .47-.23 1-.7 1h-2.6c-.47 0-.7-.53-.7-1V5.5c0-.47.23-1 .7-1M12 10c1.66 0 3 1.34 3 3s-1.34 3-3 3s-3-1.34-3-3s1.34-3 3-3m6 10H6v-1.18c0-.47.26-.9.68-1.12C8.42 16.77 10.12 16 12 16s3.58.77 5.32 1.7c.42.22.68.65.68 1.12z"/></svg>
+          <span>Job Title</span>
+        </div>
+        <div class="fd-head-right">
+          <button class="fd-add-btn" data-table="tbl-jobtitle" data-title="Job Title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add</button>
+          <div class="fd-tbar" data-table="tbl-jobtitle" data-title="Job Title"></div>
+          <svg class="fd-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="fd-card__body">
+        <div class="fd-filter-row">
+          <div class="fd-search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="fd-search" data-table="tbl-jobtitle" placeholder="Search job titles…" /></div>
+          <select class="fd-sort" data-table="tbl-jobtitle"><option value="newest">Newest – Oldest</option><option value="oldest">Oldest – Newest</option><option value="az">A – Z</option><option value="za">Z – A</option></select>
+        </div>
+        <div class="fd-table-wrap">
+          <table class="fd-tbl" id="tbl-jobtitle">
+            <thead><tr><th>#</th><th>Job Title</th><th>User Department</th><th>Description</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody><tr><td colspan="6" class="fd-empty">No data available in table</td></tr></tbody>
+          </table>
+        </div>
+        <div class="fd-table-footer"><span class="fd-count">Showing 0 to 0 of 0 entries</span><span class="fd-pager">Previous &nbsp; Next</span></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ CUSTODIAN TYPE ══════════════════ -->
+    <div class="fd-card dash-mb" id="card-custodian">
+      <div class="fd-card__head fd-collapsible">
+        <div class="fd-head-left">
+          <svg class="fd-head-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12c5.16-1.26 9-6.45 9-12V5zm0 4a3 3 0 1 1 0 6a3 3 0 0 1 0-6m0 14c-2 0-4.5-1.12-5.98-3.02A9 9 0 0 1 12 13a9 9 0 0 1 5.98 2.98C16.5 17.88 14 19 12 19"/></svg>
+          <span>Custodian Type</span>
+        </div>
+        <div class="fd-head-right">
+          <button class="fd-add-btn" data-table="tbl-custodian" data-title="Custodian Type"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add</button>
+          <div class="fd-tbar" data-table="tbl-custodian" data-title="Custodian Type"></div>
+          <svg class="fd-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="fd-card__body">
+        <div class="fd-filter-row">
+          <div class="fd-search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="fd-search" data-table="tbl-custodian" placeholder="Search custodian types…" /></div>
+          <select class="fd-sort" data-table="tbl-custodian"><option value="newest">Newest – Oldest</option><option value="oldest">Oldest – Newest</option><option value="az">A – Z</option><option value="za">Z – A</option></select>
+        </div>
+        <div class="fd-table-wrap">
+          <table class="fd-tbl" id="tbl-custodian">
+            <thead><tr><th>#</th><th>Custodian Type</th><th>Description</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Common-Use Office Supplies and Equipment</td><td>Standard office consumables and supplies</td><td><span class="fd-badge fd-badge--active">Active</span></td><td class="fd-actions"><button class="fd-btn-edit" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="fd-btn-delete" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fd-table-footer"><span class="fd-count">Showing 1 to 1 of 1 entries</span><span class="fd-pager">Previous &nbsp; 1 &nbsp; Next</span></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ PROPERTY ══════════════════ -->
+    <div class="fd-card dash-mb" id="card-property">
+      <div class="fd-card__head fd-collapsible">
+        <div class="fd-head-left">
+          <svg class="fd-head-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2m-1 9H9V9h10zm-4 4H9v-2h6zm4-8H9V5h10z"/></svg>
+          <span>Property</span>
+        </div>
+        <div class="fd-head-right">
+          <button class="fd-add-btn" data-table="tbl-property" data-title="Property"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add</button>
+          <div class="fd-tbar" data-table="tbl-property" data-title="Property"></div>
+          <svg class="fd-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="fd-card__body">
+        <div class="fd-filter-row">
+          <div class="fd-search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="fd-search" data-table="tbl-property" placeholder="Search properties…" /></div>
+          <select class="fd-sort" data-table="tbl-property"><option value="newest">Newest – Oldest</option><option value="oldest">Oldest – Newest</option><option value="az">A – Z</option><option value="za">Z – A</option></select>
+        </div>
+        <div class="fd-table-wrap fd-table-wrap--scroll">
+          <table class="fd-tbl" id="tbl-property" style="min-width:800px">
+            <thead><tr><th>#</th><th>Item Code</th><th>Description</th><th>Brand</th><th>Model</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td class="fd-code">LAPTOP-003</td><td class="fd-truncate">Processor Intel Corei5 1135G7 – Travelmate TMP414-51-59KM</td><td>Acer</td><td class="fd-truncate">Travelmate TMP414-51-59KM</td><td><span class="fd-badge fd-badge--active">Active</span></td><td class="fd-actions"><button class="fd-btn-edit" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="fd-btn-delete" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fd-table-footer"><span class="fd-count">Showing 1 to 1 of 1 entries</span><span class="fd-pager">Previous &nbsp; 1 &nbsp; Next</span></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ STOCK ══════════════════ -->
+    <div class="fd-card dash-mb" id="card-stock">
+      <div class="fd-card__head fd-collapsible">
+        <div class="fd-head-left">
+          <svg class="fd-head-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M20 2H4v2l9.5 9.5c.39.39.39 1.02 0 1.41L6 22.42L7.59 24l7.37-7.37C15.79 15.91 16.5 15 16.5 14c0-1.26-.99-2.28-2.24-2.28c-.57 0-1.09.24-1.47.62L8.71 16.4L4.91 12.6L14 3.51V2z"/></svg>
+          <span>Stock</span>
+        </div>
+        <div class="fd-head-right">
+          <button class="fd-add-btn" data-table="tbl-stock" data-title="Stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add</button>
+          <div class="fd-tbar" data-table="tbl-stock" data-title="Stock"></div>
+          <svg class="fd-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="fd-card__body">
+        <div class="fd-filter-row">
+          <div class="fd-search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="fd-search" data-table="tbl-stock" placeholder="Search stocks…" /></div>
+          <select class="fd-sort" data-table="tbl-stock"><option value="newest">Newest – Oldest</option><option value="oldest">Oldest – Newest</option><option value="az">A – Z</option><option value="za">Z – A</option></select>
+        </div>
+        <div class="fd-table-wrap">
+          <table class="fd-tbl" id="tbl-stock">
+            <thead><tr><th>#</th><th>Item Code</th><th>Description</th><th>Unit</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td class="fd-code fd-code--stock">ALCO-10404010-0002</td><td>ALCOHOL, Ethyl, 1 Gallon</td><td>GALLON</td><td><span class="fd-badge fd-badge--active">Active</span></td><td class="fd-actions"><button class="fd-btn-edit" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="fd-btn-delete" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fd-table-footer"><span class="fd-count">Showing 1 to 1 of 1 entries</span><span class="fd-pager">Previous &nbsp; 1 &nbsp; Next</span></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ TASK ══════════════════ -->
+    <div class="fd-card dash-mb" id="card-task">
+      <div class="fd-card__head fd-collapsible">
+        <div class="fd-head-left">
+          <svg class="fd-head-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19L21 7l-1.41-1.41z"/></svg>
+          <span>Task</span>
+        </div>
+        <div class="fd-head-right">
+          <button class="fd-add-btn" data-table="tbl-task" data-title="Task"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add</button>
+          <div class="fd-tbar" data-table="tbl-task" data-title="Task"></div>
+          <svg class="fd-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="fd-card__body">
+        <div class="fd-filter-row">
+          <div class="fd-search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="fd-search" data-table="tbl-task" placeholder="Search tasks…" /></div>
+          <select class="fd-sort" data-table="tbl-task"><option value="newest">Newest – Oldest</option><option value="oldest">Oldest – Newest</option><option value="az">A – Z</option><option value="za">Z – A</option></select>
+        </div>
+        <div class="fd-table-wrap">
+          <table class="fd-tbl" id="tbl-task">
+            <thead><tr><th>#</th><th>Task Name</th><th>Description</th><th>No. of Steps</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody><tr><td colspan="6" class="fd-empty">No data available in table</td></tr></tbody>
+          </table>
+        </div>
+        <div class="fd-table-footer"><span class="fd-count">Showing 0 to 0 of 0 entries</span><span class="fd-pager">Previous &nbsp; Next</span></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ TAG ══════════════════ -->
+    <div class="fd-card dash-mb" id="card-tag">
+      <div class="fd-card__head fd-collapsible">
+        <div class="fd-head-left">
+          <svg class="fd-head-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58s1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41s-.23-1.06-.59-1.42M5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4S7 4.67 7 5.5S6.33 7 5.5 7"/></svg>
+          <span>Tag</span>
+        </div>
+        <div class="fd-head-right">
+          <button class="fd-add-btn" data-table="tbl-tag" data-title="Tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add</button>
+          <div class="fd-tbar" data-table="tbl-tag" data-title="Tag"></div>
+          <svg class="fd-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="fd-card__body">
+        <div class="fd-filter-row">
+          <div class="fd-search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="fd-search" data-table="tbl-tag" placeholder="Search tags…" /></div>
+          <select class="fd-sort" data-table="tbl-tag"><option value="newest">Newest – Oldest</option><option value="oldest">Oldest – Newest</option><option value="az">A – Z</option><option value="za">Z – A</option></select>
+        </div>
+        <div class="fd-table-wrap">
+          <table class="fd-tbl" id="tbl-tag">
+            <thead><tr><th>#</th><th>Tag</th><th>Tag Type</th><th>Description</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody><tr><td colspan="6" class="fd-empty">No data available in table</td></tr></tbody>
+          </table>
+        </div>
+        <div class="fd-table-footer"><span class="fd-count">Showing 0 to 0 of 0 entries</span><span class="fd-pager">Previous &nbsp; Next</span></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ SECURITY QUESTION ══════════════════ -->
+    <div class="fd-card dash-mb" id="card-secq">
+      <div class="fd-card__head fd-collapsible">
+        <div class="fd-head-left">
+          <svg class="fd-head-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2m1 17h-2v-2h2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41c0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25"/></svg>
+          <span>Security Question</span>
+        </div>
+        <div class="fd-head-right">
+          <button class="fd-add-btn" data-table="tbl-secq" data-title="Security Question"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add</button>
+          <div class="fd-tbar" data-table="tbl-secq" data-title="Security Question"></div>
+          <svg class="fd-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="fd-card__body">
+        <div class="fd-filter-row">
+          <div class="fd-search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="fd-search" data-table="tbl-secq" placeholder="Search questions…" /></div>
+          <select class="fd-sort" data-table="tbl-secq"><option value="newest">Newest – Oldest</option><option value="oldest">Oldest – Newest</option><option value="az">A – Z</option><option value="za">Z – A</option></select>
+        </div>
+        <div class="fd-table-wrap">
+          <table class="fd-tbl" id="tbl-secq">
+            <thead><tr><th>#</th><th>Question</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody><tr><td colspan="4" class="fd-empty">No data available in table</td></tr></tbody>
+          </table>
+        </div>
+        <div class="fd-table-footer"><span class="fd-count">Showing 0 to 0 of 0 entries</span><span class="fd-pager">Previous &nbsp; Next</span></div>
+      </div>
+    </div>
+
+  </div><!-- /#page-body -->
+
+  <!-- ══════════════════ ADD/EDIT MODAL ══════════════════ -->
+  <div class="fd-modal-overlay" id="fd-modal" style="display:none">
+    <div class="fd-modal">
+      <div class="fd-modal__head">
+        <h2 class="fd-modal__title" id="fd-modal-title">Add Entry</h2>
+        <button class="fd-modal__close" id="fd-modal-close">&times;</button>
+      </div>
+      <div class="fd-modal__body" id="fd-modal-body"></div>
+      <div class="fd-modal__foot">
+        <button class="fd-modal-cancel" id="fd-modal-cancel">Cancel</button>
+        <button class="fd-modal-save" id="fd-modal-save">
+          <span class="fd-modal-save-text">Save</span>
+          <span class="fd-btn-spinner hidden"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════ DELETE CONFIRM MODAL ══════════════════ -->
+  <div class="fd-modal-overlay" id="fd-delete-modal" style="display:none">
+    <div class="fd-modal fd-modal--sm">
+      <div class="fd-modal__head fd-modal__head--danger">
+        <h2 class="fd-modal__title">Confirm Delete</h2>
+        <button class="fd-modal__close" id="fd-delete-close">&times;</button>
+      </div>
+      <div class="fd-modal__body">
+        <div class="fd-delete-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        </div>
+        <p class="fd-delete-msg">Are you sure you want to delete this record? This action cannot be undone.</p>
+      </div>
+      <div class="fd-modal__foot">
+        <button class="fd-modal-cancel" id="fd-delete-cancel">Cancel</button>
+        <button class="fd-modal-delete" id="fd-delete-confirm">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating dots dropdown -->
+  <div id="fd-float-drop" style="display:none; position:fixed; z-index:99999;"></div>
+
+  <script src="../../common/common.js"></script>
+  <script src="files-data.js"></script>
+</body>
+</html>

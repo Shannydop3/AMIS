@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AMIS – My Profile | DICT</title>
+  <link rel="icon" href="../../assets/AMIS-LOGO_only.png" type="image/png" />
+  <link rel="stylesheet" href="../../common/common.css" />
+  <link rel="stylesheet" href="../../common/layout.css" />
+  <link rel="stylesheet" href="profile.css" />
+
+  <script>
+    window.AMIS_PAGE = { id: '', title: 'My Profile' };
+  </script>
+  <script src="../../common/common.js"></script>
+  <script src="../../common/layout.js"></script>
+</head>
+<body>
+
+  <div id="layout-root"></div>
+
+  <div id="page-body">
+
+    <div class="dash-page-header">
+      <div>
+        <h1 class="dash-page-title">My Profile</h1>
+        <p class="dash-page-sub">Manage your account information and security settings.</p>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         ROW 1: Profile Display | Account Info
+         Equal width & height (1fr 1fr, stretch)
+    ══════════════════════════════════════════ -->
+    <div class="profile-top-row">
+
+      <!-- ── Profile Display ── -->
+      <aside class="profile-card profile-identity">
+
+        <div class="profile-avatar-wrap">
+          <div class="profile-avatar" id="profile-avatar-display">AU</div>
+          <label class="profile-avatar-edit" for="avatar-upload" title="Change photo">
+<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><title xmlns="">edit-24-filled</title><path fill="#ffffff" d="M15.891 3.048a3.578 3.578 0 1 1 5.061 5.06l-.892.893L15 3.94zM13.94 5.001L3.94 15a3.1 3.1 0 0 0-.825 1.476L2.02 21.078a.75.75 0 0 0 .904.903l4.601-1.096a3.1 3.1 0 0 0 1.477-.825L19 10.061z"/></svg>
+          </label>
+          <input type="file" id="avatar-upload" accept="image/*" hidden />
+        </div>
+
+        <h2 class="profile-name" id="profile-name-display">Loading...</h2>
+
+        <div class="profile-meta-list">
+
+          <div class="profile-meta-item">
+            <div>
+              <span class="profile-meta-label">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><title xmlns="">suitcase</title><path fill="currentColor" d="M19 6.5h-3v-1a3 3 0 0 0-3-3h-2a3 3 0 0 0-3 3v1H5a3 3 0 0 0-3 3v9a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-9a3 3 0 0 0-3-3m-9-1a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1h-4Zm10 13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-5.05h3v1.05a1 1 0 0 0 2 0v-1.05h6v1.05a1 1 0 0 0 2 0v-1.05h3Zm0-7H4v-2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1Z"/></svg>
+                Position
+              </span>
+              <span class="profile-meta-value" id="meta-position">—</span>
+            </div>
+          </div>
+
+          <div class="profile-meta-item">
+            <div>
+              <span class="profile-meta-label">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><title xmlns="">id-card-outline</title><path fill="currentColor" d="M22 3H2c-1.09.04-1.96.91-2 2v14c.04 1.09.91 1.96 2 2h20c1.09-.04 1.96-.91 2-2V5a2.074 2.074 0 0 0-2-2m0 16H2V5h20zm-8-2v-1.25c0-1.66-3.34-2.5-5-2.5s-5 .84-5 2.5V17zM9 7a2.5 2.5 0 0 0-2.5 2.5A2.5 2.5 0 0 0 9 12a2.5 2.5 0 0 0 2.5-2.5A2.5 2.5 0 0 0 9 7m5 0v1h6V7zm0 2v1h6V9zm0 2v1h4v-1z"/></svg>
+                ID Number
+              </span>
+              <span class="profile-meta-value" id="meta-idnumber">—</span>
+            </div>
+          </div>
+
+          <div class="profile-meta-item">
+            <div>
+              <span class="profile-meta-label">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 2048 2048"><title xmlns="">date-time-12</title><path fill="currentColor" d="M1707 911q78 37 141 93t108 127t68 152t24 168q0 123-47 232t-128 190t-190 128t-232 47q-87 0-168-24t-151-68t-127-107t-94-142H0V171h341V0h171v171h683V0h170v171h342zM171 512h1365V341H171zm688 1024q-6-42-6-85q0-124 47-233t128-190t190-128t233-47q43 0 85 6V683H171v853zm592 341q88 0 165-33t136-92t91-135t34-166q0-88-33-166t-91-136t-136-91t-166-34q-89 0-166 33t-136 92t-91 136t-34 166q0 89 33 166t92 135t136 91t166 34m85-512h171v171h-342v-341h171z"/></svg>
+                Joined
+              </span>
+              <span class="profile-meta-value" id="meta-joined">—</span>
+            </div>
+          </div>
+
+        </div>
+      </aside>
+
+      <!-- ── Account Information ── -->
+      <div class="profile-card profile-account">
+        <div class="profile-card__head">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M14.5 23q-.625 0-1.062-.437T13 21.5v-7q0-.625.438-1.062T14.5 13h7q.625 0 1.063.438T23 14.5v7q0 .625-.437 1.063T21.5 23zm-5.25-1l-.4-3.2q-.325-.125-.612-.3t-.563-.375L4.7 19.375l-2.75-4.75l2.575-1.95Q4.5 12.5 4.5 12.338v-.675q0-.163.025-.338L1.95 9.375l2.75-4.75l2.975 1.25q.275-.2.575-.375t.6-.3l.4-3.2h5.5l.4 3.2q.325.125.613.3t.562.375l2.975-1.25l2.75 4.75L19.925 11H15.4q-.35-1.075-1.25-1.787t-2.1-.713q-1.45 0-2.475 1.025T8.55 12q0 1.2.675 2.1T11 15.35V22zM15 21h6v-.825q-.625-.575-1.4-.875T18 19t-1.6.3t-1.4.875zm4.063-3.437q.437-.438.437-1.063t-.437-1.062T18 15t-1.062.438T16.5 16.5t.438 1.063T18 18t1.063-.437"/></svg>
+          Account Information
+        </div>
+        <div class="profile-card__body">
+          <form id="account-form" novalidate>
+
+            <!-- Email — full width -->
+            <div class="pf-field-row">
+              <div class="pf-field-group">
+                <label class="pf-label" for="pf-email">Email Address</label>
+                <input type="email" id="pf-email" class="pf-input" placeholder="your.email@dict.gov.ph" autocomplete="email" />
+              </div>
+            </div>
+
+            <!-- New Password — full width -->
+            <div class="pf-field-row">
+              <div class="pf-field-group">
+                <label class="pf-label" for="pf-password">New Password</label>
+                <div class="pf-input-wrap">
+                  <input type="password" id="pf-password" class="pf-input" placeholder="Leave blank to keep current" autocomplete="new-password" />
+                  <button type="button" class="pf-eye" data-target="pf-password" aria-label="Toggle password visibility">
+                    <svg id="eye-pf-password" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                      <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Confirm Password — full width -->
+            <div class="pf-field-row">
+              <div class="pf-field-group">
+                <label class="pf-label" for="pf-confirm">Confirm Password</label>
+                <div class="pf-input-wrap">
+                  <input type="password" id="pf-confirm" class="pf-input" placeholder="Re-enter new password" autocomplete="new-password" />
+                  <button type="button" class="pf-eye" data-target="pf-confirm" aria-label="Toggle password visibility">
+                    <svg id="eye-pf-confirm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                      <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+                </div>
+                <span class="pf-hint" id="pf-match-hint"></span>
+              </div>
+            </div>
+
+            <div class="pf-actions">
+              <button type="submit" class="pf-btn-save" id="account-save-btn">
+                <span class="btn-text">
+<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M3 9c0-2.828 0-4.243.879-5.121C4.757 3 6.172 3 9 3h6.343c.818 0 1.226 0 1.594.152c.367.152.656.442 1.235 1.02l1.656 1.656c.579.578.867.868 1.02 1.235c.152.368.152.776.152 1.594V15c0 2.828 0 4.243-.879 5.121c-.641.642-1.568.815-3.121.862v-3.045c0-.654 0-1.241-.064-1.717c-.07-.52-.232-1.052-.668-1.489c-.437-.436-.97-.598-1.489-.668C14.303 14 13.716 14 13.062 14H9.938c-.654 0-1.241 0-1.717.064c-.52.07-1.052.232-1.489.668c-.436.437-.598.97-.668 1.489C6 16.697 6 17.284 6 17.938v2.986c-.975-.096-1.631-.313-2.121-.803C3 19.243 3 17.828 3 15zm12 9v3H9q-.532 0-1-.002V18c0-.735.002-1.186.046-1.513c.039-.286.093-.334.1-.34v-.001c.007-.007.054-.061.341-.1C8.814 16.002 9.265 16 10 16h3c.735 0 1.186.002 1.513.046c.287.039.334.093.34.1h.001c.007.007.061.055.1.341c.044.327.046.778.046 1.513M7 7a1 1 0 0 0 0 2h5a1 1 0 1 0 0-2z" clip-rule="evenodd"/></svg>
+                  Save Changes
+                </span>
+                <span class="btn-spinner hidden"></span>
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
+    </div><!-- /.profile-top-row -->
+
+    <!-- ══════════════════════════════════════════
+         ROW 2: Security Questions (full width)
+         6 questions — layout: 1|4 / 2|5 / 3|6
+    ══════════════════════════════════════════ -->
+    <div class="profile-card profile-security">
+      <div class="profile-card__head">
+<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12c5.16-1.26 9-6.45 9-12V5zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11z"/></svg>
+        Security Questions
+      </div>
+      <div class="profile-card__body">
+
+        <div class="pf-section-note">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          Set up 6 security questions to help verify your identity if you ever need to reset your password. Each question must be unique.
+        </div>
+
+        <form id="security-form" novalidate>
+          <!--
+            Layout: 2-column grid of sq-items.
+            Order in DOM is 1,4,2,5,3,6 so they
+            read top-to-bottom in each column:
+            Col A: 1, 2, 3
+            Col B: 4, 5, 6
+          -->
+          <div class="sq-grid" id="sq-list"></div>
+          <div class="pf-actions">
+            <button type="submit" class="pf-btn-save" id="security-save-btn">
+              <span class="btn-text">
+<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M3 9c0-2.828 0-4.243.879-5.121C4.757 3 6.172 3 9 3h6.343c.818 0 1.226 0 1.594.152c.367.152.656.442 1.235 1.02l1.656 1.656c.579.578.867.868 1.02 1.235c.152.368.152.776.152 1.594V15c0 2.828 0 4.243-.879 5.121c-.641.642-1.568.815-3.121.862v-3.045c0-.654 0-1.241-.064-1.717c-.07-.52-.232-1.052-.668-1.489c-.437-.436-.97-.598-1.489-.668C14.303 14 13.716 14 13.062 14H9.938c-.654 0-1.241 0-1.717.064c-.52.07-1.052.232-1.489.668c-.436.437-.598.97-.668 1.489C6 16.697 6 17.284 6 17.938v2.986c-.975-.096-1.631-.313-2.121-.803C3 19.243 3 17.828 3 15zm12 9v3H9q-.532 0-1-.002V18c0-.735.002-1.186.046-1.513c.039-.286.093-.334.1-.34v-.001c.007-.007.054-.061.341-.1C8.814 16.002 9.265 16 10 16h3c.735 0 1.186.002 1.513.046c.287.039.334.093.34.1h.001c.007.007.061.055.1.341c.044.327.046.778.046 1.513M7 7a1 1 0 0 0 0 2h5a1 1 0 1 0 0-2z" clip-rule="evenodd"/></svg>
+                Save Security Questions
+              </span>
+              <span class="btn-spinner hidden"></span>
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+  </div><!-- /#page-body -->
+
+  <script src="profile.js"></script>
+</body>
+</html>

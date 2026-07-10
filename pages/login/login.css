@@ -1,0 +1,532 @@
+/* ============================================
+   AMIS – Login Page Styles
+   ============================================ */
+
+/* === Layout === */
+.login-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+
+/* ── LEFT: Brand Panel ────────────────────── */
+.brand-panel {
+  background: linear-gradient(150deg, black 5%, var(--primary-dark) 50%, var(--primary) 75%, var(--primary-light) 100%);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 40px;
+}
+
+/* Background texture */
+.brand-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 60% at 10% 20%, rgba(255,255,255,0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 90% 80%, rgba(252,209,22,0.06) 0%, transparent 60%);
+}
+
+/* Grid pattern */
+.brand-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.brand-panel__inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  width: 100%;
+  max-width: 420px;
+}
+
+/* Watermark */
+.brand-panel__watermark {
+  position: absolute;
+  font-family: 'Barlow', sans-serif;
+  font-size: clamp(80px, 12vw, 160px);
+  font-weight: 800;
+  color: rgba(255,255,255,0.03);
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  letter-spacing: -4px;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* DICT Logo + Name */
+.brand-logos {
+  position: absolute;
+  top: 160px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  z-index: 5;
+}
+
+.brand-logos-inner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  animation: fadeSlideDown 0.7s ease both;
+}
+
+.brand-dict-logo {
+  width: 45px;
+  height: auto;
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,0.3));
+}
+
+.brand-dict-name {
+  width: 90px;
+  height: auto;
+  filter: brightness(0) invert(1) drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+}
+
+/* Divider */
+.brand-divider {
+  width: 70px;
+  height: 2px;
+  margin-bottom: -10px;
+  background: linear-gradient(90deg, transparent, rgba(252,209,22,0.6), transparent);
+  animation: fadeSlideDown 0.7s 0.15s ease both;
+}
+
+/* AMIS Logo */
+.brand-amis-wrap {
+  animation: fadeSlideDown 0.7s 0.3s ease both;
+}
+
+.brand-amis-logo {
+  width: 500px; /* bigger */
+
+  /* turn it light blue */
+  filter: 
+    brightness(0) 
+    invert(65%) 
+    sepia(40%) 
+    saturate(500%) 
+    hue-rotate(180deg)
+    drop-shadow(0 6px 24px rgba(0,0,0,0.4));
+}
+
+/* Tagline */
+.brand-tagline {
+  color: rgba(255,255,255,0.65);
+  font-size: 0.82rem;
+  line-height: 1.7;
+  text-align: center;
+  max-width: 320px;
+  animation: fadeSlideDown 0.7s 0.45s ease both;
+}
+
+/* PH Flag Strip */
+.ph-flag-strip {
+  display: flex;
+  gap: 0;
+  border-radius: 99px;
+  overflow: hidden;
+  width: 60px;
+  height: 5px;
+  animation: fadeSlideDown 0.7s 0.6s ease both;
+}
+
+.ph-flag-strip span { flex: 1; }
+.ph-blue   { background: var(--ph-blue); }
+.ph-red    { background: var(--ph-red); }
+.ph-yellow { background: var(--ph-yellow); }
+
+/* ── RIGHT: Form Panel ────────────────────── */
+.form-panel {
+  background: #F5F7FA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 32px;
+  position: relative;
+}
+
+.form-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--ph-blue), var(--ph-red), var(--ph-yellow));
+}
+
+.form-panel__inner {
+  width: 100%;
+  max-width: 420px;
+  animation: fadeSlideUp 0.6s 0.2s ease both;
+}
+
+/* Mobile logos */
+.mobile-logos {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.mobile-logos img:first-child { width: 44px; }
+.mobile-logos img:last-child  { width: 120px; filter: invert(1) sepia(1) saturate(2) hue-rotate(190deg); }
+
+/* Form Header */
+.form-header {
+  margin-bottom: 32px;
+}
+
+.form-title {
+  font-family: 'Barlow', sans-serif;
+  font-size: clamp(1.6rem, 3vw, 2rem);
+  font-weight: 800;
+  color: var(--primary-dark);
+  line-height: 1.2;
+  margin-bottom: 6px;
+}
+
+.form-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Field Groups */
+.field-group {
+  margin-bottom: 20px;
+}
+
+.field-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 8px;
+}
+
+/* To this — add a new outer container */
+.field-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.field-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;  /* keep this — it centers the icon + input + eye toggle */
+}
+
+.field-error {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--error);
+  margin-top: 5px;
+  padding-left: 2px;
+}
+
+.field-icon {
+  position: absolute;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.field-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.field-input {
+  width: 100%;
+  padding: 13px 44px 13px 44px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  transition: var(--transition);
+}
+
+.field-input::placeholder {
+  color: var(--text-muted);
+}
+
+.field-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(25,118,210,0.12);
+  background: #fff;
+}
+
+.field-input.field-invalid {
+  border-color: var(--error);
+  box-shadow: 0 0 0 3px rgba(183,28,28,0.1);
+}
+
+.field-input[type="password"]::-ms-reveal,
+.field-input[type="password"]::-ms-clear {
+  display: none;
+}
+
+/* Chrome/Edge */
+.field-input::-webkit-credentials-auto-fill-button {
+  visibility: hidden;
+}
+
+.field-error {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--error);
+  margin-top: 5px;
+  padding-left: 2px;
+}
+
+/* Eye toggle */
+.field-eye {
+  position: absolute;
+  right: 12px;
+  background: none;
+  color: var(--text-muted);
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: var(--transition);
+}
+
+.field-eye:hover { color: var(--accent); }
+
+.field-eye svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Forgot link */
+.form-forgot {
+  text-align: right;
+  margin-top: -8px;
+  margin-bottom: 24px;
+}
+
+.forgot-link {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.forgot-link:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+/* ── Buttons ────────────────────────────────── */
+.btn-signin {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: 'Barlow', sans-serif;
+  letter-spacing: 0.05em;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 14px rgba(10,61,124,0.35);
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-signin::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0);
+  transition: var(--transition);
+}
+
+.btn-signin:hover::before { background: rgba(255,255,255,0.08); }
+.btn-signin:active { transform: scale(0.99); }
+
+.btn-signin:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.btn-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* Divider */
+.form-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 22px 0;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.form-divider::before,
+.form-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Google Button */
+.btn-google {
+  width: 100%;
+  padding: 13px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-google:hover {
+  background: #F8FBFF;
+  border-color: var(--accent-light);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-google:active { transform: scale(0.99); }
+
+.google-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* Cancel button */
+.btn-cancel {
+  width: 100%;
+  padding: 13px;
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 10px;
+  transition: var(--transition);
+}
+
+.btn-cancel:hover {
+  background: var(--bg);
+  color: var(--text-primary);
+}
+
+/* Form note */
+.form-note {
+  margin-top: 28px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.7;
+  padding: 14px 16px;
+  background: rgba(10,61,124,0.04);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(10,61,124,0.08);
+}
+
+/* Modal extras */
+.modal-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(25,118,210,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.modal-icon svg {
+  width: 24px;
+  height: 24px;
+  color: var(--accent);
+}
+
+/* ── Animations ─────────────────────────── */
+@keyframes fadeSlideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Responsive ─────────────────────────── */
+@media (max-width: 860px) {
+  .login-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-panel {
+    display: none;
+  }
+
+  .form-panel {
+    padding: 40px 24px;
+  }
+
+  .mobile-logos {
+    display: flex;
+  }
+
+  .form-panel::before {
+    height: 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-panel {
+    padding: 32px 16px;
+  }
+
+  .form-panel__inner {
+    max-width: 100%;
+  }
+}

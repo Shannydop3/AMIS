@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AMIS – PAGE_TITLE | DICT</title>
+  <link rel="icon" href="../../assets/AMIS-LOGO_only.png" type="image/png" />
+  <link rel="stylesheet" href="../../common/common.css" />
+  <link rel="stylesheet" href="../../common/layout.css" />
+  <link rel="stylesheet" href="about.css" />
+  <!-- <link rel="stylesheet" href="PAGE_NAME.css" /> optional: only if this page has unique styles -->
+
+  <!-- ① Set page identity -->
+  <script>
+    window.AMIS_PAGE = {
+      id:    'about',     // dashboard | system | user-management |
+                            // files-data | views | operation-module |
+                            // sticker-tag | about
+      title: 'About',
+    };
+  </script>
+
+  <!-- ② Common utilities -->
+  <script src="../../common/common.js"></script>
+
+  <!-- ③ Shared layout -->
+  <script src="../../common/layout.js"></script>
+</head>
+<body>
+
+  <!-- DO NOT remove these two divs — layout.js requires them -->
+  <div id="layout-root"></div>
+
+  <div id="page-body">
+    <!-- ============================================
+         YOUR PAGE CONTENT GOES HERE ONLY.
+         No sidebar, no header, no app-shell wrapper.
+         layout.js handles all of that automatically.
+         ============================================ -->
+
+    <div class="dash-page-header">
+      <div>
+        <h1 class="dash-page-title">About</h1>
+        <p class="dash-page-sub">System information and contact details.</p>
+      </div>
+    </div>
+
+<div class="about-grid">
+  <div class="about-card">
+
+    <!-- Logo -->
+    <div class="about-logo-hero">
+      <img src="../../assets/AMIS-LOGO.png" alt="AMIS Logo" class="about-logo-hero__img" />
+      <div class="about-logo-hero__version">Version 1.6.2D</div>
+    </div>
+
+    <div class="about-inner-divider"></div>
+
+    <!-- Warning -->
+    <div class="about-card__body">
+      <div class="about-section-label">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Warning
+      </div>
+      <div class="about-warning">
+        <div class="about-warning__icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><title xmlns="">alert-circle-twotone-loop</title><g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path fill="currentColor" fill-opacity="0" stroke-dasharray="60" d="M12 3c4.97 0 9 4.03 9 9c0 4.97 -4.03 9 -9 9c-4.97 0 -9 -4.03 -9 -9c0 -4.97 4.03 -9 9 -9Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="60;0"/><animate fill="freeze" attributeName="fill-opacity" begin="1s" dur="0.15s" to=".3"/></path><g fill="none"><path stroke-dasharray="8" stroke-dashoffset="8" d="M12 7v6"><animate attributeName="stroke-width" begin="0.7s" dur="3s" keyTimes="0;0.1;0.2;0.3;1" repeatCount="indefinite" values="2;3;3;2;2"/><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.2s" to="0"/></path><path stroke-dasharray="4" stroke-dashoffset="4" d="M12 17v0.01"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.2s" to="0"/><animate attributeName="stroke-width" begin="1s" dur="3s" keyTimes="0;0.1;0.2;0.3;1" repeatCount="indefinite" values="2;3;3;2;2"/></path></g></g></svg>
+        </div>
+        <div>
+          <div class="about-warning__title">Copyright Notice</div>
+          <div class="about-warning__text">
+            This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it, may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under law.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-inner-divider"></div>
+
+    <!-- Contact -->
+    <div class="about-card__body">
+      <div class="about-section-label">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.68 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 5.53 5.54l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        Contact Us
+      </div>
+      <div class="about-contact-grid">
+        <div class="about-contact-block">
+          <div class="about-contact-block__title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 14 14"><title xmlns="">page-setting-remix</title><path fill="currentColor" fill-rule="evenodd" d="M10.375.125c.228 0 .438.124.548.324l2.75 5a.625.625 0 0 1-.548.926h-5.5a.625.625 0 0 1-.548-.926l2.75-5c.11-.2.32-.324.548-.324m1.693 5l-1.693-3.078l-1.693 3.078zM.875.375A.625.625 0 0 0 .25 1v4.5c0 .345.28.625.625.625h4.5c.345 0 .625-.28.625-.625V1a.625.625 0 0 0-.625-.625zM7.5 13c0-.345.28-.625.625-.625h4.5a.625.625 0 1 1 0 1.25h-4.5A.625.625 0 0 1 7.5 13m.625-5.125a.625.625 0 1 0 0 1.25h4.5a.625.625 0 1 0 0-1.25zM7.5 10.75c0-.345.28-.625.625-.625h4.5a.625.625 0 1 1 0 1.25h-4.5a.625.625 0 0 1-.625-.625m-6.25 0a1.875 1.875 0 1 1 3.75 0a1.875 1.875 0 0 1-3.75 0m1.875-3.125a3.125 3.125 0 1 0 0 6.25a3.125 3.125 0 0 0 0-6.25" clip-rule="evenodd"/></svg>
+            Asset Management Section
+          </div>
+          <div class="about-contact-row">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 20 20"><title xmlns="">email</title><path fill="currentColor" d="M14.608 12.172c0 .84.239 1.175.864 1.175c1.393 0 2.28-1.775 2.28-4.727c0-4.512-3.288-6.672-7.393-6.672c-4.223 0-8.064 2.832-8.064 8.184c0 5.112 3.36 7.896 8.52 7.896c1.752 0 2.928-.192 4.727-.792l.386 1.607c-1.776.577-3.674.744-5.137.744c-6.768 0-10.393-3.72-10.393-9.456c0-5.784 4.201-9.72 9.985-9.72c6.024 0 9.215 3.6 9.215 8.016c0 3.744-1.175 6.6-4.871 6.6c-1.681 0-2.784-.672-2.928-2.161c-.432 1.656-1.584 2.161-3.145 2.161c-2.088 0-3.84-1.609-3.84-4.848c0-3.264 1.537-5.28 4.297-5.28c1.464 0 2.376.576 2.782 1.488l.697-1.272h2.016v7.057zm-2.951-3.168c0-1.319-.985-1.872-1.801-1.872c-.888 0-1.871.719-1.871 2.832c0 1.68.744 2.616 1.871 2.616c.792 0 1.801-.504 1.801-1.896z"/></svg>
+            <span>Email: <a href="mailto:gsd.asset@dict.gov.ph">gsd.asset@dict.gov.ph</a></span>
+          </div>
+          <div class="about-contact-row">
+            <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><title xmlns="">telephone</title><path fill="currentColor" d="M6.62 10.79c1.44 2.83 3.76 5.15 6.59 6.59l2.2-2.2c.28-.28.67-.36 1.02-.25c1.12.37 2.32.57 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57c.11.35.03.74-.25 1.02z"/></svg>
+            <span>Contact: 8920-0101 (local 5000)</span>
+          </div>
+        </div>
+        <div class="about-contact-block">
+          <div class="about-contact-block__title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><title xmlns="">customer-support-setting-solid</title><path fill="currentColor" d="m9.583 19.502l-.463-3.206C10.049 16.102 11.012 16 12 16s1.951.102 2.88.296l-.463 3.206l5.252 3.283l3.759-4.03l-.761-.68a16 16 0 0 0-6.401-3.5C14.906 14.2 13.476 14 12 14s-2.907.2-4.266.575a16 16 0 0 0-6.4 3.5l-.761.68l3.758 4.03z"/><path fill="currentColor" fill-rule="evenodd" d="M9 1.5h6v2.512q.452.16.88.365l1.777-1.776L21.9 6.842L20.123 8.62q.204.428.365.88H23V14h-2.747a18 18 0 0 0-4.757-1.66a3.5 3.5 0 0 0-6.992 0A18 18 0 0 0 3.747 14H1V9.5h2.512a9 9 0 0 1 .365-.88L2.101 6.843l4.242-4.242L8.12 4.377A9 9 0 0 1 9 4.012z" clip-rule="evenodd"/></svg>
+            Technical Support
+          </div>
+          <div class="about-contact-row">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 20 20"><title xmlns="">email</title><path fill="currentColor" d="M14.608 12.172c0 .84.239 1.175.864 1.175c1.393 0 2.28-1.775 2.28-4.727c0-4.512-3.288-6.672-7.393-6.672c-4.223 0-8.064 2.832-8.064 8.184c0 5.112 3.36 7.896 8.52 7.896c1.752 0 2.928-.192 4.727-.792l.386 1.607c-1.776.577-3.674.744-5.137.744c-6.768 0-10.393-3.72-10.393-9.456c0-5.784 4.201-9.72 9.985-9.72c6.024 0 9.215 3.6 9.215 8.016c0 3.744-1.175 6.6-4.871 6.6c-1.681 0-2.784-.672-2.928-2.161c-.432 1.656-1.584 2.161-3.145 2.161c-2.088 0-3.84-1.609-3.84-4.848c0-3.264 1.537-5.28 4.297-5.28c1.464 0 2.376.576 2.782 1.488l.697-1.272h2.016v7.057zm-2.951-3.168c0-1.319-.985-1.872-1.801-1.872c-.888 0-1.871.719-1.871 2.832c0 1.68.744 2.616 1.871 2.616c.792 0 1.801-.504 1.801-1.896z"/></svg>
+            <span>Email: <a href="mailto:amis@dict.gov.ph">amis@dict.gov.ph</a></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-footer-row">
+        <span class="about-footer-row__powered">Powered by <strong>Internet Of Things Phils. Inc.</strong></span>
+        <span class="about-footer-row__ver">Version No. : 1.6.2D</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+    </div><!-- /#page-body -->
+  <!-- Optional page-specific script -->
+  <script src="about.js"></script>
+
+</body>
+</html>

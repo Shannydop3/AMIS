@@ -1,0 +1,841 @@
+================================================================================
+  AMIS – Asset Management Information System
+  PROJECT DOCUMENTATION & DEVELOPER INSTRUCTIONS
+  Department of Information and Communications Technology (DICT)
+  Powered by Internet of Things Phils. Inc.  |  Version 1.6.2D
+================================================================================
+
+
+--------------------------------------------------------------------------------
+  TABLE OF CONTENTS
+--------------------------------------------------------------------------------
+
+  1.  System Overview
+  2.  Full Folder & File Structure
+  3.  Core Architecture
+      3a. common.css
+      3b. common.js
+      3c. layout.css
+      3d. layout.js
+  4.  Authentication & Session
+  5.  Page-by-Page Breakdown
+      5a. Login
+      5b. Dashboard
+      5c. Files Data
+      5d. Views
+      5e. Operation Module
+      5f. System (stub)
+      5g. User Management (stub)
+      5h. Sticker Tag (stub)
+      5i. About
+  6.  CHANGED: Operation Module – Sub-View Architecture (Option C)
+  7.  CHANGED: Views Page – Sub-View Architecture (Option C)
+  8.  Shared Patterns & Conventions
+  9.  Adding a New Page
+  10. Adding a New Sub-View (Operation Module or Views)
+  11. Demo Credentials
+  12. Known Stubs / Incomplete Features
+
+
+================================================================================
+  1. SYSTEM OVERVIEW
+================================================================================
+
+AMIS (Asset Management Information System) is a web-based government portal
+built for the Department of Information and Communications Technology (DICT).
+It manages property and stock assets — tracking issuance, transfers, returns,
+disposals, maintenance, inventory counts, and reports.
+
+The system is a pure front-end application (HTML + CSS + Vanilla JS).
+No build tools, no frameworks, no npm. Everything runs directly in the browser.
+A real back-end API is expected to replace the mock/stub functions in the future.
+
+Key characteristics:
+  - No page reloads between sub-views (single-page shell per section)
+  - URL query parameters drive which sub-view is active (?op=KEY, ?view=KEY)
+  - Session is stored in sessionStorage (not localStorage)
+  - All shared UI (sidebar, header, loader, toasts, modals) is injected by
+    layout.js — page scripts never touch the sidebar or header directly
+
+
+================================================================================
+  2. FULL FOLDER & FILE STRUCTURE
+================================================================================
+
+project-root/
+│
+├── assets/
+│   ├── AMIS-LOGO.png              ← Full AMIS logo (used in mobile header)
+│   ├── AMIS-LOGO_only.png         ← Icon-only AMIS logo (favicon + sidebar)
+│   ├── amis-logo.png              ← Logo used on the login brand panel
+│   ├── dict-logo.png              ← DICT circular logo
+│   └── dict-name.png              ← DICT wordmark / name image
+│
+├── common/
+│   ├── common.css                 ← Global CSS variables, reset, utilities,
+│   │                                 toast, loader, modal, scrollbar styles
+│   ├── common.js                  ← Global JS utilities: Toast, Loader,
+│   │                                 Auth, Modal, Form helpers
+│   ├── layout.css                 ← Sidebar, top header, app-shell,
+│   │                                 page-content, responsive breakpoints
+│   └── layout.js                  ← Injects sidebar + header into #layout-root,
+│                                     moves #page-body into .page-content,
+│                                     handles collapse, dropdowns, user info
+│
+└── pages/
+    │
+    ├── login/
+    │   ├── login.html             ← Two-column login page (brand + form)
+    │   ├── login.css              ← Login-specific styles
+    │   └── login.js               ← Form validation, mock auth, forgot password
+    │
+    ├── dashboard/
+    │   ├── dashboard.html         ← KPI tiles, collapsible cards, data tables
+    │   ├── dashboard.css          ← Dashboard-specific styles
+    │   └── dashboard.js           ← Collapsible cards, table search, chart
+    │                                 rendering (Chart.js), export/print/copy
+    │
+    ├── files-data/
+    │   ├── files-data.html        ← 15 reference data tables (Category, Brand,
+    │   │                             Model, Region, Branch, Office, etc.)
+    │   ├── files-data.css         ← Files Data-specific styles
+    │   └── files-data.js          ← Collapsible cards, CRUD modals, custom
+    │                                 searchable dropdowns, inline sub-modals
+    │
+    ├── views/
+    │   ├── views.html             ← Shell page with dropdown selector + table
+    │   ├── views.css              ← Views-specific styles
+    │   ├── views.js               ← Thin router — reads ?view=KEY, calls
+    │   │                             window.VIEW_VIEWS[key].onLoad()
+    │   └── view-list/             ← [NEW] One JS file per sub-view (26 total)
+    │       ├── property-masterlist.js
+    │       ├── stock-masterlist.js
+    │       ├── good-receive-history.js
+    │       ├── property-issuance-history.js
+    │       ├── property-request-history.js
+    │       ├── property-transfer-history.js
+    │       ├── property-maintenance-history.js
+    │       ├── gate-pass-view.js
+    │       ├── stock-issuance-history.js
+    │       ├── stock-request-history.js
+    │       ├── inventory-count-view.js
+    │       ├── property-disposal-history.js
+    │       ├── property-disposal-request-history.js
+    │       ├── property-movement.js
+    │       ├── stock-card.js
+    │       ├── property-card.js
+    │       ├── ppe-ledger-card.js
+    │       ├── sep-ledger-card.js
+    │       ├── rspi-view.js
+    │       ├── rsmi-view.js
+    │       ├── regspi-view.js
+    │       ├── tagging-history.js
+    │       ├── personal-property-gate-pass-request.js
+    │       ├── property-return-history.js
+    │       ├── stock-disposal-history.js
+    │       └── audit-trail.js
+    │
+    ├── operation-module/
+    │   ├── operation-module.html  ← Shell page with landing tiles + content card
+    │   ├── operation-module.css   ← Operation Module-specific styles
+    │   ├── operation-module.js    ← Thin router — reads ?op=KEY, calls
+    │   │                             window.OP_VIEWS[key].onLoad()
+    │   └── ops/                   ← [NEW] One JS file per sub-view (20 total)
+    │       ├── goods-receive.js
+    │       ├── tagging.js
+    │       ├── property-information.js
+    │       ├── property-issuance.js
+    │       ├── stock-issuance.js
+    │       ├── property-request.js
+    │       ├── stock-request.js
+    │       ├── property-transfer.js
+    │       ├── property-return.js
+    │       ├── property-return-request.js
+    │       ├── stock-return.js
+    │       ├── property-maintenance-request.js
+    │       ├── property-maintenance.js
+    │       ├── property-verification.js
+    │       ├── property-gate-pass-request.js
+    │       ├── inventory-count.js
+    │       ├── personal-property-gate-pass-request.js
+    │       ├── property-disposal.js
+    │       ├── property-disposal-request.js
+    │       └── stock-disposal.js
+    │
+    ├── system/
+    │   └── system.html            ← Stub page (nav link target)
+    │
+    ├── user-management/
+    │   └── user-management.html   ← Stub page (nav link target)
+    │
+    ├── sticker-tag/
+    │   └── sticker-tag.html       ← Stub page (nav link target)
+    │
+    └── about/
+        ├── about.html             ← System info, copyright notice, contact
+        └── about.js               ← Minimal page script
+
+
+================================================================================
+  3. CORE ARCHITECTURE
+================================================================================
+
+  Every page (except login) follows this exact pattern:
+
+  HTML HEAD:
+    <script>
+      window.AMIS_PAGE = { id: 'page-id', title: 'Page Title' };
+    </script>
+    <script src="../../common/common.js"></script>
+    <script src="../../common/layout.js"></script>
+
+  HTML BODY:
+    <div id="layout-root"></div>      ← layout.js injects sidebar + header here
+    <div id="page-body">              ← layout.js MOVES this into .page-content
+      ... page content ...
+    </div>
+    <script src="page.js"></script>   ← page script runs AFTER layout is ready
+
+  Page scripts listen for the custom event before touching the DOM:
+    document.addEventListener('amis:layout-ready', () => { ... });
+
+  The 'amis:layout-ready' event is dispatched by layout.js after it finishes
+  injecting the sidebar, header, and moving #page-body into place.
+
+  ── 3a. common.css ────────────────────────────────────────────────────────────
+
+  Loaded on every page. Defines:
+    - CSS custom properties (--primary, --accent, --border, --shadow-*, etc.)
+    - DICT brand colors: --primary (#0A3D7C), --primary-dark (#062B5B)
+    - Philippine flag colors: --ph-blue, --ph-red, --ph-yellow
+    - Base reset (box-sizing, margin, padding)
+    - Typography: Inter (body), Barlow (headings, buttons)
+    - Utility classes: .hidden, .flex, .gap-*, .text-center, etc.
+    - Toast notification styles (#toast-container, .toast, .toast.success, etc.)
+    - Page loader styles (#page-loader, .loader-spinner)
+    - Modal overlay styles (.modal-overlay, .modal, .modal-close)
+    - Global scrollbar styles
+
+  ── 3b. common.js ─────────────────────────────────────────────────────────────
+
+  Loaded on every page. Exposes four global objects:
+
+  Toast
+    .show(message, type, duration)
+    Types: 'success' | 'error' | 'warning' | 'info'
+    Duration defaults to 3500ms.
+    Auto-creates #toast-container if not present.
+
+  Loader
+    .show(text)   ← shows fullscreen dark overlay with spinner
+    .hide()       ← fades out and removes the loader
+
+  Auth
+    .setSession(userData)   ← saves user object to sessionStorage
+    .getSession()           ← returns parsed user object or null
+    .clearSession()         ← removes session
+    .isLoggedIn()           ← returns boolean
+    .requireAuth(redirect)  ← redirects to login if not logged in
+    .requireGuest(redirect) ← redirects to dashboard if already logged in
+    Session key: 'amis_session'
+
+  Modal
+    .open(id)                    ← adds .open class to overlay element
+    .close(id)                   ← removes .open class
+    .closeOnOverlayClick(id)     ← wires click-outside-to-close behavior
+
+  Form
+    .validate(fields)            ← validates array of {el, rules} objects
+    .setFieldError(el, message)  ← shows/clears inline field error
+    .clearErrors(form)           ← removes all validation states from a form
+    Rules supported: 'required', 'email', 'minLength:N'
+
+  ── 3c. layout.css ────────────────────────────────────────────────────────────
+
+  Loaded on every page except login. Defines:
+    - .app-shell (flex container for sidebar + main-wrapper)
+    - .sidebar (fixed left nav, 256px expanded / 68px collapsed)
+    - .sidebar.collapsed — collapses sidebar, hides labels
+    - .main-wrapper (right side, holds header + page-content)
+    - .top-header (70px fixed top bar with breadcrumb + user dropdown)
+    - .page-content (scrollable main area, 24px/28px padding)
+    - .user-dropdown (absolute dropdown from header avatar)
+    - .sidebar-overlay (mobile backdrop)
+    - Submenu styles: .nav-item--has-children, .nav-sub-list, .nav-sub-link
+    - Nav tooltip: #nav-float-tip (shown when sidebar is collapsed)
+    - .dash-page-header, .dash-page-title, .dash-page-sub (page top area)
+    - Responsive breakpoints: 1024px (collapse sidebar), 720px (hide labels)
+
+  ── 3d. layout.js ─────────────────────────────────────────────────────────────
+
+  Loaded on every page except login. Responsibilities:
+    1. Builds the full sidebar HTML from NAV_ITEMS and OP_ITEMS / VIEWS_ITEMS
+    2. Injects it into <div id="layout-root">
+    3. Moves <div id="page-body"> into .page-content (no innerHTML cloning)
+    4. Reads window.AMIS_PAGE.id to set the active nav item
+    5. Reads ?op= or ?view= URL params to set active sub-nav item
+    6. Handles sidebar collapse (persisted in localStorage: 'amis_sidebar_collapsed')
+    7. Handles Operation Module submenu toggle (#nav-op-toggle)
+    8. Handles Views submenu toggle (#nav-views-toggle)
+    9. Handles mobile overlay (#mobile-menu-btn, .sidebar-overlay)
+    10. Handles user dropdown (#user-dropdown-btn, .user-dropdown)
+    11. Populates user info (name, role, avatar initials) from Auth.getSession()
+    12. Handles sign out (#signout-btn)
+    13. Dispatches 'amis:layout-ready' custom event when done
+
+  NAV_ITEMS order in sidebar:
+    Dashboard → System → User Management → Files Data →
+    Operation Module (expandable) → Sticker Tag → Views (expandable) → About
+
+
+================================================================================
+  4. AUTHENTICATION & SESSION
+================================================================================
+
+  - Session is stored in sessionStorage under key 'amis_session'
+  - Session object shape:
+      {
+        id:      'usr_<timestamp>',
+        name:    'Full Name',
+        email:   'user@dict.gov.ph',
+        role:    'Administrator' | 'Staff',
+        loginAt: '<ISO timestamp>'
+      }
+  - Login page calls Auth.requireGuest() — redirects away if already logged in
+  - All other pages call Auth.requireAuth() — redirects to login if not logged in
+  - Sign out clears session, shows loader, then redirects to login after 900ms
+
+  DEMO CREDENTIALS (remove in production):
+    Username: admin          Password: admin123
+    Username: dict.user      Password: dict1234
+    Username: admin@dict.gov.ph  Password: admin123
+
+  The mockLogin() function in login.js simulates a 1200ms network delay.
+  Replace it with a real fetch('/api/auth/login', { method: 'POST', ... }).
+
+
+================================================================================
+  5. PAGE-BY-PAGE BREAKDOWN
+================================================================================
+
+  ── 5a. Login (/pages/login/) ─────────────────────────────────────────────────
+
+  Files: login.html, login.css, login.js
+  Does NOT use layout.js or common/layout.css.
+
+  Layout: Two-column grid (.login-layout)
+    Left:  .brand-panel — dark gradient, DICT logos, AMIS logo, tagline,
+           Philippine flag strip, animated watermark text
+    Right: .form-panel — sign-in form on light background
+
+  Features:
+    - Username + password form with validation
+    - Password show/hide toggle (SVG eye icon swaps inline)
+    - Forgot Password modal (sends mock reset link)
+    - Google Sign-In button (stub, shows toast)
+    - Loading spinner state on submit button
+    - On success: sets session → shows toast → shows loader → redirects
+    - Responsive: brand panel hidden on mobile, mobile logos shown instead
+    - Philippine flag color strip across top of form panel (::before)
+
+  ── 5b. Dashboard (/pages/dashboard/) ────────────────────────────────────────
+
+  Files: dashboard.html, dashboard.css, dashboard.js
+  Uses layout.js. Page ID: 'dashboard'.
+  Also loads Chart.js from cdnjs.cloudflare.com.
+
+  Features:
+    - KPI row: 6 colored tiles (Issued, On Stock, Pending Upload,
+      Pending Verification, Pending Approval, Open Inventory)
+    - Collapsible cards (.dash-card with .dash-collapsible heads)
+    - Expand All / Collapse All button (all cards start collapsed)
+    - Per-table toolbar: View dropdown (Table / Bar / Pie), 3-dot menu
+    - 3-dot menu: Copy, Excel export, CSV export, Print, Column Visibility
+    - Column Visibility: scrollable checkbox list in floating dropdown
+    - Chart rendering via Chart.js (bar and pie, destroys previous instance)
+    - Table search (filters rows by text content)
+    - Floating dropdown (#tbar-float-drop) positioned by getBoundingClientRect
+    - Closes dropdown on page scroll or outside click
+    - Tiles and KPIs show toast on click (detail view placeholder)
+
+  Cards / tables present:
+    - Stocks Under Reorder Point (tbl-reorder)
+    - Property Important Schedule (tbl-schedule) — has date range filter
+    - Property Status (tbl-propstatus) — 5 entries with color pills
+    - Open Inventory Count — large number tile
+    - Top 10 Most Used Item (tbl-top10) — has Property/Stock dropdown
+    - Pending Verification — 6 colored tiles
+    - My Items (tbl-myitems) — wide scrollable table, 11 columns
+    - Property Masterlist (tbl-propmaster) — 1000 entries, red theme
+    - Stock Masterlist (tbl-stockmaster) — 14 entries, green theme
+
+  ── 5c. Files Data (/pages/files-data/) ──────────────────────────────────────
+
+  Files: files-data.html, files-data.css, files-data.js
+  Uses layout.js. Page ID: 'files-data'.
+
+  Purpose: Manage all reference/master data tables used across the system.
+
+  Tables (all collapsible, start collapsed):
+    1.  Chart of Accounts    (tbl-coa)
+    2.  Category             (tbl-category)
+    3.  Brand                (tbl-brand)
+    4.  Model                (tbl-model)
+    5.  Classification       (tbl-classification)
+    6.  Unit of Measurement  (tbl-uom)
+    7.  Supplier             (tbl-supplier)
+    8.  Region               (tbl-region)
+    9.  Branch               (tbl-branch)   — depends on Region
+    10. Office               (tbl-office)   — depends on Branch
+    11. User Department      (tbl-userdept)
+    12. Job Title            (tbl-jobtitle) — depends on User Department
+    13. Custodian Type       (tbl-custodian)
+    14. Property             (tbl-property) — depends on Brand, Model
+    15. Stock                (tbl-stock)    — depends on Unit of Measurement
+    16. Task                 (tbl-task)
+    17. Tag                  (tbl-tag)
+    18. Security Question    (tbl-secq)
+
+  Features per table:
+    - Search input (filters rows by text)
+    - Sort dropdown (Newest, Oldest, A-Z, Z-A)
+    - Add button → opens modal with schema-driven fields
+    - 3-dot toolbar → Copy, Excel, CSV, Print, Column Visibility
+    - Edit button per row → pre-fills modal with existing data
+    - Delete button per row → opens confirm modal, removes row with fade
+    - Active/Inactive toggle in modal (live label update)
+    - 500-character counter on textarea fields
+    - Custom searchable dropdown for fields that reference other tables
+      (e.g. Branch's Region field shows live options from tbl-region)
+    - Inline "New +" button next to select-table fields — opens a sub-modal
+      to add a new record to the referenced table without leaving the form
+    - Footer count updates after add/delete
+
+  TABLE_SCHEMAS in files-data.js defines the field configuration for each
+  table's Add/Edit modal. Field types: text, email, number, textarea,
+  select (static options), select-table (live from another table).
+
+  ── 5d. Views (/pages/views/) ────────────────────────────────────────────────
+
+  Files: views.html, views.css, views.js, view-list/*.js
+  Uses layout.js. Page ID: 'views'.
+  See Section 7 for the sub-view architecture detail.
+
+  ── 5e. Operation Module (/pages/operation-module/) ──────────────────────────
+
+  Files: operation-module.html, operation-module.css,
+         operation-module.js, ops/*.js
+  Uses layout.js. Page ID: 'operation-module'.
+  See Section 6 for the sub-view architecture detail.
+
+  ── 5f. System (/pages/system/) ──────────────────────────────────────────────
+
+  Status: STUB. HTML shell only, no content yet.
+  Nav link present, page ID: 'system'.
+
+  ── 5g. User Management (/pages/user-management/) ────────────────────────────
+
+  Status: STUB. HTML shell only, no content yet.
+  Nav link present, page ID: 'user-management'.
+
+  ── 5h. Sticker Tag (/pages/sticker-tag/) ────────────────────────────────────
+
+  Status: STUB. HTML shell only, no content yet.
+  Nav link present, page ID: 'sticker-tag'.
+
+  ── 5i. About (/pages/about/) ────────────────────────────────────────────────
+
+  Files: about.html, about.js
+  Uses layout.js. Page ID: 'about'.
+  Content: AMIS logo + version, copyright warning, contact details
+  (Asset Management Section and Technical Support).
+  Contacts: gsd.asset@dict.gov.ph, amis@dict.gov.ph, 8920-0101 local 5000.
+
+
+================================================================================
+  6. CHANGED: OPERATION MODULE – SUB-VIEW ARCHITECTURE (OPTION C)
+================================================================================
+
+  BEFORE (original):
+  ─────────────────
+  operation-module/
+  ├── operation-module.html
+  ├── operation-module.css
+  └── operation-module.js     ← contained ALL 20 sub-view definitions inline
+                                 (labels, groups, column arrays) in one large
+                                 OPS object at the top of the file
+
+  The original operation-module.js had a single loadOp(key) function that
+  read from that internal OPS object, built the table header, and rendered
+  an empty table. All 20 sub-views shared the exact same rendering logic
+  with no way to add view-specific behavior (filters, API calls, etc.)
+  without bloating the single file further.
+
+  AFTER (current):
+  ────────────────
+  operation-module/
+  ├── operation-module.html   ← updated: loads all ops/*.js before router
+  ├── operation-module.css    ← unchanged
+  ├── operation-module.js     ← now a THIN ROUTER only (no sub-view data)
+  └── ops/                    ← NEW folder, one file per sub-view
+      ├── goods-receive.js
+      ├── tagging.js
+      ├── property-information.js
+      ├── property-issuance.js
+      ├── stock-issuance.js
+      ├── property-request.js
+      ├── stock-request.js
+      ├── property-transfer.js
+      ├── property-return.js
+      ├── property-return-request.js
+      ├── stock-return.js
+      ├── property-maintenance-request.js
+      ├── property-maintenance.js
+      ├── property-verification.js
+      ├── property-gate-pass-request.js
+      ├── inventory-count.js
+      ├── personal-property-gate-pass-request.js
+      ├── property-disposal.js
+      ├── property-disposal-request.js
+      └── stock-disposal.js
+
+  HOW IT WORKS:
+  ─────────────
+  Each file in ops/ registers itself on window.OP_VIEWS:
+
+    window.OP_VIEWS = window.OP_VIEWS || {};
+    window.OP_VIEWS['goods-receive'] = {
+      label:    'Goods Receive',
+      group:    'Receiving & Tagging',
+      columns:  ['GRR No.', 'Date Received', ...],
+      onLoad:   function(container) { /* view-specific logic */ },
+      onUnload: function()           { /* cleanup */ },
+    };
+
+  operation-module.js (the router) does:
+    1. Reads ?op=KEY from the URL
+    2. Looks up window.OP_VIEWS[key]
+    3. Calls onUnload() on the previously active view (if any)
+    4. Updates the page title, breadcrumb, document.title
+    5. Hides the landing grid, shows the content card
+    6. Builds the <thead> from op.columns
+    7. Resets <tbody> to "No records found"
+    8. Shows toolbar, table wrap, footer, export/add buttons
+    9. Calls onLoad(container) on the new view
+    10. Exposes window.OP_LOAD(key) globally for programmatic switching
+
+  SCRIPT LOADING ORDER in operation-module.html:
+    All ops/*.js files MUST be loaded before operation-module.js
+    so that window.OP_VIEWS is populated before the router runs.
+
+    <script src="ops/goods-receive.js"></script>
+    <script src="ops/tagging.js"></script>
+    ... (all 20 ops files) ...
+    <script src="operation-module.js"></script>   ← LAST
+
+  WHY THIS APPROACH:
+    - Each sub-view's unique logic (filters, date pickers, API calls,
+      custom form fields, etc.) lives in its own isolated file
+    - The router (operation-module.js) stays small and never needs editing
+      when adding or modifying a sub-view
+    - onUnload() allows proper cleanup (removing event listeners, clearing
+      timers) before switching to another sub-view
+    - URL routing (?op=KEY) continues to work exactly as before
+    - window.OP_LOAD(key) allows the landing tiles to trigger a load
+      programmatically if needed
+
+
+================================================================================
+  7. CHANGED: VIEWS PAGE – SUB-VIEW ARCHITECTURE (OPTION C)
+================================================================================
+
+  BEFORE (original):
+  ─────────────────
+  views/
+  ├── views.html
+  ├── views.css
+  └── views.js     ← contained ALL 26 sub-view definitions inline in one
+                      large VIEWS object (labels, groups, column arrays)
+
+  The original views.js had a loadView(key) function that read from the
+  internal VIEWS object, built the dropdown sync, table header, and rendered
+  an empty table. No way to add view-specific behavior per sub-view.
+
+  AFTER (current):
+  ────────────────
+  views/
+  ├── views.html        ← updated: loads all view-list/*.js before router
+  ├── views.css         ← unchanged
+  ├── views.js          ← now a THIN ROUTER only (no sub-view data)
+  └── view-list/        ← NEW folder, one file per sub-view
+      ├── property-masterlist.js
+      ├── stock-masterlist.js
+      ├── good-receive-history.js
+      ├── property-issuance-history.js
+      ├── property-request-history.js
+      ├── property-transfer-history.js
+      ├── property-maintenance-history.js
+      ├── gate-pass-view.js
+      ├── stock-issuance-history.js
+      ├── stock-request-history.js
+      ├── inventory-count-view.js
+      ├── property-disposal-history.js
+      ├── property-disposal-request-history.js
+      ├── property-movement.js
+      ├── stock-card.js
+      ├── property-card.js
+      ├── ppe-ledger-card.js
+      ├── sep-ledger-card.js
+      ├── rspi-view.js
+      ├── rsmi-view.js
+      ├── regspi-view.js
+      ├── tagging-history.js
+      ├── personal-property-gate-pass-request.js
+      ├── property-return-history.js
+      ├── stock-disposal-history.js
+      └── audit-trail.js
+
+  HOW IT WORKS:
+  ─────────────
+  Each file in view-list/ registers itself on window.VIEW_VIEWS:
+
+    window.VIEW_VIEWS = window.VIEW_VIEWS || {};
+    window.VIEW_VIEWS['property-masterlist'] = {
+      label:    'Property Masterlist',
+      group:    'Property',
+      columns:  ['Property No.', 'Description', ...],
+      onLoad:   function(container) { /* view-specific logic */ },
+      onUnload: function()           { /* cleanup */ },
+    };
+
+  views.js (the router) does:
+    1. Reads ?view=KEY from the URL (auto-load on page load)
+    2. Also fires when the user picks from the dropdown + clicks Load View
+    3. Calls onUnload() on the previously active view (if any)
+    4. Syncs the dropdown selection to the loaded key
+    5. Updates contentTitle, document.title, breadcrumb
+    6. Builds <thead> from view.columns
+    7. Resets <tbody> to "No records found"
+    8. Shows/hides emptyState, tableWrap, toolbar, footer, export button
+    9. Calls onLoad(container) on the new view
+    10. Exposes window.VIEW_LOAD(key) globally for programmatic switching
+
+  SCRIPT LOADING ORDER in views.html:
+    All view-list/*.js files MUST be loaded before views.js.
+
+    <script src="view-list/property-masterlist.js"></script>
+    ... (all 26 view files) ...
+    <script src="views.js"></script>   ← LAST
+
+  GROUPS used in view-list files:
+    'Property'  — masterlist, issuance, request, transfer, maintenance,
+                  disposal, disposal request, movement, return, cards, ledgers
+    'Stock'     — masterlist, GRR history, issuance, request, card, inventory
+    'Gate Pass' — gate pass view, personal gate pass request view
+    'Reports'   — RSPI, RSMI, RegSPI, tagging history, stock disposal, audit trail
+
+  SIDE-BY-SIDE COMPARISON (Operation Module vs Views):
+  ┌──────────────────┬──────────────────────────┬──────────────────────────┐
+  │                  │  Operation Module         │  Views                   │
+  ├──────────────────┼──────────────────────────┼──────────────────────────┤
+  │ Sub-folder       │  ops/                     │  view-list/              │
+  │ Registry         │  window.OP_VIEWS          │  window.VIEW_VIEWS       │
+  │ Router file      │  operation-module.js      │  views.js                │
+  │ URL parameter    │  ?op=goods-receive        │  ?view=property-masterlist│
+  │ Global loader    │  window.OP_LOAD(key)      │  window.VIEW_LOAD(key)   │
+  │ Sub-view count   │  20                       │  26                      │
+  │ Has landing page │  Yes (op-landing grid)    │  No (dropdown selector)  │
+  └──────────────────┴──────────────────────────┴──────────────────────────┘
+
+
+================================================================================
+  8. SHARED PATTERNS & CONVENTIONS
+================================================================================
+
+  CSS VARIABLE NAMING:
+    --primary, --primary-dark, --primary-light  (blue shades)
+    --accent, --accent-light                    (lighter blues)
+    --ph-blue, --ph-red, --ph-yellow            (PH flag colors)
+    --bg, --bg-card                             (backgrounds)
+    --border, --border-focus                    (borders)
+    --text-primary, --text-secondary, --text-muted, --text-inverse
+    --success, --warning, --error, --info       (status colors)
+    --shadow-sm, --shadow-md, --shadow-lg, --shadow-xl
+    --radius-sm (6px), --radius-md (10px), --radius-lg (16px), --radius-xl (24px)
+    --transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1)
+
+  FONT FAMILIES:
+    Body text:    'Inter' (weights 300–700)
+    Headings/UI:  'Barlow' (weights 400–800)
+    Both loaded from Google Fonts in common.css.
+
+  COLLAPSIBLE CARDS (dashboard + files-data):
+    - Card gets .collapsed class to hide body
+    - Chevron SVG rotates -90deg when collapsed
+    - CSS transition on max-height for smooth open/close
+    - All cards start collapsed; Expand All button toggles all
+
+  FLOATING DROPDOWNS (dashboard + files-data):
+    - Single shared <div> appended to <body>
+    - Positioned using getBoundingClientRect() of the anchor button
+    - Flips upward if not enough space below
+    - Closes on outside click or page scroll
+    - Clicking the same anchor again closes it
+
+  TOAST NOTIFICATIONS:
+    Toast.show('message', 'success' | 'error' | 'warning' | 'info', ms)
+    Appears top-right, auto-dismisses, animates in/out.
+
+  PAGE LOADER:
+    Loader.show('text')  — fullscreen dark overlay, yellow spinner
+    Loader.hide()        — fades out
+    Auto-hidden on window load (300ms delay) by common.js
+
+  MODAL PATTERN:
+    .modal-overlay — fixed fullscreen backdrop
+    .modal-overlay.open — makes it visible
+    Modal.open(id) / Modal.close(id)
+    Close on overlay click via Modal.closeOnOverlayClick(id)
+
+  RELATIVE PATH CONVENTION:
+    All pages are two levels deep from root (pages/page-name/page.html)
+    So assets and common files are always at ../../assets/ and ../../common/
+    Sub-view JS files (ops/, view-list/) are one level up from their page
+    folder — they use no path for assets since they don't reference any.
+
+  ACTIVE NAV STATE:
+    layout.js sets .active class on the matching nav item using
+    window.AMIS_PAGE.id. For sub-nav items (Operation Module, Views),
+    it reads the URL query param and sets .active on the matching sub-item.
+
+
+================================================================================
+  9. ADDING A NEW PAGE
+================================================================================
+
+  1. Create folder: pages/new-page/
+  2. Copy template.html → pages/new-page/new-page.html
+  3. Update window.AMIS_PAGE: { id: 'new-page', title: 'New Page' }
+  4. Add a nav item to layout.js in the NAV_ITEMS array:
+       {
+         id:    'new-page',
+         label: 'New Page',
+         href:  '../new-page/new-page.html',
+         icon:  '<svg ...>...</svg>',
+       }
+  5. Create new-page.js and write logic inside:
+       document.addEventListener('amis:layout-ready', () => {
+         Auth.requireAuth('../login/login.html');
+         // your code here
+       });
+  6. Optionally create new-page.css for page-specific styles
+  7. Link the CSS in new-page.html and the JS at the bottom of <body>
+
+
+================================================================================
+  10. ADDING A NEW SUB-VIEW
+================================================================================
+
+  FOR OPERATION MODULE:
+  ─────────────────────
+  1. Create ops/new-operation.js with this template:
+
+       window.OP_VIEWS = window.OP_VIEWS || {};
+       window.OP_VIEWS['new-operation'] = {
+         label:    'New Operation',
+         group:    'Group Name',
+         columns:  ['Col 1', 'Col 2', 'Col 3', ...],
+         onLoad:   function(container) {
+           // add filters, wire API calls, etc.
+         },
+         onUnload: function() {
+           // remove event listeners, clear timers
+         },
+       };
+
+  2. Add to operation-module.html BEFORE operation-module.js:
+       <script src="ops/new-operation.js"></script>
+
+  3. Add to layout.js in OP_ITEMS array:
+       {
+         id:    'op-new-operation',
+         label: 'New Operation',
+         href:  '../operation-module/operation-module.html?op=new-operation',
+         icon:  '<svg ...>...</svg>',
+       }
+
+  4. Add a tile to operation-module.html in the appropriate .op-card-group.
+
+  FOR VIEWS PAGE:
+  ───────────────
+  1. Create view-list/new-view.js with this template:
+
+       window.VIEW_VIEWS = window.VIEW_VIEWS || {};
+       window.VIEW_VIEWS['new-view'] = {
+         label:    'New View',
+         group:    'Property' | 'Stock' | 'Gate Pass' | 'Reports',
+         columns:  ['Col 1', 'Col 2', 'Col 3', ...],
+         onLoad:   function(container) {
+           // add filters, wire API calls, etc.
+         },
+         onUnload: function() {
+           // remove event listeners, clear timers
+         },
+       };
+
+  2. Add to views.html BEFORE views.js:
+       <script src="view-list/new-view.js"></script>
+
+  3. Add to layout.js in VIEWS_ITEMS array:
+       {
+         id:    'view-new-view',
+         label: 'New View',
+         href:  '../views/views.html?view=new-view',
+         icon:  '<svg ...>...</svg>',
+       }
+
+  4. Add an <option> to the correct <optgroup> in views.html:
+       <option value="new-view">New View</option>
+
+
+================================================================================
+  11. DEMO CREDENTIALS
+================================================================================
+
+  These are hardcoded in login.js mockLogin() for development only.
+  REMOVE before deploying to production.
+
+  Username              Password      Name            Role
+  ─────────────────     ──────────    ─────────────   ─────────────
+  admin                 admin123      Admin User      Administrator
+  dict.user             dict1234      DICT Staff      Staff
+  admin@dict.gov.ph     admin123      Admin User      Administrator
+
+
+================================================================================
+  12. KNOWN STUBS / INCOMPLETE FEATURES
+================================================================================
+
+  - Google Sign-In button on login → shows "coming soon" toast
+  - Forgot Password → simulates API delay, shows toast, does not send email
+  - All dashboard tile/KPI clicks → "detail view coming soon" toast
+  - Dashboard Export (CSV/Excel) → functional for visible table data
+  - Operation Module "Add New" button → "Form coming soon" toast
+  - Operation Module "Export" button → "Export coming soon" toast
+  - Views Page "Export" button → "Export coming soon" toast
+  - Views Page search input → wired but not connected to data
+  - Operation Module search input → wired but not connected to data
+  - System page → empty stub
+  - User Management page → empty stub
+  - Sticker Tag page → empty stub
+  - Notification bell in header → "Notification panel coming soon" toast
+  - All op sub-views → onLoad() is console.log only, no real data
+  - All view sub-views → onLoad() is console.log only, no real data
+  - Pagination (Previous / Next) in tables → display only, not functional
+  - Real API integration → all data is static HTML or mock JS arrays
+
+
+================================================================================
+  END OF DOCUMENTATION
+  Last updated: May 2026
+================================================================================

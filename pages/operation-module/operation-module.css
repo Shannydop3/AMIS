@@ -1,0 +1,105 @@
+/* ============================================
+   AMIS – Operation Module Page Styles
+   ============================================ */
+
+/* ── Landing grid ────────────────────────── */
+.op-landing {
+  padding-bottom: 1.5rem;
+}
+
+.op-landing__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Card groups (use same shell as dashboard cards) ── */
+.op-card-group {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.op-group-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  font-family: 'Barlow', 'Segoe UI', sans-serif;
+}
+
+.op-card-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ── Operation tiles ─────────────────────── */
+.op-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 12px;
+  min-width: 120px;
+  max-width: 160px;
+  flex: 1 1 120px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: background 0.15s, border-color 0.15s, transform 0.12s, box-shadow 0.15s, color 0.15s;
+  text-align: center;
+}
+
+.op-tile:hover {
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(6,43,91,0.22);
+  text-decoration: none;
+}
+
+.op-tile__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(10,61,124,0.08);
+  color: var(--primary-dark);
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+
+.op-tile:hover .op-tile__icon {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+}
+
+.op-tile__icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.op-tile__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.35;
+  font-family: 'Barlow', 'Segoe UI', sans-serif;
+  color: inherit;
+}
+
+/* ── Content area ────────────────────────── */
+/* #op-content-card is a plain container — no styles needed; sub-view JS injects all content */

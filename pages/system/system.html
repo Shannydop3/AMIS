@@ -1,0 +1,228 @@
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AMIS – SYSTEM  | DICT</title>
+    <link rel="icon" href="../../assets/AMIS-LOGO_only.png" type="image/png" />
+    <link rel="stylesheet" href="../../common/common.css" />
+    <link rel="stylesheet" href="../../common/layout.css" />
+    <link rel="stylesheet" href="system.css" />
+    <!-- <link rel="stylesheet" href="PAGE_NAME.css" /> optional: only if this page has unique styles -->
+
+    <!-- ① Set page identity -->
+    <script>
+      window.AMIS_PAGE = {
+        id:    'system',     // dashboard | system | user-management |
+                              // files-data | views | operation-module |
+                              // sticker-tag | about
+        title: 'System',
+      };
+    </script>
+
+    <!-- ② Common utilities -->
+    <script src="../../common/common.js"></script>
+
+    <!-- ③ Shared layout -->
+    <script src="../../common/layout.js"></script>
+  </head>
+  <body>
+
+    <!-- DO NOT remove these two divs — layout.js requires them -->
+    <div id="layout-root"></div>
+    
+    <div id="page-body">
+      <!-- ============================================
+          YOUR PAGE CONTENT GOES HERE ONLY.
+          No sidebar, no header, no app-shell wrapper.
+          layout.js handles all of that automatically.
+          ============================================ -->
+      <div class="dash-page-header">
+        <div>
+          <h1 class="dash-page-title">Data Upload</h1>
+          <p class="dash-page-sub">Import existing records via Excel templates.</p>
+        </div>
+      </div>
+
+            <!-- ── SECTION 1: Existing Property Upload ── -->
+          <div class="du-card" id="section-property">
+            <div class="du-card__head du-collapsible" data-target="section-property">
+              <div class="du-card__head-left">
+                <span>Existing Property Upload</span>
+              </div>
+              <svg class="du-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="du-card__body">
+              <p class="du-desc">Upload a spreadsheet of existing property records. Download the template first, fill it in, then upload the completed file.</p>
+
+              <div class="du-upload-area">
+                <!-- Left: Download Template -->
+                <button class="du-btn du-btn--outline" id="dl-property-template">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Template
+                </button>
+
+                <!-- Center: Drop Zone -->
+                <div class="du-dropzone" id="dropzone-property">
+                  <div class="du-dropzone__inner">
+                    <svg class="du-dropzone__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    <span class="du-dropzone__label">Drop Excel file here or <label class="du-dropzone__browse" for="file-property">browse</label></span>
+                    <span class="du-dropzone__hint">.xlsx or .xls &nbsp;·&nbsp; Max 10 MB</span>
+                  </div>
+                  <input type="file" id="file-property" accept=".xlsx,.xls" class="du-file-input" />
+                </div>
+
+                <!-- Right: Upload Button -->
+                <button class="du-btn du-btn--primary" id="upload-property" disabled>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  Upload
+                </button>
+              </div>
+
+              <!-- File Preview -->
+              <div class="du-file-preview hidden" id="preview-property">
+                <svg viewBox="0 0 24 24" class="du-file-preview__icon" fill="#1e8449"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline fill="none" stroke="#fff" stroke-width="2" points="14 2 14 8 20 8"/></svg>
+                <div class="du-file-preview__info">
+                  <span class="du-file-preview__name" id="preview-property-name">—</span>
+                  <span class="du-file-preview__size" id="preview-property-size">—</span>
+                </div>
+                <button class="du-file-preview__remove" id="remove-property" aria-label="Remove file">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+              </div>
+
+              <!-- Progress Bar -->
+              <div class="du-progress hidden" id="progress-property">
+                <div class="du-progress__bar"><div class="du-progress__fill" id="progress-property-fill"></div></div>
+                <span class="du-progress__label" id="progress-property-label">Uploading…</span>
+              </div>
+
+              <!-- Upload Log -->
+              <div class="du-log hidden" id="log-property"></div>
+            </div>
+          </div>
+
+          <!-- ── SECTION 2: Existing Stock Upload ── -->
+          <div class="du-card" id="section-stock">
+            <div class="du-card__head du-collapsible" data-target="section-stock">
+              <div class="du-card__head-left">
+                <span>Existing Stock Upload</span>
+              </div>
+              <svg class="du-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="du-card__body">
+              <p class="du-desc">Upload a spreadsheet of existing stock/inventory records. Download the template, complete it, then upload.</p>
+
+              <div class="du-upload-area">
+                <button class="du-btn du-btn--outline" id="dl-stock-template">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Template
+                </button>
+
+                <div class="du-dropzone" id="dropzone-stock">
+                  <div class="du-dropzone__inner">
+                    <svg class="du-dropzone__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    <span class="du-dropzone__label">Drop Excel file here or <label class="du-dropzone__browse" for="file-stock">browse</label></span>
+                    <span class="du-dropzone__hint">.xlsx or .xls &nbsp;·&nbsp; Max 10 MB</span>
+                  </div>
+                  <input type="file" id="file-stock" accept=".xlsx,.xls" class="du-file-input" />
+                </div>
+
+                <button class="du-btn du-btn--primary" id="upload-stock" disabled>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  Upload
+                </button>
+              </div>
+
+              <div class="du-file-preview hidden" id="preview-stock">
+                <svg viewBox="0 0 24 24" class="du-file-preview__icon" fill="#1e8449"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline fill="none" stroke="#fff" stroke-width="2" points="14 2 14 8 20 8"/></svg>
+                <div class="du-file-preview__info">
+                  <span class="du-file-preview__name" id="preview-stock-name">—</span>
+                  <span class="du-file-preview__size" id="preview-stock-size">—</span>
+                </div>
+                <button class="du-file-preview__remove" id="remove-stock" aria-label="Remove file">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+              </div>
+
+              <div class="du-progress hidden" id="progress-stock">
+                <div class="du-progress__bar"><div class="du-progress__fill" id="progress-stock-fill"></div></div>
+                <span class="du-progress__label" id="progress-stock-label">Uploading…</span>
+              </div>
+
+              <div class="du-log hidden" id="log-stock"></div>
+            </div>
+          </div>
+
+          <!-- ── SECTION 3: Goods Receive Upload ── -->
+          <div class="du-card" id="section-goods">
+            <div class="du-card__head du-collapsible" data-target="section-goods">
+              <div class="du-card__head-left">
+                <span>Goods Receive Upload</span>
+              </div>
+              <svg class="du-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="du-card__body">
+              <p class="du-desc">Upload goods-receive records. Select the template type and associated record type before uploading.</p>
+
+              <!-- Radio toggle for type selection -->
+              <div class="du-type-selector">
+                <span class="du-type-selector__label">Record Type:</span>
+                <label class="du-radio-label">
+                  <input type="radio" name="goods-type" value="property" class="du-radio" id="goods-type-property" checked />
+                  <span class="du-radio-custom"></span>
+                  Property
+                </label>
+                <label class="du-radio-label">
+                  <input type="radio" name="goods-type" value="stock" class="du-radio" id="goods-type-stock" />
+                  <span class="du-radio-custom"></span>
+                  Stock
+                </label>
+              </div>
+
+              <div class="du-upload-area">
+                <button class="du-btn du-btn--outline" id="dl-goods-template">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Template
+                </button>
+
+                <div class="du-dropzone" id="dropzone-goods">
+                  <div class="du-dropzone__inner">
+                    <svg class="du-dropzone__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    <span class="du-dropzone__label">Drop Excel file here or <label class="du-dropzone__browse" for="file-goods">browse</label></span>
+                    <span class="du-dropzone__hint">.xlsx or .xls &nbsp;·&nbsp; Max 10 MB</span>
+                  </div>
+                  <input type="file" id="file-goods" accept=".xlsx,.xls" class="du-file-input" />
+                </div>
+
+                <button class="du-btn du-btn--primary" id="upload-goods" disabled>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  Upload
+                </button>
+              </div>
+
+              <div class="du-file-preview hidden" id="preview-goods">
+                <svg viewBox="0 0 24 24" class="du-file-preview__icon" fill="#1e8449"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline fill="none" stroke="#fff" stroke-width="2" points="14 2 14 8 20 8"/></svg>
+                <div class="du-file-preview__info">
+                  <span class="du-file-preview__name" id="preview-goods-name">—</span>
+                  <span class="du-file-preview__size" id="preview-goods-size">—</span>
+                </div>
+                <button class="du-file-preview__remove" id="remove-goods" aria-label="Remove file">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+              </div>
+
+              <div class="du-progress hidden" id="progress-goods">
+                <div class="du-progress__bar"><div class="du-progress__fill" id="progress-goods-fill"></div></div>
+                <span class="du-progress__label" id="progress-goods-label">Uploading…</span>
+              </div>
+
+              <div class="du-log hidden" id="log-goods"></div>
+            </div>
+          </div>
+    </div><!-- /#page-body -->
+    <!-- Optional page-specific script -->
+    <script src="system.js"></script>
+
+  </body>
+  </html>

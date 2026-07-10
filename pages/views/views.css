@@ -1,0 +1,579 @@
+/* ============================================
+   AMIS – Views Page Styles
+   ============================================ */
+
+/* ── Override dashboard.css: views cards never start collapsed ── */
+#card-adv-filter,
+#card-views-data {
+  overflow: visible !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+#card-adv-filter.collapsed > .dash-card__body,
+#card-views-data.collapsed > .dash-card__body {
+  display: none !important;
+}
+
+#card-adv-filter > .dash-card__body {
+  overflow: visible !important;
+}
+
+/* ── Page header inline category select ─── */
+.views-header-sel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.views-cat-select {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 34px;
+  padding: 0 36px 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-family: 'Barlow', 'Segoe UI', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  min-width: 220px;
+}
+.views-cat-select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(25,118,210,0.1);
+}
+.views-cat-select optgroup {
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  background: var(--bg);
+}
+.views-cat-select option {
+  font-weight: 400;
+  color: var(--text-primary);
+  background: var(--bg-card);
+  font-size: 0.82rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.views-cat-chevron {
+  position: absolute;
+  right: 10px;
+  width: 14px;
+  height: 14px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+/* ── Date bar ───────────────────────────── */
+.views-date-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 10px 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Advance filter inputs row ──────────── */
+.advf-inputs {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.advf-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+.advf-group--wide { flex: 1 1 180px; min-width: 160px; }
+.advf-group--btn  { align-self: flex-end; }
+
+.advf-lbl {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  white-space: nowrap;
+}
+
+.advf-sel,
+.advf-val {
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--text-primary);
+  font-size: 0.78rem;
+  font-family: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.advf-sel { cursor: pointer; }
+.advf-sel:focus,
+.advf-val:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(25,118,210,0.1);
+}
+
+/* Searchable Filter By button */
+.advf-searchable { position: relative; }
+
+.advf-sel--btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  text-align: left;
+  font-size: 0.78rem;
+  font-family: inherit;
+  color: var(--text-primary);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  height: 30px;
+  padding: 0 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  min-width: 160px;
+}
+.advf-sel--btn:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(25,118,210,0.1);
+}
+.advf-sel--btn svg {
+  width: 12px; height: 12px;
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+/* Filter By dropdown panel */
+.advf-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 230px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.advf-drop-search {
+  display: block;
+  width: 100%;
+  padding: 7px 12px;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.78rem;
+  font-family: inherit;
+  outline: none;
+  background: #f7f9fc;
+  color: var(--text-primary);
+}
+
+.advf-drop-list {
+  list-style: none;
+  margin: 0; padding: 4px 0;
+  max-height: 220px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.advf-drop-list::-webkit-scrollbar { width: 4px; }
+.advf-drop-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+
+.advf-drop-item {
+  padding: 7px 14px;
+  font-size: 0.78rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.advf-drop-item:hover { background: rgba(10,61,124,0.06); color: var(--primary); }
+.advf-drop-item--active {
+  background: rgba(10,61,124,0.08);
+  color: var(--primary-dark);
+  font-weight: 600;
+}
+.advf-drop-empty {
+  padding: 10px 14px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ── Add Filter button — Files Data style ── */
+.advf-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 16px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-family: 'Barlow', 'Segoe UI', sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: box-shadow 0.15s, opacity 0.15s;
+  box-shadow: 0 2px 8px rgba(10,61,124,0.25);
+}
+.advf-add-btn:hover {
+  opacity: 0.92;
+  box-shadow: 0 4px 14px rgba(10,61,124,0.35);
+}
+.advf-add-btn svg { width: 12px; height: 12px; flex-shrink: 0; }
+
+/* Applied filters table tools row */
+.advf-table-section { margin-top: 2px; }
+
+.advf-tbl-tools {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
+/* Active checkmark badge */
+.advf-active-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px; height: 20px;
+  background: #27ae60;
+  border-radius: 50%;
+}
+.advf-active-badge::after {
+  content: '';
+  display: block;
+  width: 9px; height: 6px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) translateY(-1px);
+}
+
+/* Row action buttons (edit / delete) */
+.advf-act-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px;
+  border: none; border-radius: 5px;
+  cursor: pointer; transition: opacity 0.12s;
+  margin-right: 3px;
+}
+.advf-act-btn svg { width: 13px; height: 13px; }
+.advf-act-btn--edit { background: #e67e22; color: #fff; }
+.advf-act-btn--edit:hover { opacity: 0.85; }
+.advf-act-btn--del  { background: #e74c3c; color: #fff; }
+.advf-act-btn--del:hover  { opacity: 0.85; }
+
+/* ── Views empty state ───────────────────── */
+.views-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+.views-empty-state svg { width: 52px; height: 52px; color: var(--border); }
+.views-empty-state p {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  max-width: 320px;
+  line-height: 1.6;
+}
+
+/* ══════════════════════════════════════════
+   VIEW TABLE — shared row styles
+══════════════════════════════════════════ */
+
+/* Blue-shaded first column — consistent across all views */
+#views-table tbody td:first-child {
+  background: rgba(10,61,124,0.04);
+}
+#views-table thead th:first-child {
+  background: #eef3fb;
+}
+/* First-col code badge base */
+.v-id {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: #dbeafe;
+  color: #1e40af;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+/* Stock variant (green tint) */
+.v-id--green {
+  background: #dcfce7;
+  color: #15803d;
+}
+/* Purple / disposal variant */
+.v-id--purple {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+/* ── Action buttons with Files-Data–style animation ── */
+.v-act-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.v-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, transform 0.15s;
+}
+.v-btn svg { width: 14px; height: 14px; }
+
+/* View — cyan tint */
+.v-btn--view  { background: rgba(6,182,212,0.10); color: #0891b2; }
+.v-btn--view:hover  { background: #0891b2; color: #fff; transform: translateY(-1px); }
+
+/* Upload — blue tint */
+.v-btn--upload { background: rgba(25,118,210,0.10); color: var(--accent); }
+.v-btn--upload:hover { background: var(--accent); color: #fff; transform: translateY(-1px); }
+
+/* Cancel / Delete — red tint */
+.v-btn--cancel { background: rgba(220,53,69,0.08); color: #dc3545; }
+.v-btn--cancel:hover { background: #dc3545; color: #fff; transform: translateY(-1px); }
+
+/* ══════════════════════════════════════════
+   VIEWS MODAL — Files-Data style
+══════════════════════════════════════════ */
+.vm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(6,43,91,0.45);
+  backdrop-filter: blur(3px);
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: vmFadeIn 0.2s ease;
+}
+
+@keyframes vmFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes vmSlideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.vm-modal {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 60px rgba(6,43,91,0.3);
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: vmSlideUp 0.25s ease;
+}
+.vm-modal--sm { max-width: 400px; }
+
+/* Header — color varies by action */
+.vm-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  color: #fff;
+  flex-shrink: 0;
+}
+.vm-head--view   { background: var(--primary-dark); }
+.vm-head--upload { background: var(--accent); }
+.vm-head--cancel { background: var(--error); }
+
+.vm-head__title {
+  font-family: 'Barlow', 'Segoe UI', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.vm-head__title svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+.vm-close {
+  background: rgba(255,255,255,0.12);
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  width: 28px; height: 28px;
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+.vm-close:hover { background: rgba(255,255,255,0.22); }
+
+.vm-body {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Detail table inside view modal */
+.vm-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+.vm-table tr:nth-child(even) td { background: #f8f9fa; }
+.vm-table td {
+  padding: 9px 12px;
+  vertical-align: top;
+}
+.vm-table td:first-child {
+  font-weight: 600;
+  color: var(--text-secondary);
+  width: 42%;
+  white-space: nowrap;
+}
+.vm-table td:last-child {
+  color: var(--text-primary);
+}
+
+/* Cancel confirm body */
+.vm-confirm-icon {
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 14px;
+}
+.vm-confirm-icon--cancel { background: rgba(183,28,28,0.1); color: var(--error); }
+.vm-confirm-icon--upload { background: rgba(25,118,210,0.1); color: var(--accent); }
+.vm-confirm-icon svg { width: 26px; height: 26px; }
+
+.vm-confirm-msg {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.vm-confirm-msg strong { color: var(--text-primary); }
+
+/* Upload area */
+.vm-upload-area {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-md);
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  margin-bottom: 14px;
+}
+.vm-upload-area:hover {
+  border-color: var(--accent);
+  background: rgba(25,118,210,0.03);
+}
+.vm-upload-area svg { width: 32px; height: 32px; color: var(--text-muted); margin-bottom: 8px; }
+.vm-upload-area p  { font-size: 0.8rem; color: var(--text-muted); margin: 0; }
+.vm-upload-area input { display: none; }
+
+.vm-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  background: #fafbfc;
+  flex-shrink: 0;
+}
+
+/* Footer buttons */
+.vm-btn-cancel-action {
+  padding: 9px 20px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  font-family: inherit;
+}
+.vm-btn-cancel-action:hover { background: var(--bg); color: var(--text-primary); }
+
+.vm-btn-confirm {
+  padding: 9px 24px;
+  border: none;
+  border-radius: var(--radius-md);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: 'Barlow', 'Segoe UI', sans-serif;
+  cursor: pointer;
+  transition: opacity 0.15s, box-shadow 0.15s;
+  display: flex; align-items: center; gap: 6px;
+}
+.vm-btn-confirm--view   { background: var(--primary-dark); box-shadow: 0 4px 14px rgba(6,43,91,0.3); }
+.vm-btn-confirm--upload { background: var(--accent); box-shadow: 0 4px 14px rgba(25,118,210,0.3); }
+.vm-btn-confirm--cancel { background: var(--error); box-shadow: 0 4px 12px rgba(183,28,28,0.3); }
+.vm-btn-confirm:hover   { opacity: 0.9; }
+
+/* Muted dash for empty cells */
+.v-muted { color: #adb5bd; }
+
+/* Status pill helper */
+.v-pill {
+  display: inline-block;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-weight: 600;
+  white-space: nowrap;
+}

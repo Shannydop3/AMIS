@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AMIS – Sticker Tag | DICT</title>
+  <link rel="icon" href="../../assets/AMIS-LOGO_only.png" type="image/png" />
+
+  <!-- Common styles -->
+  <link rel="stylesheet" href="../../common/common.css" />
+  <link rel="stylesheet" href="../../common/layout.css" />
+  <!-- Page styles -->
+  <link rel="stylesheet" href="sticker-tag.css" />
+
+  <!-- ① Page identity -->
+  <script>
+    window.AMIS_PAGE = { id: 'sticker-tag', title: 'Sticker Tag' };
+  </script>
+
+  <!-- ② Common utilities -->
+  <script src="../../common/common.js"></script>
+
+  <!-- ③ Shared layout — fills #layout-root, moves #page-body into .page-content -->
+  <script src="../../common/layout.js"></script>
+</head>
+<body>
+
+  <!-- Layout placeholder — sidebar + header injected here by layout.js -->
+  <div id="layout-root"></div>
+
+  <!-- Page-specific content — moved into .page-content by layout.js -->
+  <div id="page-body">
+
+    <!-- Page header: title left | search + tabs right -->
+    <div class="st-page-header">
+      <div>
+        <h1 class="st-page-title">Sticker Tag</h1>
+        <p class="st-page-sub">Property Inventory Tag Generator</p>
+      </div>
+
+      <!-- Hidden proxy inputs so JS references still resolve -->
+      <input type="hidden" id="globalSearch">
+      <span id="searchBadge" style="display:none"></span>
+
+      <div class="st-action-bar">
+
+        <!-- Search bar -->
+        <div class="st-search-wrap" id="searchWrap">
+          <span class="st-search-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+          </span>
+          <input type="text" id="globalSearch2"
+                 placeholder="Search sticker #…"
+                 oninput="globalSearchSticker(this.value)">
+          <span class="st-search-badge" id="searchBadge2" style="display:none"></span>
+        </div>
+
+        <!-- View tabs — icon only -->
+        <button class="st-tab-btn st-tab-icon" id="tabPrint" onclick="switchView('print')" title="Print View">
+         <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512"><title xmlns="">home</title><path fill="currentColor" d="M261.56 101.28a8 8 0 0 0-11.06 0L66.4 277.15a8 8 0 0 0-2.47 5.79L63.9 448a32 32 0 0 0 32 32H192a16 16 0 0 0 16-16V328a8 8 0 0 1 8-8h80a8 8 0 0 1 8 8v136a16 16 0 0 0 16 16h96.06a32 32 0 0 0 32-32V282.94a8 8 0 0 0-2.47-5.79Z"/><path fill="currentColor" d="m490.91 244.15l-74.8-71.56V64a16 16 0 0 0-16-16h-48a16 16 0 0 0-16 16v32l-57.92-55.38C272.77 35.14 264.71 32 256 32c-8.68 0-16.72 3.14-22.14 8.63l-212.7 203.5c-6.22 6-7 15.87-1.34 22.37A16 16 0 0 0 43 267.56L250.5 69.28a8 8 0 0 1 11.06 0l207.52 198.28a16 16 0 0 0 22.59-.44c6.14-6.36 5.63-16.86-.76-22.97"/></svg>
+        </button>
+        <button class="st-tab-btn st-tab-icon" id="tabHistory" onclick="switchView('history')" title="History Log">
+          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512"><title xmlns="">history</title><path fill="currentColor" d="M504 255.531c.253 136.64-111.18 248.372-247.82 248.468c-59.015.042-113.223-20.53-155.822-54.911c-11.077-8.94-11.905-25.541-1.839-35.607l11.267-11.267c8.609-8.609 22.353-9.551 31.891-1.984C173.062 425.135 212.781 440 256 440c101.705 0 184-82.311 184-184c0-101.705-82.311-184-184-184c-48.814 0-93.149 18.969-126.068 49.932l50.754 50.754c10.08 10.08 2.941 27.314-11.313 27.314H24c-8.837 0-16-7.163-16-16V38.627c0-14.254 17.234-21.393 27.314-11.314l49.372 49.372C129.209 34.136 189.552 8 256 8c136.81 0 247.747 110.78 248 247.531m-180.912 78.784l9.823-12.63c8.138-10.463 6.253-25.542-4.21-33.679L288 256.349V152c0-13.255-10.745-24-24-24h-16c-13.255 0-24 10.745-24 24v135.651l65.409 50.874c10.463 8.137 25.541 6.253 33.679-4.21"/></svg>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- ══ PRINT VIEW ══ -->
+    <div class="st-view active" id="view-print">
+      <div class="st-workspace">
+
+        <!-- LEFT: Sticker info input form -->
+        <div class="st-form-panel" id="stickerFormPanel">
+
+          <div class="st-num-display" id="stickerNumDisplay">—</div>
+
+          <div class="st-form-body">
+            <p class="st-section-label">Sticker INFORMATION</p>
+            <div class="st-field">
+              <label>Item Number <span class="req">*</span></label>
+              <input type="number" id="inp_num" min="1"
+                     oninput="updateNum(this.value)"
+                     onkeypress="return allowNumbers(event)">
+            </div>
+
+            <div class="st-field">
+              <label>Property Number <span class="req">*</span></label>
+              <input type="text" id="inp_propnum"
+                     onkeypress="return allowNumbers(event)"
+                     oninput="enforceNumbers(this)">
+            </div>
+            <div class="st-field">
+              <label>Asset Classification <span class="req">*</span></label>
+              <input type="text" id="inp_assetclas"
+                     onkeypress="return allowLetters(event)"
+                     oninput="enforceLetters(this)">
+            </div>
+            <div class="st-field">
+              <label>Item / Brand / Model <span class="req">*</span></label>
+              <input type="text" id="inp_item">
+            </div>
+            <div class="st-field">
+              <label>Serial Number <span class="req">*</span></label>
+              <input type="text" id="inp_serial">
+            </div>
+            <div class="st-field">
+              <label>Acquisition Cost <span class="req">*</span></label>
+              <input type="text" id="inp_cost">
+            </div>
+            <div class="st-field">
+              <label>Acquisition Date <span class="req">*</span></label>
+              <input type="date" id="inp_acqdate">
+            </div>
+            <div class="st-field">
+              <label>Location <span class="req">*</span></label>
+              <input type="text" id="inp_location"
+                     onkeypress="return allowLetters(event)"
+                     oninput="enforceLetters(this)">
+            </div>
+            <div class="st-field">
+              <label>Person Accountable <span class="req">*</span></label>
+              <input type="text" id="inp_person"
+                     onkeypress="return allowLetters(event)"
+                     oninput="enforceLetters(this)">
+            </div>
+
+          </div><!-- /.st-form-body -->
+
+          <!-- Icon-only action buttons row -->
+          <div class="st-form-actions">
+            <p class="st-section-label" style="margin:0 0 8px;">Actions</p>
+            <div class="st-icon-btn-row">
+              <!-- Add to Page -->
+              <button class="st-icon-btn st-icon-btn--primary" onclick="addStickerToPage()" title="Add to Page">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 20 20"><title xmlns="">Add to Page</title><path fill="currentColor" d="M11 9V4H9v5H4v2h5v5h2v-5h5V9z"/></svg>
+              <span>Add</span>
+              </button>
+              <!-- Print Page -->
+              <button class="st-icon-btn st-icon-btn--gold" onclick="printCurrentPage()" title="Print Page">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><title xmlns="">Print Page</title><g fill="none"><path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z"/><path fill="currentColor" d="M16 3a3 3 0 0 1 2.995 2.824L19 6v10h.75c.647 0 1.18.492 1.244 1.122l.006.128V19a3 3 0 0 1-2.824 2.995L18 22H8a3 3 0 0 1-2.995-2.824L5 19V9H3.25a1.25 1.25 0 0 1-1.244-1.122L2 7.75V6a3 3 0 0 1 2.824-2.995L5 3zm0 2H7v14a1 1 0 1 0 2 0v-1.75c0-.69.56-1.25 1.25-1.25H17V6a1 1 0 0 0-1-1m3 13h-8v1c0 .35-.06.687-.17 1H18a1 1 0 0 0 1-1zm-7-6a1 1 0 1 1 0 2h-2a1 1 0 1 1 0-2zm2-4a1 1 0 1 1 0 2h-4a1 1 0 0 1 0-2zM5 5a1 1 0 0 0-.993.883L4 6v1h1z"/></g></svg>
+              <span>Print</span>
+              </button>
+              <!-- Clear Page -->
+              <button class="st-icon-btn st-icon-btn--danger" onclick="clearCurrentPage()" title="Clear Page">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 1024 1024"><title xmlns="">Clear Page</title><path fill="currentColor" d="m899.1 869.6l-53-305.6H864c14.4 0 26-11.6 26-26V346c0-14.4-11.6-26-26-26H618V138c0-14.4-11.6-26-26-26H432c-14.4 0-26 11.6-26 26v182H160c-14.4 0-26 11.6-26 26v192c0 14.4 11.6 26 26 26h17.9l-53 305.6c-.3 1.5-.4 3-.4 4.4c0 14.4 11.6 26 26 26h723c1.5 0 3-.1 4.4-.4c14.2-2.4 23.7-15.9 21.2-30M204 390h272V182h72v208h272v104H204zm468 440V674c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v156H416V674c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v156H202.8l45.1-260H776l45.1 260z"/></svg>
+              <span>Clear</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="st-status-bar" id="statusBar">
+            Ready. Fill in all fields and click Add to Page.
+          </div>
+
+        </div><!-- /.st-form-panel -->
+
+        <!-- RIGHT: A4 canvas -->
+        <div class="st-canvas-area">
+          <div class="page-controls-row no-print">
+            <div class="page-nav-pill" id="pageNav">
+              <!-- page dots injected by JS; add/delete buttons appended here too -->
+            </div>
+            <button class="nav-round-btn nav-btn-green nav-pill-btn" onclick="createNewPage()" title="Add new page">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6"/></svg>
+            </button>
+            <button class="nav-round-btn nav-btn-red nav-pill-btn" onclick="deleteCurrentPage()" title="Delete current page">
+              <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6zM8 9h8v10H8zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+            </button>
+          </div>
+          <div class="a4-wrapper" id="a4Page"></div>
+        </div>
+
+      </div><!-- /.st-workspace -->
+    </div><!-- /#view-print -->
+
+    <!-- ══ HISTORY VIEW ══ -->
+    <div class="st-view" id="view-history">
+      <div class="history-panel">
+        <div class="history-header">
+          <h2>History Log</h2>
+          <span id="historyCount">0 records</span>
+        </div>
+        <div class="history-search">
+          <input type="text" id="historySearch"
+                 placeholder="Search by any field…"
+                 oninput="filterHistory()">
+        </div>
+        <div class="history-table-wrap">
+          <table class="history-table">
+            <thead><tr id="historyHead"></tr></thead>
+            <tbody id="historyBody">
+              <tr><td colspan="11" class="history-empty">No stickers created yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div><!-- /#view-history -->
+
+  </div><!-- /#page-body -->
+
+
+  <!-- ══ STICKER VIEWER / EDITOR MODAL ══ -->
+  <div class="modal-overlay" id="stickerModal" onclick="closeModal(event)">
+    <div class="modal-box">
+
+      <!-- Floating × button on the modal corner -->
+      <button class="modal-close" onclick="closeModal()" title="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+
+      <div class="modal-topbar">
+        <span class="modal-title" id="modalTitle">Sticker Preview</span>
+      </div>
+
+      <!-- Preview pane -->
+      <div id="modalPreviewPane">
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-footer">
+          <button class="st-btn st-btn-danger"  onclick="deleteCurrentSticker()">Delete Sticker</button>
+          <button class="st-btn st-btn-primary" onclick="switchToEditMode()">Edit Sticker</button>
+        </div>
+      </div>
+
+      <!-- Edit pane -->
+      <div id="modalEditPane" style="display:none">
+        <div class="modal-edit-body">
+          <div class="edit-field-grid">
+            <div class="st-field">
+              <label>Item Number <span class="req">*</span></label>
+              <input type="number" id="edit_num" min="1">
+            </div>
+            <div class="st-field">
+              <label>Property Number <span class="req">*</span></label>
+              <input type="text" id="edit_propnum">
+            </div>
+            <div class="st-field">
+              <label>Asset Classification <span class="req">*</span></label>
+              <input type="text" id="edit_assetclas">
+            </div>
+            <div class="st-field">
+              <label>Item / Brand / Model <span class="req">*</span></label>
+              <input type="text" id="edit_item">
+            </div>
+            <div class="st-field">
+              <label>Serial Number <span class="req">*</span></label>
+              <input type="text" id="edit_serial">
+            </div>
+            <div class="st-field">
+              <label>Acquisition Cost <span class="req">*</span></label>
+              <input type="text" id="edit_cost">
+            </div>
+            <div class="st-field">
+              <label>Acquisition Date <span class="req">*</span></label>
+              <input type="date" id="edit_acqdate">
+            </div>
+            <div class="st-field">
+              <label>Location <span class="req">*</span></label>
+              <input type="text" id="edit_location">
+            </div>
+            <div class="st-field edit-field-wide">
+              <label>Person Accountable <span class="req">*</span></label>
+              <input type="text" id="edit_person">
+            </div>
+          </div>
+          <div class="edit-status" id="editStatus"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="st-btn st-btn-danger"  onclick="deleteCurrentSticker()">Delete Sticker</button>
+          <button class="st-btn st-btn-gold"    onclick="switchToPreviewMode()">Cancel</button>
+          <button class="st-btn st-btn-primary" onclick="saveEditedSticker()">Save Changes</button>
+        </div>
+      </div>
+
+    </div><!-- /.modal-box -->
+  </div><!-- /#stickerModal -->
+
+
+  <!-- Page-specific script — runs after layout is ready -->
+  <script src="sticker-tag.js"></script>
+
+</body>
+</html>

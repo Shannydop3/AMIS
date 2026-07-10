@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AMIS – Dashboard | DICT</title>
+  <link rel="icon" href="../../assets/AMIS-LOGO_only.png" type="image/png" />
+  <link rel="stylesheet" href="../../common/common.css" />
+  <link rel="stylesheet" href="../../common/layout.css" />
+  <link rel="stylesheet" href="dashboard.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+  <!-- ① Page identity -->
+  <script>
+    window.AMIS_PAGE = { id: 'dashboard', title: 'Dashboard' };
+  </script>
+
+  <!-- ② Common utilities -->
+  <script src="../../common/common.js"></script>
+
+  <!-- ③ Shared layout — fills #layout-root, moves #page-body into .page-content -->
+  <script src="../../common/layout.js"></script>
+</head>
+<body>
+
+  <!-- Layout placeholder — sidebar + header injected here by layout.js -->
+  <div id="layout-root"></div>
+
+  <!-- Page-specific content — moved into .page-content by layout.js -->
+  <div id="page-body">
+
+    <div class="dash-page-header">
+      <div>
+        <h1 class="dash-page-title">Dashboard</h1>
+        <p class="dash-page-sub">Asset Management Overview</p>
+      </div>
+      <button class="dash-expand-all-btn" id="btn-expand-all" title="Expand all cards">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        <span>Expand All</span>
+      </button>
+    </div>
+
+    <!-- KPI Row -->
+    <div class="dash-kpi-card dash-mb">
+      <div class="dash-kpi-row">
+        <div class="dash-kpi dash-kpi--blue">  <div class="dash-kpi__num">262</div><div class="dash-kpi__lbl">Issued</div></div>
+        <div class="dash-kpi dash-kpi--green"> <div class="dash-kpi__num">226</div><div class="dash-kpi__lbl">On Stock</div></div>
+        <div class="dash-kpi dash-kpi--amber"> <div class="dash-kpi__num">11</div> <div class="dash-kpi__lbl">Pending Upload</div></div>
+        <div class="dash-kpi dash-kpi--red">   <div class="dash-kpi__num">123</div><div class="dash-kpi__lbl">Pending Verification</div></div>
+        <div class="dash-kpi dash-kpi--purple"><div class="dash-kpi__num">1</div>  <div class="dash-kpi__lbl">Pending Approval</div></div>
+        <div class="dash-kpi dash-kpi--teal">  <div class="dash-kpi__num">3</div>  <div class="dash-kpi__lbl">Open Inventory</div></div>
+      </div>
+    </div>
+
+    <!-- Row 2: Stocks Under Reorder Point (full width) -->
+    <div class="dash-card dash-mb" id="card-reorder">
+      <div class="dash-card__head dash-collapsible">
+        <span>Stocks Under Reorder Point</span>
+        <div class="dash-head-right">
+          <div class="tbar" data-table="tbl-reorder" data-title="Stocks Under Reorder Point"></div>
+          <svg class="dash-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="dash-card__body">
+        <div class="dash-filter-row">
+          <input type="text" class="dash-input dash-search" data-table="tbl-reorder" placeholder="Search…" />
+        </div>
+        <div class="dash-view-wrap">
+          <div class="dash-table-wrap">
+            <table class="dash-tbl" id="tbl-reorder">
+              <thead><tr><th>Item Code</th><th>Description</th><th>Reorder Point</th><th>Quantity</th></tr></thead>
+              <tbody><tr><td colspan="4" class="dash-empty">No data available in table</td></tr></tbody>
+            </table>
+          </div>
+          <div class="dash-chart-wrap" style="display:none"><canvas class="dash-chart-canvas"></canvas></div>
+        </div>
+        <div class="dash-table-footer"><span>Showing 0 to 0 of 0 entries</span><span class="dash-pager">Previous &nbsp; Next</span></div>
+      </div>
+    </div>
+
+    <!-- Row 3: Property Important Schedule (full width) -->
+    <div class="dash-card dash-mb" id="card-schedule">
+      <div class="dash-card__head dash-collapsible">
+        <span>Property Important Schedule</span>
+        <div class="dash-head-right">
+          <div class="tbar" data-table="tbl-schedule" data-title="Property Important Schedule"></div>
+          <svg class="dash-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="dash-card__body">
+        <div class="dash-filter-row">
+          <label class="dash-filter-label">Date From</label><input type="date" class="dash-input dash-input--date" value="2026-04-23" />
+          <label class="dash-filter-label">Date To</label><input type="date" class="dash-input dash-input--date" value="2026-04-23" />
+        </div>
+        <div class="dash-filter-row">
+          <input type="text" class="dash-input dash-search" data-table="tbl-schedule" placeholder="Search…" />
+        </div>
+        <div class="dash-view-wrap">
+          <div class="dash-table-wrap">
+            <table class="dash-tbl" id="tbl-schedule">
+              <thead><tr><th>Date</th><th>Property No.</th><th>Description</th><th>Activity</th></tr></thead>
+              <tbody><tr><td colspan="4" class="dash-empty">No data available in table</td></tr></tbody>
+            </table>
+          </div>
+          <div class="dash-chart-wrap" style="display:none"><canvas class="dash-chart-canvas"></canvas></div>
+        </div>
+        <div class="dash-table-footer"><span>Showing 0 to 0 of 0 entries</span><span class="dash-pager">Previous &nbsp; Next</span></div>
+      </div>
+    </div>
+
+    <!-- Row 4: Property Status | Open Inventory Count (2-col) -->
+    <div class="dash-grid dash-grid--2 dash-grid--stretch">
+
+      <div class="dash-card" id="card-propstatus">
+        <div class="dash-card__head dash-collapsible">
+          <span>Property Status</span>
+          <div class="dash-head-right">
+            <span class="dash-card__count">5 entries</span>
+            <div class="tbar" data-table="tbl-propstatus" data-title="Property Status"></div>
+            <svg class="dash-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+        <div class="dash-card__body">
+          <div class="dash-filter-row"><input type="text" class="dash-input dash-search" data-table="tbl-propstatus" placeholder="Search…" /></div>
+          <div class="dash-view-wrap">
+            <div class="dash-table-wrap">
+              <table class="dash-tbl" id="tbl-propstatus">
+                <thead><tr><th>Status</th><th>Count</th></tr></thead>
+                <tbody>
+                  <tr><td><span class="dash-pill dash-pill--blue">Issued</span></td><td>262</td></tr>
+                  <tr><td><span class="dash-pill dash-pill--green">On Stock</span></td><td>226</td></tr>
+                  <tr><td><span class="dash-pill dash-pill--amber">Pending Approval</span></td><td>1</td></tr>
+                  <tr><td><span class="dash-pill dash-pill--amber">Pending Upload</span></td><td>11</td></tr>
+                  <tr><td><span class="dash-pill dash-pill--red">Pending Verification</span></td><td>123</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="dash-chart-wrap" style="display:none"><canvas class="dash-chart-canvas"></canvas></div>
+          </div>
+          <div class="dash-table-footer"><span>Showing 1 to 5 of 5 entries</span><span class="dash-pager">Previous &nbsp; 1 &nbsp; Next</span></div>
+        </div>
+      </div>
+
+      <div class="dash-card" id="card-openinv">
+        <div class="dash-card__head dash-collapsible">
+          <span>Open Inventory Count</span>
+          <svg class="dash-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="dash-card__body dash-card__body--inv">
+          <div class="dash-inv-tile dash-tile--teal">
+            <div class="dash-tile__num">3</div>
+            <div class="dash-tile__lbl">Open Inventory Count</div>
+            <div class="dash-tile__more_big">More Info. <svg xmlns="http://www.w3.org/2000/svg" width="1.1em" height="1.1em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m13 6l6 6l-6 6M5 6l6 6l-6 6"/></svg></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 5: Top 10 Most Used Item (full width) -->
+    <div class="dash-card dash-mb" id="card-top10">
+      <div class="dash-card__head dash-collapsible">
+        <span>Top 10 Most Used Item</span>
+        <div class="dash-head-right">
+          <div class="tbar" data-table="tbl-top10" data-title="Top 10 Most Used Item"></div>
+          <svg class="dash-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="dash-card__body">
+        <div class="dash-filter-row">
+          <select class="dash-select"><option>Property</option><option>Stock</option></select>
+        </div>
+        <div class="dash-filter-row"><input type="text" class="dash-input dash-search" data-table="tbl-top10" placeholder="Search…" /></div>
+        <div class="dash-view-wrap">
+          <div class="dash-table-wrap">
+            <table class="dash-tbl" id="tbl-top10">
+              <thead><tr><th>Item Code</th><th>Description</th><th>Value</th></tr></thead>
+              <tbody><tr><td colspan="3" class="dash-empty">No data available in table</td></tr></tbody>
+            </table>
+          </div>
+          <div class="dash-chart-wrap" style="display:none"><canvas class="dash-chart-canvas"></canvas></div>
+        </div>
+        <div class="dash-table-footer"><span>Showing 0 to 0 of 0 entries</span><span class="dash-pager">Previous &nbsp; Next</span></div>
+      </div>
+    </div>
+
+    <!-- Pending Verification -->
+    <div class="dash-card dash-mb" id="card-pendingverif2">
+      <div class="dash-card__head dash-collapsible">
+        <span>Pending Verification</span>
+        <svg class="dash-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="dash-card__body">
+        <div class="dash-tiles-row">
+          <div class="dash-tile dash-tile--teal"> <div class="dash-tile__num">121</div><div class="dash-tile__lbl">Goods Receive</div>      <div class="dash-tile__more">More Info. <svg xmlns="http://www.w3.org/2000/svg" width="1.1em" height="1.1em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m13 6l6 6l-6 6M5 6l6 6l-6 6"/></svg></div></div>
+          <div class="dash-tile dash-tile--green"> <div class="dash-tile__num">2</div>  <div class="dash-tile__lbl">Property Issuance</div> <div class="dash-tile__more">More Info. <svg xmlns="http://www.w3.org/2000/svg" width="1.1em" height="1.1em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m13 6l6 6l-6 6M5 6l6 6l-6 6"/></svg></div></div>
+          <div class="dash-tile dash-tile--amber"> <div class="dash-tile__num">0</div>  <div class="dash-tile__lbl">Property Transfer</div> <div class="dash-tile__more">More Info. <svg xmlns="http://www.w3.org/2000/svg" width="1.1em" height="1.1em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m13 6l6 6l-6 6M5 6l6 6l-6 6"/></svg></div></div>
+          <div class="dash-tile dash-tile--red">   <div class="dash-tile__num">0</div>  <div class="dash-tile__lbl">Property Request</div>  <div class="dash-tile__more">More Info. <svg xmlns="http://www.w3.org/2000/svg" width="1.1em" height="1.1em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m13 6l6 6l-6 6M5 6l6 6l-6 6"/></svg></div></div>
+          <div class="dash-tile dash-tile--blue">  <div class="dash-tile__num">0</div>  <div class="dash-tile__lbl">Property Return</div>   <div class="dash-tile__more">More Info. <svg xmlns="http://www.w3.org/2000/svg" width="1.1em" height="1.1em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m13 6l6 6l-6 6M5 6l6 6l-6 6"/></svg></div></div>
+          <div class="dash-tile dash-tile--gray">  <div class="dash-tile__num">0</div>  <div class="dash-tile__lbl">Property Disposal</div> <div class="dash-tile__more">More Info. <svg xmlns="http://www.w3.org/2000/svg" width="1.1em" height="1.1em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m13 6l6 6l-6 6M5 6l6 6l-6 6"/></svg></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- My Items -->
+    <div class="dash-card dash-mb" id="card-myitems">
+      <div class="dash-card__head dash-collapsible">
+        <span>My Items</span>
+        <div class="dash-head-right">
+          <div class="tbar" data-table="tbl-myitems" data-title="My Items"></div>
+          <svg class="dash-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="dash-card__body">
+        <div class="dash-filter-row"><input type="text" class="dash-input dash-search" data-table="tbl-myitems" placeholder="Search…" /></div>
+        <div class="dash-view-wrap">
+          <div class="dash-table-wrap dash-table-wrap--scroll">
+            <table class="dash-tbl" id="tbl-myitems" style="min-width:800px;">
+              <thead><tr><th>Item Type</th><th>Item Code</th><th>Property #</th><th>Description</th><th>Serial #</th><th>Quantity</th><th>Classification</th><th>Category</th><th>Brand</th><th>Model</th><th>Status</th></tr></thead>
+              <tbody><tr><td colspan="11" class="dash-empty">No data available in table</td></tr></tbody>
+            </table>
+          </div>
+          <div class="dash-chart-wrap" style="display:none"><canvas class="dash-chart-canvas"></canvas></div>
+        </div>
+        <div class="dash-table-footer"><span>Showing 0 to 0 of 0 entries</span><span class="dash-pager">Previous &nbsp; Next</span></div>
+      </div>
+    </div>
+
+    <!-- Property Masterlist -->
+    <div class="dash-card dash-mb" id="card-propmaster">
+      <div class="dash-card__head dash-collapsible">
+        <span>Property Masterlist</span>
+        <div class="dash-head-right">
+          <span class="dash-card__count">1,000 entries</span>
+          <div class="tbar" data-table="tbl-propmaster" data-title="Property Masterlist"></div>
+          <svg class="dash-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="dash-card__body">
+        <div class="dash-filter-row"><input type="text" class="dash-input dash-search" data-table="tbl-propmaster" placeholder="Search…" /></div>
+        <div class="dash-view-wrap">
+          <div class="dash-table-wrap dash-table-wrap--scroll">
+            <table class="dash-tbl dash-tbl--property" id="tbl-propmaster" style="min-width:1100px;">
+              <thead><tr><th>Item Code</th><th>Description</th><th>Property #</th><th>Long Description</th><th>Serial #</th><th>Classification</th><th>Category</th><th>Brand</th><th>Model</th><th>PR #</th><th>PO #</th><th>Invoice #</th><th>DR #</th><th>Issuance #</th><th>Issued To</th><th>Region</th><th>Branch</th><th>Office</th><th>Acquired Date</th></tr></thead>
+              <tbody>
+                <tr><td class="dash-icode--property">SWITCHGEAR</td><td class="dash-truncate">ABB Medium Voltage Switchgear 13.8KV…</td><td>2024-10605010-0004-05</td><td>ABB Medium Voltage Switchgear</td><td>NA</td><td>SWITCHGEAR</td><td>MACHINERY</td><td>ABB</td><td class="dash-truncate">ABB Medium Voltage…</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>LIZA RABENA</td><td>NCR</td><td>STUDIO 7</td><td>IMB-OBD</td><td>12/29/2022</td></tr>
+                <tr><td class="dash-icode--property">LAPTOP-003</td><td class="dash-truncate">Processor Intel Corei5 1135G7…</td><td>2025-10405030-0040-01</td><td>Travelmate TMP414-51-59KM</td><td>NXVP2SP00B…</td><td>LAPTOP</td><td>ICT EQUIPMENT</td><td>ACER</td><td class="dash-truncate">Travelmate TMP414…</td><td>101-2024-07-0419</td><td>101-2024-12-0675</td><td>202815</td><td>197310</td><td></td><td>BERNA JOY MONTEMAYOR</td><td>NCR</td><td>CP GARCIA</td><td></td><td>1/9/2025</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="dash-chart-wrap" style="display:none"><canvas class="dash-chart-canvas"></canvas></div>
+        </div>
+        <div class="dash-table-footer"><span>Showing 1 to 10 of 1,000 entries</span><span class="dash-pager">Previous &nbsp; 1 &nbsp; 2 &nbsp; 3 &nbsp; … &nbsp; 100 &nbsp; Next</span></div>
+      </div>
+    </div>
+
+    <!-- Stock Masterlist -->
+    <div class="dash-card dash-mb" id="card-stockmaster">
+      <div class="dash-card__head dash-collapsible">
+        <span>Stock Masterlist</span>
+        <div class="dash-head-right">
+          <span class="dash-card__count">14 entries</span>
+          <div class="tbar" data-table="tbl-stockmaster" data-title="Stock Masterlist"></div>
+          <svg class="dash-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="dash-card__body">
+        <div class="dash-filter-row"><input type="text" class="dash-input dash-search" data-table="tbl-stockmaster" placeholder="Search…" /></div>
+        <div class="dash-view-wrap">
+          <div class="dash-table-wrap dash-table-wrap--scroll">
+            <table class="dash-tbl dash-tbl--stock" id="tbl-stockmaster">
+              <thead><tr><th>Item Code</th><th>Description</th><th>Quantity</th><th>Unit</th><th>Custodian Type</th><th>Region</th><th>Min. Stock Level</th></tr></thead>
+              <tbody>
+                <tr><td class="dash-icode--stock">ALCO-10404010-0002</td><td>ALCOHOL, Ethyl, 1 Gallon</td><td>50</td><td>GALLON</td><td>Common-Use Office Supplies and Equipment</td><td>NCR</td><td>0</td></tr>
+                <tr><td class="dash-icode--stock">BOOTS-10404990-0001</td><td>Rain Boots</td><td>10</td><td>PAIRS</td><td>Common-Use Office Supplies and Equipment</td><td>NCR</td><td>0</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="dash-chart-wrap" style="display:none"><canvas class="dash-chart-canvas"></canvas></div>
+        </div>
+        <div class="dash-table-footer"><span>Showing 1 to 10 of 14 entries</span><span class="dash-pager">Previous &nbsp; 1 &nbsp; 2 &nbsp; Next</span></div>
+      </div>
+    </div>
+
+  </div><!-- /#page-body -->
+
+  <!-- Page-specific script — runs after layout is ready -->
+  <script src="dashboard.js"></script>
+
+</body>
+</html>

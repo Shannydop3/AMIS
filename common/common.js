@@ -4,6 +4,20 @@
 
   'use strict';
 
+  // ── HTML escape (XSS guard) ──────────────────
+  // Use whenever untrusted text is interpolated into an innerHTML template.
+  // Exposed as window.escapeHtml so page scripts can share it.
+  function escapeHtml(value) {
+    if (value === null || value === undefined) return '';
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+  window.escapeHtml = escapeHtml;
+
   // ── Toast Notifications ──────────────────────
   const Toast = (() => {
     let container;
@@ -41,10 +55,12 @@ const icons = {
 
       const toast = document.createElement('div');
       toast.className = `toast ${type}`;
+      // Icon markup is trusted (defined above); message is treated as plain text.
       toast.innerHTML = `
         <span class="toast-icon">${icons[type] || icons.info}</span>
-        <span>${message}</span>
+        <span class="toast-message"></span>
       `;
+      toast.querySelector('.toast-message').textContent = message == null ? '' : String(message);
       container.appendChild(toast);
 
       setTimeout(() => {
@@ -73,8 +89,9 @@ const icons = {
       loader.id = 'page-loader';
       loader.innerHTML = `
         <div class="loader-spinner"></div>
-        <span class="loader-text">${text}</span>
+        <span class="loader-text"></span>
       `;
+      loader.querySelector('.loader-text').textContent = text == null ? 'Loading...' : String(text);
       document.body.appendChild(loader);
     }
 

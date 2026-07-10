@@ -98,10 +98,24 @@ togglePwdBtn.addEventListener('click', () => {
   // ── Mock Login Function ─────────────────────
   // Replace this with your actual API call:
   // const res = await fetch('/api/auth/login', { method: 'POST', ... })
+  //
+  // SECURITY: The demo credentials below are ONLY accepted when the page is
+  // served from a local development origin (localhost / 127.0.0.1 / file://).
+  // On any other host the mock login returns "not configured" so this file is
+  // safe to publish to a public repo without exposing usable accounts.
+  const DEMO_ALLOWED_HOSTS = ['localhost', '127.0.0.1', '::1', ''];
+
   async function mockLogin(username, password) {
     await delay(1200); // simulate network
 
-    // Demo credentials (remove in production)
+    if (!DEMO_ALLOWED_HOSTS.includes(location.hostname)) {
+      return {
+        success: false,
+        message: 'Login backend is not configured on this host.'
+      };
+    }
+
+    // Demo credentials — local development only.
     const DEMO_USERS = [
       { username: 'admin',         password: 'admin123', name: 'Admin User',   role: 'Administrator', email: 'admin@dict.gov.ph' },
       { username: 'dict.user',     password: 'dict1234', name: 'DICT Staff',   role: 'Staff',         email: 'staff@dict.gov.ph' },

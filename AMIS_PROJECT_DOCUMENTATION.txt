@@ -803,7 +803,12 @@ project-root/
 ================================================================================
 
   These are hardcoded in login.js mockLogin() for development only.
-  REMOVE before deploying to production.
+  REMOVE (or replace with a real /api/auth/login call) before deploying.
+
+  As of the latest security pass, the demo login is GATED by hostname and
+  is only accepted when the page is served from one of:
+      localhost, 127.0.0.1, ::1, or the file:// scheme
+  On any other host mockLogin() returns "Login backend is not configured".
 
   Username              Password      Name            Role
   ─────────────────     ──────────    ─────────────   ─────────────
@@ -825,14 +830,38 @@ project-root/
   - Views Page "Export" button → "Export coming soon" toast
   - Views Page search input → wired but not connected to data
   - Operation Module search input → wired but not connected to data
-  - System page → empty stub
-  - User Management page → empty stub
-  - Sticker Tag page → empty stub
+  - System page → HAS content (system.js) — no longer an empty stub
+  - User Management page → HAS content (user-management.js) — no longer an empty stub
+  - Sticker Tag page → HAS content (sticker-tag.js) — no longer an empty stub
   - Notification bell in header → "Notification panel coming soon" toast
   - All op sub-views → onLoad() is console.log only, no real data
   - All view sub-views → onLoad() is console.log only, no real data
   - Pagination (Previous / Next) in tables → display only, not functional
   - Real API integration → all data is static HTML or mock JS arrays
+
+
+================================================================================
+  13. SECURITY NOTES (2026-07 hardening pass)
+================================================================================
+
+  Applied fixes:
+    - common.js now exposes window.escapeHtml() and Toast/Loader use
+      textContent for user-supplied strings (was innerHTML).
+    - login.js DEMO_USERS is gated to local hostnames only.
+    - Chart.js <script> tags in dashboard.html and views.html now include
+      Subresource Integrity (SRI sha512) and crossorigin="anonymous".
+    - Root .gitignore and .gitattributes added (ignore .vscode/.env/logs,
+      normalize line endings to LF).
+
+  Still outstanding (require a real backend):
+    - Auth.requireAuth() is a JS-only redirect and can be bypassed. All
+      access control MUST be re-enforced server-side once an API exists.
+    - Session is kept in sessionStorage (plaintext, JS-accessible). Move to
+      httpOnly, Secure, SameSite=Lax cookies with the real backend.
+    - Many page scripts still build rows via `tbody.innerHTML = data.map(...)`.
+      When real (potentially untrusted) data is wired in, run every value
+      through window.escapeHtml() before interpolation.
+    - No Content-Security-Policy header is set (static hosting task).
 
 
 ================================================================================

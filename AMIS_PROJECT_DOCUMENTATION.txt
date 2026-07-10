@@ -924,16 +924,21 @@ project-root/
       Dashboard KPI tiles wired to live COUNT(*) queries against
       property_records, stock_records, property_requests,
       inventory_counts.
-    Phase 3b (not started):
-      Operation Module — 20 sub-views currently render forms but the
-      Save buttons only toast. Wiring:
-        1. Populate reference dropdowns (custodian, supplier, region,
-           branch, users) from Supabase instead of _op_helpers.js constants.
-        2. Replace each Save button's onclick with a real INSERT into
-           the corresponding operational table (schema already exists).
-        3. Add a "History" list at the bottom of each sub-view.
-      Recommended order: goods-receive, tagging, property-issuance,
-      stock-issuance, property-request, stock-request, then the rest.
+    Phase 3b (partial, commit 8e8ff32 + follow-up):
+      Operation Module — reference-data dropdowns (regions, branches,
+      offices, custodian types, suppliers, users) now load from
+      Supabase via _OP_bootstrapRefs() in ops/_op_helpers.js.
+      Shared helpers _OP_saveHeader() and _OP_loadHistory() do the
+      insert + history-list plumbing for every sub-view.
+      Wired end-to-end:
+        - Goods Receive         (goods_receipts)
+        - Property Request      (property_requests)
+        - Stock Request         (stock_requests)
+      The other 17 sub-views still have static Toast stubs on their
+      Save buttons — porting each follows the exact pattern in
+      goods-receive.js / property-request.js: give the Save button an
+      id, wire it in a _*_wireActions(container) hook, and add a
+      _*_loadHistory(container) call that renders a tbody.
     Phase 4 (not started):
       Views (26 sub-views under pages/views/view-list/). Each view
       currently ships label + filterFields + columns; needs an

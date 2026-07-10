@@ -954,11 +954,15 @@ project-root/
       Only header rows are inserted — line items (property_records or
       stock_items picking) still need UI wiring (bulk-select tables).
       Property Information is a read-only lookup page; still stubbed.
-    Phase 4 (not started):
-      Views (26 sub-views under pages/views/view-list/). Each view
-      currently ships label + filterFields + columns; needs an
-      onLoad(ctx) that runs a SELECT and paints rows. Once operational
-      tables have data (Phase 3b), each view is ~30 lines of code.
+    Phase 4 (done, Phase 4 commit — see git log):
+      Views page — 26 view sub-configs each register an onLoad()
+      that calls window._V_loadTable(...). Wire-ups live in
+      pages/views/view-list/_v_wireups.js (single file, no per-view
+      changes needed). The shared helper _V_loadTable is defined
+      in views-helper.js and paints #views-tbody with rows returned
+      from a Supabase SELECT (with embedded FK aliases where useful).
+      Fixed load-order bug: views.html now correctly loads
+      view-list/views-helper.js (was `views-helper.js` at root).
     Phase 5 (not started):
       Audit trail — insert rows into public.audit_trail from every
       INSERT/UPDATE/DELETE across the app. Cleanest via Postgres

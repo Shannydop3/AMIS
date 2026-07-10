@@ -904,12 +904,76 @@ project-root/
            where email = 'you@dict.gov.ph';
 
   Migration phases:
-    Phase 1 (next commit):  Wire login/signup/logout/password-reset to
-                            supabase.auth. mockLogin() is removed.
-    Phase 2:                Files Data page reads/writes master tables.
-    Phase 3:                Operation Module CRUD.
-    Phase 4:                Views (masterlists + histories) query real data.
-    Phase 5:                Audit trail + notifications.
+    Phase 1 (done, commit 22e94b9 / a1f0937):
+      Wire login/signup/logout/password-reset to supabase.auth.
+      mockLogin() replaced. Session cached in localStorage 'amis.auth'
+      by Supabase, plus a UI-visible mirror in sessionStorage 'amis_session'.
+    Phase 2 (done, commit e66c348):
+      Files Data page reads/writes 18 master tables via
+      pages/files-data/files-data-db.js. FK dropdowns resolve names
+      to ids automatically on save and back to names on load.
+    Phase 3a (done, commit 6a9d512):
+      Profile page — edit full_name / email / password against
+      supabase.auth + public.profiles. Layout header re-populates
+      via the 'amis:auth-ready' event.
+      User Management — real list of profiles + role/is_active edit
+      + password-reset email. "Add User" is disabled by design:
+      new users must be invited via Supabase Dashboard → Auth → Users
+      (anon key cannot create auth accounts). "Force Sign Out" is a
+      no-op with an info toast for the same reason.
+      Dashboard KPI tiles wired to live COUNT(*) queries against
+      property_records, stock_records, property_requests,
+      inventory_counts.
+    Phase 3b (not started):
+      Operation Module — 20 sub-views currently render forms but the
+      Save buttons only toast. Wiring:
+        1. Populate reference dropdowns (custodian, supplier, region,
+           branch, users) from Supabase instead of _op_helpers.js constants.
+        2. Replace each Save button's onclick with a real INSERT into
+           the corresponding operational table (schema already exists).
+        3. Add a "History" list at the bottom of each sub-view.
+      Recommended order: goods-receive, tagging, property-issuance,
+      stock-issuance, property-request, stock-request, then the rest.
+    Phase 4 (not started):
+      Views (26 sub-views under pages/views/view-list/). Each view
+      currently ships label + filterFields + columns; needs an
+      onLoad(ctx) that runs a SELECT and paints rows. Once operational
+      tables have data (Phase 3b), each view is ~30 lines of code.
+    Phase 5 (not started):
+      Audit trail — insert rows into public.audit_trail from every
+      INSERT/UPDATE/DELETE across the app. Cleanest via Postgres
+      triggers rather than client-side calls.
+
+  Design decisions (locked in this migration, see also section 15):
+    - Auth: Administrator-invites-only. No public signup.
+    - Approvals: role = 'Administrator' required.
+    - Transaction numbers: user-entered free text (no sequences).
+    - Deletes: hard delete; audit trail records the action.
+
+
+================================================================================
+  15. USER ROLES & PERMISSIONS
+================================================================================
+
+  Roles (defined by user_role enum in db/01_schema.sql):
+    Administrator   Full access. Can approve, invite users, edit master
+                    data, modify any record. Only role that RLS allows to
+                    write to reference/operational tables.
+    Staff           Regular user. Can read all data, submit requests,
+                    tag their own property issuances. Cannot approve.
+    Viewer          Read-only. Cannot submit or edit anything.
+
+  How to promote a user to Administrator:
+    Supabase Dashboard → SQL Editor:
+      update public.profiles set role='Administrator'
+       where email='them@dict.gov.ph';
+
+  How to invite a new user (admins only):
+    Supabase Dashboard → Authentication → Users → Add user
+      → Create new user → email + password → check "Auto Confirm User"
+      → Create user.
+    The public.handle_new_user() trigger auto-creates the
+    matching public.profiles row with role='Staff'.
 
 
 ================================================================================

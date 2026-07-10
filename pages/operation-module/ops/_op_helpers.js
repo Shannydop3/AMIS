@@ -222,12 +222,171 @@ function _fieldNumber(label, id, ph, req, min, max) {
   </div>`;
 }
 
-/* ── Common data ─────────────────────────── */
-var _REGIONS  = ['NCR','Region I','Region II','Region III','Region IV-A','Region IV-B','Region V','Region VI','Region VII','Region VIII','Region IX','Region X','Region XI','Region XII','CARAGA','CAR','BARMM'];
-var _BRANCHES = ['CP Garcia','Studio 7','Vitro Makati','Region I Office','Region II Office','Region III Office'];
-var _OFFICES  = ['IMB-OBD','VITRO MAKATI','GSD','ORD'];
-var _USERS    = ['ARBIE FLORES','JOVILYN MENDOZA','BERNA JOY MONTEMAYOR','JOHN PATRICK DAGUISO','LIZA RABENA'];
-var _CUSTODIAN_TYPES = ['Common-Use Office Supplies and Equipment','Property Plant and Equipment','Semi-Expendable'];
+/* ── Common data (populated at bootstrap by _OP_bootstrapRefs) ─── */
+var _REGIONS         = [];
+var _BRANCHES        = [];
+var _OFFICES         = [];
+var _USERS           = [];
+var _CUSTODIAN_TYPES = [];
+var _SUPPLIERS       = [];
+var _UOMS            = [];
+
+// Same data indexed as name → id for FK resolution at save time.
+var _OP_REF_IDS = {
+  regions: {}, branches: {}, offices: {}, profiles: {},
+  custodian_types: {}, suppliers: {}, units_of_measurement: {}
+};
+
+// Fallback demo data (used when Supabase isn't configured or query fails).
+var _OP_FALLBACK = {
+  regions:  ['NCR','Region I','Region II','Region III'],
+  branches: ['CP Garcia','Studio 7','Vitro Makati'],
+  offices:  ['IMB-OBD','VITRO MAKATI','GSD','ORD'],
+  users:    ['Admin User'],
+  custodian_types: ['Property Plant and Equipment','Semi-Expendable'],
+  suppliers: [],
+  uoms:      ['Piece','Set','Box']
+};
+
+/**
+ * _OP_bootstrapRefs()
+ *   Fills the _REGIONS / _BRANCHES / etc. arrays (and _OP_REF_IDS)
+ *   from Supabase. Safe to call multiple times. operation-module.js
+ *   awaits this before calling any op sub-view's onLoad().
+ */
+async function _OP_bootstrapRefs(force) {
+  if (_OP_bootstrapRefs._done && !force) return;
+  _OP_bootstrapRefs._done = true;
+
+  const client = window.AMIS_READY ? await window.AMIS_READY : null;
+  if (!client) {
+    _REGIONS         = _OP_FALLBACK.regions.slice();
+    _BRANCHES        = _OP_FALLBACK.branches.slice();
+    _OFFICES         = _OP_FALLBACK.offices.slice();
+    _USERS           = _OP_FALLBACK.users.slice();
+    _CUSTODIAN_TYPES = _OP_FALLBACK.custodian_types.slice();
+    _SUPPLIERS       = _OP_FALLBACK.suppliers.slice();
+    _UOMS            = _OP_FALLBACK.uoms.slice();
+    return;
+  }
+
+  async function pull(table, displayCol) {
+    const { data, error } = await client.from(table).select('id, ' + displayCol).order(displayCol);
+    if (error) { console.warn('[op-refs] load ' + table + ' failed', error); return []; }
+    const map = {};
+    data.forEach(function (r) { map[r[displayCol]] = r.id; });
+    _OP_REF_IDS[table] = map;
+    return data.map(function (r) { return r[displayCol]; });
+  }
+
+  const [regions, branches, offices, custodians, suppliers, uoms, profiles] = await Promise.all([
+    pull('regions', 'name'),
+    pull('branches', 'name'),
+    pull('offices', 'name'),
+    pull('custodian_types', 'name'),
+    pull('suppliers', 'name'),
+    pull('units_of_measurement', 'name'),
+    (async () => {
+      const { data, error } = await client
+        .from('profiles')
+        .select('id, full_name, email, is_active')
+        .eq('is_active', true)
+        .order('full_name');
+      if (error) { console.warn('[op-refs] load profiles failed', error); return []; }
+      const map = {};
+      const names = data.map(function (p) {
+        const label = (p.full_name || (p.email || '').split('@')[0]).toUpperCase();
+        map[label] = p.id;
+        return label;
+      });
+      _OP_REF_IDS.profiles = map;
+      return names;
+    })()
+  ]);
+
+  _REGIONS         = regions.length         ? regions         : _OP_FALLBACK.regions.slice();
+  _BRANCHES        = branches.length        ? branches        : _OP_FALLBACK.branches.slice();
+  _OFFICES         = offices.length         ? offices         : _OP_FALLBACK.offices.slice();
+  _CUSTODIAN_TYPES = custodians.length      ? custodians      : _OP_FALLBACK.custodian_types.slice();
+  _SUPPLIERS       = suppliers.length       ? suppliers       : _OP_FALLBACK.suppliers.slice();
+  _UOMS            = uoms.length            ? uoms            : _OP_FALLBACK.uoms.slice();
+  _USERS           = profiles.length        ? profiles        : _OP_FALLBACK.users.slice();
+}
+
+/**
+ * _OP_saveHeader({ table, fields, extra, container })
+ *   Reads form fields, resolves FK name→id via _OP_REF_IDS,
+ *   inserts into `table`, and returns the created row.
+ *
+ *   fields = [
+ *     { id: 'gr-pr-no',    db: 'pr_number' },
+ *     { id: 'gr-supplier', db: 'supplier_id', fk: 'suppliers' },
+ *     { id: 'gr-date',     db: 'received_at' },      // dates: value passed through
+ *     { id: 'gr-remarks',  db: 'remarks' },
+ *   ]
+ *   extra = static columns to always set, e.g. { status: 'Received' }
+ */
+async function _OP_saveHeader(cfg) {
+  const client = window.AMIS_READY ? await window.AMIS_READY : null;
+  if (!client) throw new Error('Database is not configured.');
+
+  const row = Object.assign({}, cfg.extra || {});
+  for (const f of cfg.fields) {
+    const el = document.getElementById(f.id);
+    if (!el) continue;
+    let val = el.value == null ? '' : String(el.value).trim();
+    if (!val) { row[f.db] = null; continue; }
+    if (f.fk) {
+      const map = _OP_REF_IDS[f.fk] || {};
+      row[f.db] = map[val] || null;
+    } else if (f.number) {
+      const n = Number(val);
+      row[f.db] = Number.isFinite(n) ? n : null;
+    } else {
+      row[f.db] = val;
+    }
+  }
+
+  const { data, error } = await client
+    .from(cfg.table)
+    .insert(row)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * _OP_loadHistory({ table, container, columns, rowFn })
+ *   Renders a "History" list of the most recent 20 records
+ *   from `table` into container.
+ */
+async function _OP_loadHistory(cfg) {
+  const client = window.AMIS_READY ? await window.AMIS_READY : null;
+  const tbody  = cfg.container.querySelector('#' + cfg.tbodyId);
+  if (!tbody) return;
+  if (!client) {
+    tbody.innerHTML = '<tr><td colspan="' + cfg.columns.length + '" class="dash-empty">Database not configured.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = '<tr><td colspan="' + cfg.columns.length + '" class="dash-empty">Loading…</td></tr>';
+  try {
+    let q = client.from(cfg.table).select(cfg.select || '*').order('created_at', { ascending: false }).limit(20);
+    const { data, error } = await q;
+    if (error) throw error;
+    if (!data.length) {
+      tbody.innerHTML = '<tr><td colspan="' + cfg.columns.length + '" class="dash-empty">No records yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = data.map(function (r) {
+      const cells = cfg.rowFn(r).map(function (c) { return '<td>' + (c == null ? '—' : c) + '</td>'; }).join('');
+      return '<tr>' + cells + '</tr>';
+    }).join('');
+  } catch (err) {
+    console.error('[op] history load failed', err);
+    tbody.innerHTML = '<tr><td colspan="' + cfg.columns.length + '" class="dash-empty">Failed to load history: ' + (err.message || 'error') + '</td></tr>';
+  }
+}
 
 /* ──────────────────────────────────────────
    SHARED HTML BLOCKS

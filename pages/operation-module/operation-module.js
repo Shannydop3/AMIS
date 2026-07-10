@@ -19,7 +19,7 @@
   var currentKey  = null;
 
   /* ── Load a sub-view ────────────────────── */
-  function loadOp(key) {
+  async function loadOp(key) {
     var view = (window.OP_VIEWS || {})[key];
     if (!view) {
       Toast.show('Operation "' + key + '" not found.', 'error');
@@ -46,10 +46,18 @@
     landing.style.display      = 'none';
     contentCard.style.display  = '';
 
+    /* Ensure Supabase reference dropdowns are ready before rendering the form. */
+    try {
+      if (typeof _OP_bootstrapRefs === 'function') await _OP_bootstrapRefs();
+    } catch (e) { console.warn('[op] refs bootstrap failed', e); }
+
     /* Clear container and call onLoad */
     container.innerHTML = '';
-    if (typeof view.onLoad === 'function') {
-      view.onLoad(container);
+    try {
+      if (typeof view.onLoad === 'function') view.onLoad(container);
+    } catch (err) {
+      console.error('[op] onLoad failed for ' + key, err);
+      container.innerHTML = '<div style="padding:16px;color:#b91c1c;">Failed to render this operation: ' + (err.message || err) + '</div>';
     }
 
     /* Scroll to top of content */

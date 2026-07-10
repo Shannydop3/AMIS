@@ -545,6 +545,14 @@
 
     /* ── Signal page scripts that layout is ready ── */
     document.dispatchEvent(new CustomEvent('amis:layout-ready'));
+
+    /* ── Hide the boot loader once layout is ready.
+       (Belt-and-suspenders: common.js also schedules a hide on
+       window.load, but layout.js is what injected the loader in the
+       first place so we take responsibility for hiding it too.) */
+    if (typeof Loader !== 'undefined') {
+      setTimeout(function () { Loader.hide(); }, 100);
+    }
   });
 
 }());

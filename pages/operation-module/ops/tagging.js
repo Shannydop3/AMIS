@@ -3,9 +3,89 @@ window.OP_VIEWS = window.OP_VIEWS || {};
 window.OP_VIEWS['tagging'] = {
   label:'Tagging / Re-tagging', group:'Receiving & Tagging',
   columns:['Tag No.','Date Tagged','Property No.','Description','Tagged By','Location','Tag Type','Remarks'],
-  onLoad:function(c){c.innerHTML=_TAG_html();_OP_wireCards(c);_OP_wireTabs(c);_OP_wireSearch(c);_OP_wireAddBtns(c);},
+  onLoad:function(c){
+    c.innerHTML=_TAG_html();
+    _OP_wireCards(c);_OP_wireTabs(c);_OP_wireSearch(c);_OP_wireAddBtns(c);
+    _TAG_wireActions(c);
+    _TAG_loadHistory(c);
+  },
   onUnload:function(){}
 };
+
+function _TAG_wireActions(container) {
+  const saveBtn  = container.querySelector('#tag-save');
+  const resetBtn = container.querySelector('#tag-reset');
+  if (saveBtn) saveBtn.addEventListener('click', async () => {
+    saveBtn.disabled = true;
+    try {
+      const client = await window.AMIS_READY;
+      if (!client) throw new Error('Database not configured.');
+
+      const activeTab = container.querySelector('.op-tab-panel.active')?.id || 'tag-gr-tab';
+      let propertyNumber = null;
+      let printerName    = null;
+
+      if (activeTab === 'tag-prop-tab') {
+        propertyNumber = (document.getElementById('tag-prop-no')||{}).value?.trim() || null;
+        printerName    = (document.getElementById('tag-prop-by')||{}).value || null;
+      } else if (activeTab === 'tag-stock-tab') {
+        printerName    = (document.getElementById('tag-stock-by')||{}).value || null;
+      } else {
+        printerName    = (document.getElementById('tag-gr-by')||{}).value || null;
+      }
+
+      let propertyRecordId = null;
+      if (propertyNumber) {
+        const { data: rec } = await client
+          .from('property_records')
+          .select('id')
+          .eq('property_number', propertyNumber)
+          .maybeSingle();
+        propertyRecordId = rec?.id || null;
+        if (!propertyRecordId) throw new Error(`Property number "${propertyNumber}" not found in property_records.`);
+      }
+
+      const { error } = await client.from('taggings').insert({
+        property_record_id: propertyRecordId,
+        printer_name: printerName
+      });
+      if (error) throw error;
+
+      Toast.show('Tag record saved.', 'success');
+      _TAG_loadHistory(container);
+    } catch (err) {
+      console.error('[tag] save failed', err);
+      Toast.show(err.message || 'Failed to save tag record.', 'error');
+    } finally {
+      saveBtn.disabled = false;
+    }
+  });
+  if (resetBtn) resetBtn.addEventListener('click', () => {
+    container.querySelectorAll('.op-control').forEach(el => {
+      if (el.readOnly) return;
+      if (el.tagName === 'SELECT') { el.selectedIndex = 0; return; }
+      el.value = '';
+    });
+    Toast.show('Form reset.', 'info', 1500);
+  });
+}
+
+function _TAG_loadHistory(container) {
+  return _OP_loadHistory({
+    table: 'taggings',
+    container: container,
+    tbodyId: 'tag-rec-tbody',
+    columns: ['Property No.','Printer','IP Address','Created'],
+    select: 'id, printer_name, ip_address, created_at, property:property_records(property_number, description)',
+    rowFn: r => [
+      '<strong>' + (r.property?.property_number || '—') + '</strong>',
+      r.property?.description || '—',
+      r.printer_name || '—',
+      new Date(r.created_at).toLocaleString()
+    ]
+  });
+}
+
 function _TAG_html(){return`
 <style>${_OP_sharedCSS()}</style>
 ${_card('tag-details','<path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42z"/><circle cx="5.5" cy="5.5" r="1.5"/>','Tagging Details','',`
@@ -65,8 +145,8 @@ ${_card('tag-details','<path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1
 `,true)}
 <div class="op-action-bar">
   <div class="op-action-bar__left">
-    <button class="op-btn op-btn--primary" onclick="_OP_quickSave('tagging')">${_icon('<path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v14a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>')} Save</button>
-    <button class="op-btn op-btn--secondary" onclick="Toast.show('Form reset.','info')">${_icon('<polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>')} Reset</button>
+    <button class="op-btn op-btn--primary" id="tag-save">${_icon('<path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v14a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>')} Save Tag</button>
+    <button class="op-btn op-btn--secondary" id="tag-reset">${_icon('<polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>')} Reset</button>
   </div>
   <div class="op-action-bar__right">
     <button class="op-btn op-btn--teal" onclick="Toast.show('Print tag coming soon.','info')">${_icon('<polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>')} Print Tag</button>
@@ -76,8 +156,8 @@ ${_card('tag-records','<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" 
   ${_tableToolbar('tag-rec-search')}
   <div class="dash-table-wrap dash-table-wrap--scroll">
     <table class="dash-tbl" style="min-width:820px;">
-      <thead><tr><th>Tag No.</th><th>Date Tagged</th><th>Property No.</th><th>Description</th><th>Tag Type</th><th>Tagged By</th><th>Location</th><th>Status</th><th>Actions</th></tr></thead>
-      <tbody><tr><td colspan="9" class="dash-empty">No records found.</td></tr></tbody>
+      <thead><tr><th>Property No.</th><th>Description</th><th>Printer</th><th>Created</th></tr></thead>
+      <tbody id="tag-rec-tbody"><tr><td colspan="4" class="dash-empty">Loading…</td></tr></tbody>
     </table>
   </div>
   ${_tableFooter('tag-rec')}

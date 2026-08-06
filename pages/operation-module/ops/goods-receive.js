@@ -11,10 +11,98 @@ window.OP_VIEWS['goods-receive'] = {
     c.innerHTML = _GR_html();
     _OP_wireCards(c); _OP_wireTabs(c); _OP_wireSearch(c); _OP_wireAddBtns(c);
     _GR_wireActions(c);
+    _GR_loadItemCatalogs(c);
     _GR_loadHistory(c);
   },
   onUnload: function(){}
 };
+
+async function _GR_loadItemCatalogs(container) {
+  const client = window.AMIS_READY ? await window.AMIS_READY : null;
+  if (!client) return;
+  try {
+    const [propRes, stockRes] = await Promise.all([
+      client.from('property_items').select('id, item_code, description, brand:brands(name), model:models(name)').order('item_code'),
+      client.from('stock_items').select('id, item_code, description, unit:units_of_measurement(name)').order('item_code')
+    ]);
+    _GR_renderCatalog(container, 'gr-prop-tbl', propRes.data || [], /*isStock*/false);
+    _GR_renderCatalog(container, 'gr-stock-tbl', stockRes.data || [], /*isStock*/true);
+    _GR_wireCatalogInputs(container);
+  } catch (err) {
+    console.error('[gr] catalog load failed', err);
+    Toast.show('Failed to load catalog: ' + (err.message || err), 'error');
+  }
+}
+
+function _GR_renderCatalog(container, tblId, rows, isStock) {
+  const tbl = container.querySelector('#' + tblId);
+  if (!tbl) return;
+  const tbody = tbl.querySelector('tbody');
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="${isStock ? 7 : 8}" class="dash-empty">No ${isStock ? 'stock' : 'property'} items in catalog. Add some via Files Data → ${isStock ? 'Stock' : 'Property'}.</td></tr>`;
+    return;
+  }
+  const numInput = (id) => `<input type="number" min="1" max="999" value="1" class="dash-input gr-qty-input" data-item-id="${id}" style="width:70px">`;
+  const costInput = (id) => `<input type="number" min="0" step="0.01" value="0" class="dash-input gr-cost-input" data-item-id="${id}" style="width:110px">`;
+  const check   = (id) => `<input type="checkbox" class="gr-item-check" data-item-id="${id}" data-tab="${isStock ? 'stock' : 'prop'}">`;
+
+  if (isStock) {
+    tbody.innerHTML = rows.map(r => `
+      <tr data-item-id="${r.id}">
+        <td>${check(r.id)}</td>
+        <td><span class="dash-pill dash-pill--green">${r.item_code || '—'}</span></td>
+        <td>${r.description || '—'}</td>
+        <td>${r.unit?.name || '—'}</td>
+        <td>${numInput(r.id)}</td>
+        <td>${costInput(r.id)}</td>
+        <td>—</td>
+      </tr>`).join('');
+    const thead = tbl.querySelector('thead tr');
+    if (thead && thead.cells.length === 5) {
+      thead.innerHTML = `<th style="width:36px"><input type="checkbox" class="gr-select-all" data-tab="stock"></th><th>Item Code</th><th>Description</th><th>Unit</th><th>Qty</th><th>Unit Cost</th><th>Action</th>`;
+    }
+  } else {
+    tbody.innerHTML = rows.map(r => `
+      <tr data-item-id="${r.id}">
+        <td>${check(r.id)}</td>
+        <td><span class="dash-pill dash-pill--red">${r.item_code || '—'}</span></td>
+        <td>${r.description || '—'}</td>
+        <td>${r.brand?.name || '—'}</td>
+        <td>${r.model?.name || '—'}</td>
+        <td>${numInput(r.id)}</td>
+        <td>${costInput(r.id)}</td>
+        <td>—</td>
+      </tr>`).join('');
+    const thead = tbl.querySelector('thead tr');
+    if (thead && thead.cells.length === 7) {
+      thead.innerHTML = `<th style="width:36px"><input type="checkbox" class="gr-select-all" data-tab="prop"></th><th>Item Code</th><th>Description</th><th>Brand</th><th>Model</th><th>Qty</th><th>Unit Cost</th><th>Action</th>`;
+    }
+  }
+}
+
+function _GR_wireCatalogInputs(container) {
+  const update = () => {
+    const checked = container.querySelectorAll('.gr-item-check:checked');
+    const propCount = container.querySelectorAll('.gr-item-check[data-tab="prop"]:checked').length;
+    const stockCount = container.querySelectorAll('.gr-item-check[data-tab="stock"]:checked').length;
+    const countEl = container.querySelector('#gr-count');
+    if (countEl) countEl.textContent = String(checked.length);
+    const propTabCount = container.querySelector('.op-tab-btn[data-tab="gr-prop-tab"] .op-tab-count');
+    const stockTabCount = container.querySelector('.op-tab-btn[data-tab="gr-stock-tab"] .op-tab-count');
+    if (propTabCount) propTabCount.textContent = String(propCount);
+    if (stockTabCount) stockTabCount.textContent = String(stockCount);
+  };
+  container.addEventListener('change', (e) => {
+    if (e.target.classList.contains('gr-select-all')) {
+      const tab = e.target.dataset.tab;
+      container.querySelectorAll(`.gr-item-check[data-tab="${tab}"]`).forEach(cb => { cb.checked = e.target.checked; });
+    }
+    if (e.target.classList.contains('gr-item-check') || e.target.classList.contains('gr-select-all')) {
+      update();
+    }
+  });
+  update();
+}
 
 function _GR_wireActions(container) {
   const saveBtn  = container.querySelector('#gr-save');
@@ -26,7 +114,7 @@ function _GR_wireActions(container) {
     try {
       const grNumber = (document.getElementById('gr-grr-no') || {}).value ||
                        ('GRR-' + new Date().getFullYear() + '-' + Date.now().toString().slice(-6));
-      await _OP_saveHeader({
+      const header = await _OP_saveHeader({
         table: 'goods_receipts',
         fields: [
           { id: 'gr-supplier',    db: 'supplier_id', fk: 'suppliers' },
@@ -39,7 +127,13 @@ function _GR_wireActions(container) {
           status:    'Received'
         }
       });
-      Toast.show('Goods receive record saved.', 'success');
+
+      const summary = await _GR_persistLineItems(container, header);
+      const bits = [];
+      if (summary.propertyRecords) bits.push(`${summary.propertyRecords} property record(s)`);
+      if (summary.stockLines)     bits.push(`${summary.stockLines} stock line(s)`);
+      const suffix = bits.length ? ' (' + bits.join(', ') + ')' : '';
+      Toast.show('Goods receive saved' + suffix + '.', 'success');
       _GR_loadHistory(container);
     } catch (err) {
       console.error('[gr] save failed', err);
@@ -55,8 +149,114 @@ function _GR_wireActions(container) {
       if (el.tagName === 'SELECT') { el.selectedIndex = 0; return; }
       el.value = '';
     });
+    container.querySelectorAll('.gr-item-check').forEach(cb => cb.checked = false);
+    container.querySelectorAll('.gr-qty-input').forEach(el => el.value = '1');
+    container.querySelectorAll('.gr-cost-input').forEach(el => el.value = '0');
+    _GR_wireCatalogInputs(container);
     Toast.show('Form reset.', 'info', 1500);
   });
+}
+
+// Insert property_records + stock_records + goods_receipt_items after header save.
+async function _GR_persistLineItems(container, header) {
+  const client = await window.AMIS_READY;
+  if (!client) return { propertyRecords: 0, stockLines: 0 };
+
+  const regionId = _OP_REF_IDS.regions?.[(document.getElementById('gr-region')||{}).value] || null;
+  const branchId = _OP_REF_IDS.branches?.[(document.getElementById('gr-branch')||{}).value] || null;
+  const supplierId = _OP_REF_IDS.suppliers?.[(document.getElementById('gr-supplier')||{}).value] || null;
+  const assigneeId = _OP_REF_IDS.profiles?.[(document.getElementById('gr-assigned')||{}).value] || null;
+  const receivedAt = (document.getElementById('gr-date')||{}).value || null;
+
+  // -- Property records ------------------------------------------------------
+  const propRows = Array.from(container.querySelectorAll('#gr-prop-tbl tbody tr[data-item-id]'));
+  const propertyInserts = [];
+  const grItems = [];
+  for (const tr of propRows) {
+    const check = tr.querySelector('.gr-item-check');
+    if (!check?.checked) continue;
+    const itemId = tr.dataset.itemId;
+    const qty = Math.max(1, parseInt(tr.querySelector('.gr-qty-input')?.value || '1', 10));
+    const cost = parseFloat(tr.querySelector('.gr-cost-input')?.value || '0') || null;
+    const code = tr.cells[1]?.textContent.trim();
+    const description = tr.cells[2]?.textContent.trim();
+    for (let i = 0; i < qty; i++) {
+      propertyInserts.push({
+        item_id:            itemId,
+        item_code:          code,
+        description:        description,
+        property_number:    header.gr_number + '-' + String(i + 1).padStart(3, '0') + '-' + String(propertyInserts.length + 1).padStart(3, '0'),
+        supplier_id:        supplierId,
+        region_id:          regionId,
+        branch_id:          branchId,
+        acquired_cost:      cost,
+        date_of_acquisition:receivedAt,
+        assigned_to:        assigneeId,
+        status:             'Active'
+      });
+    }
+  }
+  if (propertyInserts.length) {
+    const { data: prRows, error: prErr } = await client
+      .from('property_records')
+      .insert(propertyInserts)
+      .select('id');
+    if (prErr) throw prErr;
+    (prRows || []).forEach(row => {
+      grItems.push({
+        goods_receipt_id:   header.id,
+        property_record_id: row.id,
+        quantity:           1
+      });
+    });
+  }
+
+  // -- Stock lines -----------------------------------------------------------
+  const stockRows = Array.from(container.querySelectorAll('#gr-stock-tbl tbody tr[data-item-id]'));
+  let stockLineCount = 0;
+  for (const tr of stockRows) {
+    const check = tr.querySelector('.gr-item-check');
+    if (!check?.checked) continue;
+    const itemId = tr.dataset.itemId;
+    const qty = Math.max(1, parseInt(tr.querySelector('.gr-qty-input')?.value || '1', 10));
+    const cost = parseFloat(tr.querySelector('.gr-cost-input')?.value || '0') || null;
+    grItems.push({
+      goods_receipt_id: header.id,
+      stock_item_id:    itemId,
+      quantity:         qty,
+      unit_cost:        cost
+    });
+    // Increment / create stock_records for that item.
+    const { data: existing } = await client
+      .from('stock_records')
+      .select('id, quantity')
+      .eq('item_id', itemId)
+      .maybeSingle();
+    if (existing) {
+      await client
+        .from('stock_records')
+        .update({ quantity: Number(existing.quantity || 0) + qty })
+        .eq('id', existing.id);
+    } else {
+      const code = tr.cells[1]?.textContent.trim();
+      const description = tr.cells[2]?.textContent.trim();
+      await client.from('stock_records').insert({
+        item_id:     itemId,
+        item_code:   code,
+        description: description,
+        quantity:    qty,
+        region_id:   regionId
+      });
+    }
+    stockLineCount++;
+  }
+
+  if (grItems.length) {
+    const { error: gErr } = await client.from('goods_receipt_items').insert(grItems);
+    if (gErr) throw gErr;
+  }
+
+  return { propertyRecords: propertyInserts.length, stockLines: stockLineCount };
 }
 
 function _GR_loadHistory(container) {

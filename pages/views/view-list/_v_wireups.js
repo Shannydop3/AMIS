@@ -87,10 +87,11 @@
   attach('good-receive-history', {
     table: 'goods_receipts',
     select: `id, gr_number, received_at, status, remarks, created_at,
-             receiver:profiles!goods_receipts_received_by_fkey(full_name,email)`,
+             receiver:profiles!goods_receipts_received_by_fkey(full_name,email),
+             items:goods_receipt_items(id)`,
     rowFn: r => [
       bold(r.gr_number), dash(person(r.receiver)),
-      '—',                                     // No. of items — from goods_receipt_items count
+      dash(r.items?.length || 0),             // No. of items
       date(r.received_at), dash(r.remarks),
       '<span class="v-muted">—</span>',        // Document
       '<span class="v-muted">—</span>'         // Action
@@ -100,13 +101,20 @@
   attach('property-issuance-history', {
     table: 'property_issuances',
     select: `id, issuance_no, issued_at, status, remarks, created_at,
-             recipient:profiles!property_issuances_issued_to_fkey(full_name,email)`,
-    rowFn: r => [
-      bold(r.issuance_no), '—', '—',           // Property #, Description — from items
-      dash(person(r.recipient)),
-      date(r.issued_at), status(r.status),
-      dash(r.remarks), '<span class="v-muted">—</span>', '<span class="v-muted">—</span>'
-    ]
+             recipient:profiles!property_issuances_issued_to_fkey(full_name,email),
+             items:property_issuance_items(id, property:property_records(property_number, description))`,
+    rowFn: r => {
+      const first = r.items?.[0]?.property;
+      const propNo = first?.property_number || '—';
+      const desc   = first?.description || '—';
+      const suffix = (r.items?.length > 1) ? ` +${r.items.length - 1} more` : '';
+      return [
+        bold(r.issuance_no), propNo, desc + suffix,
+        dash(person(r.recipient)),
+        date(r.issued_at), status(r.status),
+        dash(r.remarks), '<span class="v-muted">—</span>', '<span class="v-muted">—</span>'
+      ];
+    }
   });
 
   attach('property-request-history', {

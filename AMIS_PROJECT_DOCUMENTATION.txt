@@ -963,10 +963,32 @@ project-root/
       from a Supabase SELECT (with embedded FK aliases where useful).
       Fixed load-order bug: views.html now correctly loads
       view-list/views-helper.js (was `views-helper.js` at root).
-    Phase 5 (not started):
-      Audit trail — insert rows into public.audit_trail from every
-      INSERT/UPDATE/DELETE across the app. Cleanest via Postgres
-      triggers rather than client-side calls.
+    Phase 5 (partial):
+      db/04_audit_triggers.sql — a generic AFTER INSERT/UPDATE/DELETE
+      trigger writes into public.audit_trail on every operational table.
+      Records the acting user (auth.uid()), verb, entity, PK, and a
+      JSONB before/after diff. Run this file in Supabase → SQL Editor
+      once to activate. From then on, every action across the app
+      shows up on Views → Audit Trail.
+    Line items (in progress):
+      goods-receive.js — Property + Stock tabs are now populated from
+      property_items and stock_items catalogs. Saving a Goods Receive
+      now creates N property_records per selected property (one per
+      unit of quantity) with status='Active', increments stock_records
+      for selected stock items, and inserts goods_receipt_items rows
+      linking everything to the header.
+      property-issuance.js — the "Select Properties to Issue" table
+      now loads real property_records where status='Active'. Saving
+      creates property_issuances + property_issuance_items and flips
+      the picked records to status='Issued' with assigned_to set.
+      property-information.js — the search box is real: hits
+      property_records with server-side filters on property_number,
+      item_code, status; client-side filters for region + branch.
+      Still stubbed (17 more forms):
+        tagging, stock-issuance, property/stock request, property
+        transfer/return, maintenance, gate passes, inventory count,
+        disposals — Save button writes only the header via
+        _OP_quickSave(); no line-item wiring yet.
 
   Design decisions (locked in this migration, see also section 15):
     - Auth: Administrator-invites-only. No public signup.

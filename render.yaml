@@ -1,0 +1,53 @@
+# Render Static Site config for AMIS.
+# See https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: amis
+    runtime: static
+    branch: main
+    rootDir: .
+
+    # Publish everything from the repo root — no bundler.
+    staticPublishPath: .
+
+    # Generate common/config.js from Render Environment Variables at build time.
+    # Set SUPABASE_URL and SUPABASE_ANON in the Render dashboard → Environment.
+    buildCommand: |
+      mkdir -p common
+      printf "window.AMIS_CONFIG = { SUPABASE_URL: '%s', SUPABASE_ANON: '%s' };\n" \
+        "$SUPABASE_URL" "$SUPABASE_ANON" > common/config.js
+      echo "--- generated common/config.js ---"
+      cat common/config.js
+
+    # Send every path back to index.html? No — AMIS uses real folder URLs
+    # (/pages/dashboard/dashboard.html), so leave routing off.
+
+    envVars:
+      - key: SUPABASE_URL
+        sync: false           # value provided in Render dashboard, not committed here
+      - key: SUPABASE_ANON
+        sync: false
+
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - path: /*
+        name: Permissions-Policy
+        value: camera=(), microphone=(), geolocation=()
+      - path: /*
+        name: Content-Security-Policy
+        value: >
+          default-src 'self';
+          script-src 'self' 'unsafe-inline' https://esm.sh https://cdnjs.cloudflare.com;
+          style-src 'self' 'unsafe-inline';
+          img-src 'self' data: https:;
+          font-src 'self' data:;
+          connect-src 'self' https://*.supabase.co wss://*.supabase.co https://esm.sh;
+          frame-ancestors 'none';

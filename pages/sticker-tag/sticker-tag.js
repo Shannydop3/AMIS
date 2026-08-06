@@ -123,10 +123,10 @@ function buildStickerHTML(data, index, isEmpty, isModal) {
     <div class="s-body">
       <div class="s-left">
         <div class="s-logo-wrap">
-  <img src="../../assets/dict-logo.png" alt="DICT"
+  <img src="../../assets/DICT-LOGO.png" alt="DICT"
        style="width:11mm;height:auto;object-fit:contain;display:block;"
        onerror="this.style.display='none'">
-  <img src="../../assets/dict-name.png" alt="DICT"
+  <img src="../../assets/DICT-NAME.png" alt="DICT"
        style="width:11mm;height:auto;object-fit:contain;display:block;"
        onerror="this.style.display='none'">
 </div>
